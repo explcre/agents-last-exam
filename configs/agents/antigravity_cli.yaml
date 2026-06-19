@@ -1,0 +1,55 @@
+# antigravity_cli — Google's Antigravity CLI (`agy`), run headless on the sandbox.
+#
+# AUTH IS DIFFERENT FROM EVERY OTHER AGENT. agy is OAuth-only against Google's
+# own backend — no OpenRouter, no API key. You must log in ONCE on the host:
+#
+#     ~/.local/bin/agy            # browser/paste-code login with a Google account
+#
+# That writes ~/.gemini/antigravity-cli/antigravity-oauth-token (a refresh-token
+# credential). Point the run at it via the host env (in secret/.env or shell):
+#
+#     export ANTIGRAVITY_OAUTH_TOKEN_PATH=$HOME/.gemini/antigravity-cli/antigravity-oauth-token
+#     # optional: export ANTIGRAVITY_GOOGLE_ACCOUNTS="$(cat $HOME/.gemini/google_accounts.json)"
+#
+# The lifecycle forwards that into the sandbox and the deployer writes it back
+# into place, after which agy silent-auths headlessly. Routing is Google's
+# backend + plan models, NOT OpenRouter — so token/cost are not OpenRouter-comparable.
+#
+# Reference from an experiment as:  agents: [ configs/agents/antigravity_cli.yaml ]
+
+harness: antigravity_cli
+# executor: sandbox          # only supported value (deployer default).
+
+# Example model — one of `agy models` display names (accepted verbatim by --model):
+#   "Gemini 3.1 Pro (High)" | "Gemini 3.5 Flash (High)" |
+#   "Claude Sonnet 4.6 (Thinking)" | "Claude Opus 4.6 (Thinking)" | "GPT-OSS 120B (Medium)"
+model: Gemini 3.1 Pro (High)
+
+config:
+  # Bypass tool-permission prompts (required headless) -> --dangerously-skip-permissions.
+  dangerously_skip_permissions: true
+
+  # maxSessionTurns in settings.json. -1 = unbounded (wall-clock timeout is the cap).
+  max_session_turns: -1
+
+  # Deny-only tool policy (settings.json tools.exclude); agy shares gemini's catalog.
+  disabled_tools:
+    - save_memory
+    - activate_skill
+    - get_internal_docs
+    - write_todos
+    - ask_user
+    - enter_plan_mode
+    - exit_plan_mode
+    - update_topic
+    - complete_task
+    - tracker_create_task
+    - tracker_update_task
+    - tracker_get_task
+    - tracker_list_tasks
+    - tracker_add_dependency
+    - tracker_visualize
+
+  # Pinned CLI version (probe-or-reinstall). Empty download_url => official installer.
+  cli_version: "1.0.10"
+  download_url: ""

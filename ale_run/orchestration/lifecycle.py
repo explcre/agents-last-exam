@@ -753,6 +753,9 @@ def _collect_env_passthrough() -> dict[str, str]:
         "FACTORY_API_KEY",
         "CURSOR_AUTH_JSON_PATH",
         "CURSOR_AUTH_JSON",
+        "ANTIGRAVITY_OAUTH_TOKEN_PATH",
+        "ANTIGRAVITY_OAUTH_TOKEN",
+        "ANTIGRAVITY_GOOGLE_ACCOUNTS",
     )
     result = {k: os.environ[k] for k in keys if k in os.environ}
 
@@ -776,6 +779,35 @@ def _collect_env_passthrough() -> dict[str, str]:
                     logger.warning(
                         "env_passthrough: failed to read CURSOR_AUTH_JSON_PATH=%s: %s",
                         auth_path_str, e,
+                    )
+
+    # Antigravity CLI (agy) is OAuth-only: forward its host credential file's
+    # content (a refresh-token JSON) and the active-account marker so the
+    # in-sandbox deployer can write them back and silent-auth headlessly.
+    if "ANTIGRAVITY_OAUTH_TOKEN" not in result:
+        tok_path_str = os.environ.get("ANTIGRAVITY_OAUTH_TOKEN_PATH", "").strip()
+        if tok_path_str:
+            tok_path = _Path(tok_path_str).expanduser()
+            if tok_path.is_file():
+                try:
+                    content = tok_path.read_text(encoding="utf-8")
+                    if content.strip():
+                        result["ANTIGRAVITY_OAUTH_TOKEN"] = content
+                        logger.info(
+                            "env_passthrough: materialised ANTIGRAVITY_OAUTH_TOKEN "
+                            "from ANTIGRAVITY_OAUTH_TOKEN_PATH (%d B)", len(content),
+                        )
+                    # The active-account marker sits next to the token file.
+                    if "ANTIGRAVITY_GOOGLE_ACCOUNTS" not in result:
+                        acc = tok_path.parent.parent / "google_accounts.json"
+                        if acc.is_file():
+                            ac = acc.read_text(encoding="utf-8")
+                            if ac.strip():
+                                result["ANTIGRAVITY_GOOGLE_ACCOUNTS"] = ac
+                except OSError as e:
+                    logger.warning(
+                        "env_passthrough: failed to read ANTIGRAVITY_OAUTH_TOKEN_PATH=%s: %s",
+                        tok_path_str, e,
                     )
 
     return result
