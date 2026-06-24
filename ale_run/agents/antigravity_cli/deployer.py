@@ -15,10 +15,12 @@ account. So instead of forwarding an API key, this deployer forwards a
   3. install() here:    writes it back to the same path inside the sandbox and
      ``chmod 600`` it, after which ``agy`` silent-auths headlessly.
 
-GUI comes from the shared cua MCP bridge via ``~/.gemini/settings.json`` (agy
-reads the same gemini-cli settings file). ``agy`` has no ``--output-format``, so
-the transcript is the captured stdout; the rich step log is a sqlite ``.db``
-under ``conversations/`` which is pulled as a hot artifact for later parsing.
+GUI comes from the cua MCP bridge declared in ``agy``'s native
+``~/.gemini/config/mcp_config.json`` (NOT the gemini-cli ``settings.json``).
+``agy`` has no ``--output-format``, so the transcript is its captured stdout;
+the richer step log is a sqlite ``.db`` under
+``~/.gemini/antigravity-cli/conversations/`` (outside ``work_dir``) — a follow-up
+can parse it for structured tool-call steps.
 """
 from __future__ import annotations
 
@@ -27,6 +29,7 @@ import json
 import logging
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import time
@@ -36,7 +39,6 @@ from typing import ClassVar
 from ale_run.base_interface import (
     AgentRunResult,
     BaseAgentDeployer,
-    StepMetrics,
     TrajectoryBuilder,
 )
 
@@ -99,13 +101,16 @@ class AntigravityCliDeployer(BaseAgentDeployer):
         home = os.path.expanduser("~")
         local_prefix = os.path.join(home, ".local")
 
-        # 1. locate / install agy. The official installer drops a native binary
-        #    at ~/.local/bin/agy and refuses if one already exists, so probe
-        #    first and only (re)install when missing or the version mismatches.
+        # 1. locate / install agy. Probe first, then install when missing or
+        #    version-stale. NOTE: the curl installer refuses (exits 0, no-op) if
+        #    ~/.local/bin/agy already exists, so a version bump only takes effect
+        #    when `download_url` (a pinned tarball that overwrites) is set —
+        #    `_install_agy` removes the existing binary first either way.
         agy = _find_agy(local_prefix)
         installed = await asyncio.to_thread(_installed_version, agy) if agy else None
-        if not agy or (cfg.cli_version and installed and installed != cfg.cli_version):
-            if agy and installed != cfg.cli_version:
+        stale = bool(agy and cfg.cli_version and installed and installed != cfg.cli_version)
+        if not agy or (stale and cfg.download_url):
+            if stale:
                 logger.info("antigravity_cli: %s != pinned %s — reinstalling",
                             installed, cfg.cli_version)
             await self._install_agy(cfg, local_prefix)
@@ -113,6 +118,12 @@ class AntigravityCliDeployer(BaseAgentDeployer):
             if not agy:
                 raise RuntimeError("antigravity_cli: 'agy' not found after install")
             installed = await asyncio.to_thread(_installed_version, agy)
+        elif stale:
+            # Version drift but no pinned tarball to enforce it: the curl
+            # installer would just re-fetch latest, so reuse what's installed.
+            logger.warning("antigravity_cli: installed %s != pinned %s but no "
+                           "download_url to pin — reusing installed agy",
+                           installed, cfg.cli_version)
         self._agy_path = agy
         # ~/.local/bin on PATH so launch() and any self-update find it.
         bin_dir = os.path.join(local_prefix, "bin")
@@ -127,8 +138,7 @@ class AntigravityCliDeployer(BaseAgentDeployer):
         # 3. inject the OAuth credential the operator produced on the host.
         self._write_oauth_token()
 
-        # 4. cua GUI bridge + settings.json (agy reads ~/.gemini/settings.json,
-        #    same file gemini-cli uses). Idempotent bridge install.
+        # 4. cua GUI bridge + agy config. Idempotent bridge install.
         from ale_run.agents._bootstrap import cua_bridge_env, ensure_cua_mcp_server
         await ensure_cua_mcp_server(sandbox)
 
@@ -163,21 +173,29 @@ class AntigravityCliDeployer(BaseAgentDeployer):
                     gemini_home)
 
     async def _install_agy(self, cfg: AntigravityCliConfig, local_prefix: str) -> None:
-        """Install agy via the official installer (or a pinned tarball URL)."""
+        """Install agy via the official installer (or a pinned tarball URL).
+
+        Removes any existing ``~/.local/bin/agy`` first: the curl installer is a
+        no-op when the binary already exists, so without this a reinstall would
+        silently keep the old version.
+        """
         env = {**os.environ}
+        bin_dir = os.path.join(local_prefix, "bin")
         if cfg.download_url:
             # Pinned tarball: extract the `agy` binary into ~/.local/bin.
-            bin_dir = os.path.join(local_prefix, "bin")
             os.makedirs(bin_dir, exist_ok=True)
             cmd = (
-                f"set -e; tmp=$(mktemp -d); "
-                f"curl -fsSL {cfg.download_url!r} -o $tmp/agy.tgz; "
+                f"set -e; rm -f {bin_dir}/agy; tmp=$(mktemp -d); "
+                f"curl -fsSL {shlex.quote(cfg.download_url)} -o $tmp/agy.tgz; "
                 f"tar -xzf $tmp/agy.tgz -C $tmp; "
                 f"f=$(find $tmp -name agy -type f | head -1); "
                 f"install -m755 $f {bin_dir}/agy; rm -rf $tmp"
             )
         else:
-            cmd = "curl -fsSL https://antigravity.google/cli/install.sh | bash"
+            cmd = (
+                f"rm -f {bin_dir}/agy; "
+                "curl -fsSL https://antigravity.google/cli/install.sh | bash"
+            )
         proc = await asyncio.to_thread(
             subprocess.run, ["bash", "-lc", cmd],
             capture_output=True, text=True, timeout=300, env=env,
@@ -261,6 +279,11 @@ class AntigravityCliDeployer(BaseAgentDeployer):
             env[k] = v
         env["NO_COLOR"] = "1"
         env["TERM"] = "dumb"
+        # The OAuth credential reaches agy via the file written in install(), NOT
+        # the env. Strip the transport vars so the long-lived refresh token never
+        # enters agy's process env (and thus any shell command the agent runs).
+        for cred_var in ("ANTIGRAVITY_OAUTH_TOKEN", "ANTIGRAVITY_GOOGLE_ACCOUNTS"):
+            env.pop(cred_var, None)
         logger.info("antigravity_cli: argv=%s", argv)
 
         t0 = time.monotonic()

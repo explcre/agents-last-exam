@@ -797,18 +797,25 @@ def _collect_env_passthrough() -> dict[str, str]:
                             "env_passthrough: materialised ANTIGRAVITY_OAUTH_TOKEN "
                             "from ANTIGRAVITY_OAUTH_TOKEN_PATH (%d B)", len(content),
                         )
-                    # The active-account marker sits next to the token file.
-                    if "ANTIGRAVITY_GOOGLE_ACCOUNTS" not in result:
-                        acc = tok_path.parent.parent / "google_accounts.json"
-                        if acc.is_file():
-                            ac = acc.read_text(encoding="utf-8")
-                            if ac.strip():
-                                result["ANTIGRAVITY_GOOGLE_ACCOUNTS"] = ac
                 except OSError as e:
                     logger.warning(
                         "env_passthrough: failed to read ANTIGRAVITY_OAUTH_TOKEN_PATH=%s: %s",
                         tok_path_str, e,
                     )
+            # The active-account marker sits next to the token file (own
+            # try/except so its failure isn't mis-attributed to the token read).
+            if "ANTIGRAVITY_GOOGLE_ACCOUNTS" not in result and tok_path.is_file():
+                acc = tok_path.parent.parent / "google_accounts.json"
+                if acc.is_file():
+                    try:
+                        ac = acc.read_text(encoding="utf-8")
+                        if ac.strip():
+                            result["ANTIGRAVITY_GOOGLE_ACCOUNTS"] = ac
+                    except OSError as e:
+                        logger.warning(
+                            "env_passthrough: failed to read google_accounts.json "
+                            "next to %s: %s", tok_path_str, e,
+                        )
 
     return result
 
