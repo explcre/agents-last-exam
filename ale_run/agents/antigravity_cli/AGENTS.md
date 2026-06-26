@@ -13,9 +13,10 @@
 ## Install
 
 `AntigravityCliDeployer.install()` probes `agy --version` and (re)installs via
-the official curl installer when missing or version-mismatched, then writes the
-OAuth credential, the CUA MCP config, and `settings.json`. Linux only so far
-(curl installer / `~/.local/bin` / `bash`); native-Windows is a follow-up.
+the official installer when missing or version-mismatched, then writes the
+OAuth credential, the CUA MCP config, and `settings.json`. OS-branched: Linux
+uses the curl installer → `~/.local/bin/agy`; Windows uses `install.ps1` →
+`%LOCALAPPDATA%\agy\bin\agy.exe` (see Windows section for the cua caveat).
 
 ## Runtime
 
@@ -89,6 +90,39 @@ exposes its full native set. `agy` self-skips the interactive tools
 tool names (and confirming `agy` honors `settings.json`) is a follow-up if we
 want to disable e.g. `schedule` / `manage_task` / subagents for benchmark
 integrity.
+
+## Validation (OS × provider)
+
+| Task | Linux / docker | Linux / gcloud | Windows / gcloud |
+|---|---|---|---|
+| `demo/seecheck` (GUI vision) | **1.0** | **1.0** | — (cua, see below) |
+| `demo/tool_smoke` | **0.92** (33/36) | **0.92** (33/36) | n/a |
+| `demo/tool_smoke_win` | n/a | n/a | **0.48–0.84** (native only) |
+
+gcloud uses the operator's **active gcloud account** (compute access) when
+`GCP_SA_KEY` is unset/missing — `gcloud_sa_key_path()` returns None and the
+provider falls back to it. `output_path: local` needs no GCS key.
+
+## Windows
+
+The deployer supports Windows: it installs `agy.exe` via `install.ps1` into
+`%LOCALAPPDATA%\agy\bin`, writes the OAuth token + MCP config under
+`%USERPROFILE%\.gemini` (the Linux-generated token authenticates fine on
+Windows), and launches `agy.exe -p -`. **agy's own native tools work**
+(`run_command`, file tools, web, etc.) — except `grep_search`, which shells out
+to `grep` (absent on Windows; agy's own limitation).
+
+**Known limitation — cua GUI tools do not load on Windows.** Verified on a live
+VM that everything the deployer controls is correct: `mcp_config.json` (cua +
+the right `node.exe`/`index.js` paths), `node.exe`, the bridge `index.js`, and
+its `node_modules` are all present. Yet agy's log shows **no MCP-server startup**
+on Windows (it logs the cua connection on Linux), and the model gets
+`unknown tool name: call_mcp_tool` / `mcp_cua_cursor_position` — i.e. agy does
+not surface MCP (cua) tools to the model on Windows the way it does on Linux.
+This is an agy-internal Windows behavior, not a wiring issue, and blocks GUI
+tasks (incl. `demo/seecheck`) on Windows until agy fixes MCP exposure there.
+(The deployer copies agy's `cli.log` → `work_dir/agy_cli.log`, pulled as a hot
+artifact, to make this diagnosable.)
 
 ## Quota
 

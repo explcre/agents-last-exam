@@ -57,8 +57,11 @@ _ACCOUNTS_RELPATH = (".gemini", "google_accounts.json")
 
 def _installed_version(agy_path: str) -> str | None:
     try:
+        # stdin=DEVNULL: a bare `agy --version` can otherwise wait on a TTY /
+        # trip Defender on Windows.
         probe = subprocess.run(
             [agy_path, "--version"], capture_output=True, text=True, timeout=30,
+            stdin=subprocess.DEVNULL,
         )
     except (subprocess.SubprocessError, OSError):
         return None
@@ -66,15 +69,23 @@ def _installed_version(agy_path: str) -> str | None:
     return m.group(1) if m else None
 
 
-def _find_agy(local_prefix: str) -> str | None:
-    """Resolve the agy binary, preferring our ``~/.local/bin`` install.
+def _win_appdata_bin(home: str) -> str:
+    """``%LOCALAPPDATA%\\agy\\bin`` — where install.ps1 drops ``agy.exe``."""
+    local_appdata = os.environ.get("LOCALAPPDATA") or os.path.join(home, "AppData", "Local")
+    return os.path.join(local_appdata, "agy", "bin")
 
-    The sandbox entry runs without a login shell, so ``~/.local/bin`` may not be
-    on PATH and ``shutil.which`` misses the installer-dropped binary."""
-    p = shutil.which("agy")
+
+def _find_agy(home: str, *, is_windows: bool) -> str | None:
+    """Resolve the agy binary, preferring the installer's drop location.
+
+    The sandbox entry runs without a login shell, so the install dir may not be
+    on PATH and ``shutil.which`` misses the installer-dropped binary. Linux:
+    ``~/.local/bin/agy``; Windows: ``%LOCALAPPDATA%\\agy\\bin\\agy.exe``."""
+    p = shutil.which("agy.exe" if is_windows else "agy") or shutil.which("agy")
     if p:
         return p
-    cand = os.path.join(local_prefix, "bin", "agy")
+    cand = (os.path.join(_win_appdata_bin(home), "agy.exe") if is_windows
+            else os.path.join(home, ".local", "bin", "agy"))
     return cand if os.path.isfile(cand) else None
 
 
@@ -83,7 +94,7 @@ class AntigravityCliDeployer(BaseAgentDeployer):
 
     default_executor: ClassVar[str] = "sandbox"
     supported_executors: ClassVar[frozenset[str]] = frozenset({"sandbox"})
-    hot_artifacts: ClassVar[tuple[str, ...]] = ("transcript.txt", "stderr.log")
+    hot_artifacts: ClassVar[tuple[str, ...]] = ("transcript.txt", "stderr.log", "agy_cli.log")
 
     @property
     def version(self) -> str | None:
@@ -97,36 +108,37 @@ class AntigravityCliDeployer(BaseAgentDeployer):
     async def install(self) -> None:
         cfg: AntigravityCliConfig = self.config  # type: ignore[assignment]
         sandbox = self.executor.sandbox
+        self._is_windows = not sandbox.is_linux
 
         home = os.path.expanduser("~")
-        local_prefix = os.path.join(home, ".local")
 
         # 1. locate / install agy. Probe first, then install when missing or
-        #    version-stale. NOTE: the curl installer refuses (exits 0, no-op) if
-        #    ~/.local/bin/agy already exists, so a version bump only takes effect
-        #    when `download_url` (a pinned tarball that overwrites) is set —
-        #    `_install_agy` removes the existing binary first either way.
-        agy = _find_agy(local_prefix)
+        #    version-stale. NOTE: the official installer refuses (no-op) if agy
+        #    already exists, so a version bump only takes effect when
+        #    `download_url` (a pinned tarball, Linux-only) is set — `_install_agy`
+        #    removes the existing binary first either way.
+        agy = _find_agy(home, is_windows=self._is_windows)
         installed = await asyncio.to_thread(_installed_version, agy) if agy else None
         stale = bool(agy and cfg.cli_version and installed and installed != cfg.cli_version)
-        if not agy or (stale and cfg.download_url):
+        if not agy or (stale and cfg.download_url and not self._is_windows):
             if stale:
                 logger.info("antigravity_cli: %s != pinned %s — reinstalling",
                             installed, cfg.cli_version)
-            await self._install_agy(cfg, local_prefix)
-            agy = _find_agy(local_prefix)
+            await self._install_agy(cfg, home)
+            agy = _find_agy(home, is_windows=self._is_windows)
             if not agy:
                 raise RuntimeError("antigravity_cli: 'agy' not found after install")
             installed = await asyncio.to_thread(_installed_version, agy)
         elif stale:
-            # Version drift but no pinned tarball to enforce it: the curl
-            # installer would just re-fetch latest, so reuse what's installed.
+            # Version drift but no pinned tarball to enforce it: the installer
+            # would just re-fetch latest, so reuse what's installed.
             logger.warning("antigravity_cli: installed %s != pinned %s but no "
                            "download_url to pin — reusing installed agy",
                            installed, cfg.cli_version)
         self._agy_path = agy
-        # ~/.local/bin on PATH so launch() and any self-update find it.
-        bin_dir = os.path.join(local_prefix, "bin")
+        # Put the install dir on PATH so launch() and any self-update find it.
+        bin_dir = (_win_appdata_bin(home) if self._is_windows
+                   else os.path.join(home, ".local", "bin"))
         if bin_dir not in os.environ.get("PATH", ""):
             os.environ["PATH"] = bin_dir + os.pathsep + os.environ.get("PATH", "")
         logger.info("antigravity_cli: CLI ok — agy %s at %s", installed or "?", agy)
@@ -172,33 +184,45 @@ class AntigravityCliDeployer(BaseAgentDeployer):
         logger.info("antigravity_cli: config staged at %s (cua -> config/mcp_config.json)",
                     gemini_home)
 
-    async def _install_agy(self, cfg: AntigravityCliConfig, local_prefix: str) -> None:
-        """Install agy via the official installer (or a pinned tarball URL).
+    async def _install_agy(self, cfg: AntigravityCliConfig, home: str) -> None:
+        """Install agy via the official installer (Linux: curl, Windows: ps1) or
+        a pinned tarball URL (Linux only).
 
-        Removes any existing ``~/.local/bin/agy`` first: the curl installer is a
-        no-op when the binary already exists, so without this a reinstall would
-        silently keep the old version.
+        Removes any existing binary first: both installers are a no-op when the
+        binary already exists, so without this a reinstall would silently keep
+        the old version.
         """
         env = {**os.environ}
-        bin_dir = os.path.join(local_prefix, "bin")
-        if cfg.download_url:
-            # Pinned tarball: extract the `agy` binary into ~/.local/bin.
-            os.makedirs(bin_dir, exist_ok=True)
-            cmd = (
-                f"set -e; rm -f {bin_dir}/agy; tmp=$(mktemp -d); "
-                f"curl -fsSL {shlex.quote(cfg.download_url)} -o $tmp/agy.tgz; "
-                f"tar -xzf $tmp/agy.tgz -C $tmp; "
-                f"f=$(find $tmp -name agy -type f | head -1); "
-                f"install -m755 $f {bin_dir}/agy; rm -rf $tmp"
+        if self._is_windows:
+            target = os.path.join(_win_appdata_bin(home), "agy.exe")
+            ps = (
+                f"$ErrorActionPreference='Stop'; "
+                f"if (Test-Path '{target}') {{ Remove-Item '{target}' -Force }}; "
+                "irm https://antigravity.google/cli/install.ps1 | iex"
             )
+            argv = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", ps]
         else:
-            cmd = (
-                f"rm -f {bin_dir}/agy; "
-                "curl -fsSL https://antigravity.google/cli/install.sh | bash"
-            )
+            bin_dir = os.path.join(home, ".local", "bin")
+            if cfg.download_url:
+                # Pinned tarball: extract the `agy` binary into ~/.local/bin.
+                os.makedirs(bin_dir, exist_ok=True)
+                cmd = (
+                    f"set -e; rm -f {bin_dir}/agy; tmp=$(mktemp -d); "
+                    f"curl -fsSL {shlex.quote(cfg.download_url)} -o $tmp/agy.tgz; "
+                    f"tar -xzf $tmp/agy.tgz -C $tmp; "
+                    f"f=$(find $tmp -name agy -type f | head -1); "
+                    f"install -m755 $f {bin_dir}/agy; rm -rf $tmp"
+                )
+            else:
+                cmd = (
+                    f"rm -f {bin_dir}/agy; "
+                    "curl -fsSL https://antigravity.google/cli/install.sh | bash"
+                )
+            argv = ["bash", "-lc", cmd]
         proc = await asyncio.to_thread(
-            subprocess.run, ["bash", "-lc", cmd],
+            subprocess.run, argv,
             capture_output=True, text=True, timeout=300, env=env,
+            stdin=subprocess.DEVNULL,
         )
         if proc.returncode != 0:
             raise RuntimeError(
@@ -314,6 +338,17 @@ class AntigravityCliDeployer(BaseAgentDeployer):
                 except ProcessLookupError:
                     pass
             raise
+
+        # Capture agy's own internal log (MCP connection / auth / quota) into the
+        # work dir so it's pulled as an artifact — invaluable for debugging (e.g.
+        # why cua MCP tools did/didn't load). Best-effort; cli.log is a symlink to
+        # the latest log/cli-*.log, copyfile follows it.
+        try:
+            agy_log = Path(os.path.expanduser("~")) / ".gemini" / "antigravity-cli" / "cli.log"
+            if agy_log.exists():
+                shutil.copyfile(agy_log, wd / "agy_cli.log")
+        except OSError:
+            pass
 
         duration_s = time.monotonic() - t0
         exit_code = proc.returncode
