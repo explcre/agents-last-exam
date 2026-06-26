@@ -108,21 +108,34 @@ provider falls back to it. `output_path: local` needs no GCS key.
 The deployer supports Windows: it installs `agy.exe` via `install.ps1` into
 `%LOCALAPPDATA%\agy\bin`, writes the OAuth token + MCP config under
 `%USERPROFILE%\.gemini` (the Linux-generated token authenticates fine on
-Windows), and launches `agy.exe -p -`. **agy's own native tools work**
+Windows), and launches `agy.exe -p -`. **agy's native tools work**
 (`run_command`, file tools, web, etc.) — except `grep_search`, which shells out
 to `grep` (absent on Windows; agy's own limitation).
 
-**Known limitation — cua GUI tools do not load on Windows.** Verified on a live
-VM that everything the deployer controls is correct: `mcp_config.json` (cua +
-the right `node.exe`/`index.js` paths), `node.exe`, the bridge `index.js`, and
-its `node_modules` are all present. Yet agy's log shows **no MCP-server startup**
-on Windows (it logs the cua connection on Linux), and the model gets
-`unknown tool name: call_mcp_tool` / `mcp_cua_cursor_position` — i.e. agy does
-not surface MCP (cua) tools to the model on Windows the way it does on Linux.
-This is an agy-internal Windows behavior, not a wiring issue, and blocks GUI
-tasks (incl. `demo/seecheck`) on Windows until agy fixes MCP exposure there.
-(The deployer copies agy's `cli.log` → `work_dir/agy_cli.log`, pulled as a hot
-artifact, to make this diagnosable.)
+### cua GUI on Windows — an intermittent startup race (mitigated)
+
+The CUA MCP tools loaded only **intermittently** on Windows (≈1 run in 4) — some
+runs registered and used all 14, others registered none. Everything the deployer
+controls is correct (verified on a live VM: `mcp_config.json` with the right
+`node.exe`/`index.js` paths, the bridge, and its `node_modules` are all present;
+the `GeminiDir "...not absolute, falling back to default"` log line is a red
+herring — it appears even when cua works). The variance is a **race on the FIRST
+agy run on a fresh VM**: agy's config-migration + auto-updater + a cold `node`
+start (slow on Windows — Defender scan + ESM module load of the MCP SDK) race
+with agy's MCP tool-discovery window, so cua sometimes isn't registered in time.
+
+The deployer mitigates this in `install()` (all steps cost **no model quota**):
+
+1. **Pre-warm the node bridge** — spawn it once so its modules are cached /
+   Defender-scanned, making agy's spawn at launch fast.
+2. **Prime agy** with `agy models` (a metadata call, *not* a `-p` generation
+   turn) so first-run config-migration + the auto-updater are already done.
+3. **Pass `--gemini_dir=<absolute>`** so config discovery is deterministic.
+
+The deployer also copies agy's `cli.log` → `work_dir/agy_cli.log` (hot artifact)
+to keep this diagnosable. With the mitigation a fresh-VM run registered cua
+(`tool_smoke_win` total=36, cua usable); full multi-run reliability validation
+is pending (the account hit its multi-day quota during testing).
 
 ## Quota
 

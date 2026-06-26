@@ -156,6 +156,7 @@ class AntigravityCliDeployer(BaseAgentDeployer):
 
         gemini_home = Path(home) / ".gemini"
         gemini_home.mkdir(parents=True, exist_ok=True)
+        self._gemini_dir = str(gemini_home)
         cua_server = {
             "cua": {
                 "command": sandbox.node,
@@ -183,6 +184,61 @@ class AntigravityCliDeployer(BaseAgentDeployer):
         )
         logger.info("antigravity_cli: config staged at %s (cua -> config/mcp_config.json)",
                     gemini_home)
+
+        # 5. Windows: pre-warm node + the cua bridge modules. A COLD node start
+        #    on Windows (Defender scan + ESM module load of the MCP SDK) is slow
+        #    enough to intermittently miss agy's MCP tool-discovery window at
+        #    launch, so the cua GUI tools register only ~1 run in 4. One warm-up
+        #    run loads the modules into the OS file cache and lets Defender scan
+        #    them once, so agy's spawn of the bridge at launch is fast and wins
+        #    the race. (Linux node start is fast; no warm-up needed there.)
+        if self._is_windows:
+            await self._prewarm_bridge(sandbox)
+            await self._prewarm_agy()
+
+    async def _prewarm_agy(self) -> None:
+        """Run ``agy models`` once so the FIRST-run side effects (config
+        migration, the background auto-updater) are done before the real launch.
+        On a fresh Windows VM those first-run steps otherwise race with MCP tool
+        discovery, so the cua tools register only intermittently; priming makes
+        the real launch a reliable 'subsequent' run.
+
+        Uses ``models`` (a metadata call), NOT a ``-p`` generation turn, so it
+        consumes **no model quota** — a per-task generation warm-up would double
+        quota usage across a benchmark and exhaust the account.
+        """
+        argv = [self._agy_path, "models", f"--gemini_dir={self._gemini_dir}"]
+        try:
+            await asyncio.to_thread(
+                subprocess.run, argv, stdin=subprocess.DEVNULL,
+                capture_output=True, timeout=60, env=os.environ.copy(),
+            )
+            logger.info("antigravity_cli: warmed up agy (first-run migration primed, no quota used)")
+        except subprocess.TimeoutExpired:
+            logger.info("antigravity_cli: agy warm-up timed out (continuing)")
+        except (OSError, subprocess.SubprocessError) as e:
+            logger.info("antigravity_cli: agy warm-up skipped: %s", e)
+
+    async def _prewarm_bridge(self, sandbox) -> None:
+        """Spawn the cua bridge once so node + its modules are warm/cached."""
+        from ale_run.agents._bootstrap import cua_bridge_env
+        index_js = self._join(sandbox.mcp_server_dir, "src", "index.js",
+                              is_linux=sandbox.is_linux)
+        env = {**os.environ, **cua_bridge_env(self.executor)}
+        try:
+            # stdin=DEVNULL → the stdio MCP server gets EOF and idles/exits once
+            # its modules are loaded; the timeout caps the (slow, one-time) cold
+            # start. We only care that the modules end up cached, not the output.
+            await asyncio.to_thread(
+                subprocess.run, [sandbox.node, index_js],
+                stdin=subprocess.DEVNULL, capture_output=True, timeout=45, env=env,
+            )
+        except subprocess.TimeoutExpired:
+            pass
+        except (OSError, subprocess.SubprocessError) as e:
+            logger.info("antigravity_cli: bridge pre-warm skipped: %s", e)
+            return
+        logger.info("antigravity_cli: pre-warmed cua bridge (node modules cached)")
 
     async def _install_agy(self, cfg: AntigravityCliConfig, home: str) -> None:
         """Install agy via the official installer (Linux: curl, Windows: ps1) or
@@ -288,6 +344,12 @@ class AntigravityCliDeployer(BaseAgentDeployer):
         prompt_file.write_text(prompt, encoding="utf-8")
 
         argv = [self._agy_path, "-p", "-"]
+        # Pin the gemini dir to an ABSOLUTE path: agy resolves a relative
+        # ".gemini" against CWD on Windows and falls back to a default, which
+        # makes config discovery (incl. the cua MCP server) non-deterministic.
+        gemini_dir = getattr(self, "_gemini_dir", "")
+        if gemini_dir:
+            argv.append(f"--gemini_dir={gemini_dir}")
         if cfg.model:
             argv += ["--model", cfg.model]
         if cfg.dangerously_skip_permissions:
