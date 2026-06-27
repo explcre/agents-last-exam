@@ -17,26 +17,17 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar
 
-# Deny-only tool policy, mirrored from gemini_cli: agy shares the same tool
-# catalog and reads the same ``~/.gemini/settings.json`` ``tools.exclude`` list.
-# Only persistent-state / interactive / tracker tools are disabled; web + file
-# tools stay enabled (internet is allowed by the benchmark).
+# Deny-only tool policy (written to ``settings.json`` ``tools.exclude``).
+# Principle: disable tools that (a) need a human in the loop, or (b) need extra
+# config/capability the headless sandbox doesn't provide. These are agy's OWN
+# tool names (a demonstration of the mechanism — extend per benchmark policy):
+#   - ask_permission / ask_question : interactive, block a headless run.
+#   - read_resource                 : needs MCP resources the cua server doesn't expose.
+# Everything else (shell, files, web, GUI/cua, …) stays enabled.
 _DISABLED_TOOLS = (
-    "save_memory",
-    "activate_skill",
-    "get_internal_docs",
-    "write_todos",
-    "ask_user",
-    "enter_plan_mode",
-    "exit_plan_mode",
-    "update_topic",
-    "complete_task",
-    "tracker_create_task",
-    "tracker_update_task",
-    "tracker_get_task",
-    "tracker_list_tasks",
-    "tracker_add_dependency",
-    "tracker_visualize",
+    "ask_permission",
+    "ask_question",
+    "read_resource",
 )
 
 

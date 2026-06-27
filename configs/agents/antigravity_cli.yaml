@@ -32,23 +32,14 @@ config:
   # maxSessionTurns in settings.json. -1 = unbounded (wall-clock timeout is the cap).
   max_session_turns: -1
 
-  # Deny-only tool policy (settings.json tools.exclude); agy shares gemini's catalog.
+  # Deny-only tool policy (written to settings.json tools.exclude). Principle:
+  # disable tools that need a human in the loop OR need extra config/capability
+  # the headless sandbox lacks. These are agy's own tool names (a demonstration
+  # — extend per benchmark policy). Everything else (shell/files/web/GUI) stays on.
   disabled_tools:
-    - save_memory
-    - activate_skill
-    - get_internal_docs
-    - write_todos
-    - ask_user
-    - enter_plan_mode
-    - exit_plan_mode
-    - update_topic
-    - complete_task
-    - tracker_create_task
-    - tracker_update_task
-    - tracker_get_task
-    - tracker_list_tasks
-    - tracker_add_dependency
-    - tracker_visualize
+    - ask_permission   # interactive — blocks headless
+    - ask_question     # interactive — blocks headless
+    - read_resource    # needs MCP resources the cua server doesn't expose
 
   # Pinned CLI version (probe-or-reinstall). Empty download_url => official installer.
   cli_version: "1.0.10"

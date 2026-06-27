@@ -82,14 +82,23 @@ The matrix below is the agent's own self-report from `demo/tool_smoke` on
 
 ### Tool disabling
 
-`config.disabled_tools` is written to `settings.json` `tools.exclude`, but those
-are **gemini-cli** tool names (`save_memory`, `ask_user`, …) and do not match
-`agy`'s native names — so the exclude list is effectively inert for `agy`, which
-exposes its full native set. `agy` self-skips the interactive tools
-(`ask_permission` / `ask_question`). Aligning the exclude list to `agy`'s real
-tool names (and confirming `agy` honors `settings.json`) is a follow-up if we
-want to disable e.g. `schedule` / `manage_task` / subagents for benchmark
-integrity.
+`config.disabled_tools` is written to `settings.json` `tools.exclude`. Principle:
+disable tools that need **a human in the loop** or **extra config/capability** the
+headless sandbox lacks. The default uses `agy`'s real tool names (a demonstration
+— extend per benchmark policy):
+
+| Tool | Why disabled |
+|---|---|
+| `ask_permission`, `ask_question` | Interactive — block a headless run. |
+| `read_resource` | Needs MCP resources the `cua` server doesn't expose. |
+
+> **Enforcement is unverified.** The deployer writes the exclude to
+> `~/.gemini/settings.json`, but `agy` reads MCP config from
+> `~/.gemini/config/mcp_config.json` and its CLI settings from
+> `~/.gemini/antigravity-cli/settings.json` — so whether `agy` honors a
+> `tools.exclude` here (and in what schema) is a follow-up to confirm. `agy`
+> already self-skips `ask_question` regardless. Treat this list as the policy
+> declaration; wiring it to the location/format `agy` enforces is TODO.
 
 ## Validation (OS × provider)
 
