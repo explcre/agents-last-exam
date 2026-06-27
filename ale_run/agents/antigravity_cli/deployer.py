@@ -352,6 +352,10 @@ class AntigravityCliDeployer(BaseAgentDeployer):
             argv.append(f"--gemini_dir={gemini_dir}")
         if cfg.model:
             argv += ["--model", cfg.model]
+        # Raise agy's print-mode timeout well above the wall budget — its 5m
+        # default silently truncates longer tasks (no output written).
+        if getattr(cfg, "print_timeout", ""):
+            argv.append(f"--print-timeout={cfg.print_timeout}")
         if cfg.dangerously_skip_permissions:
             argv.append("--dangerously-skip-permissions")
         # agy file tools reject paths outside the workspace; add the task data

@@ -68,3 +68,10 @@ class AntigravityCliConfig:
     # (https://antigravity.google/cli/install.sh). A direct tarball URL (from the
     # updater manifest) pins an exact build for reproducibility.
     download_url: str = ""
+
+    # agy print-mode wait, passed as ``--print-timeout``. agy's OWN default is
+    # only 5m, which silently cuts off any longer task (e.g. a slow thinking
+    # model, or a multi-step task) before it finishes — the run then has no
+    # output. Set it well above any task's wall budget so the orchestration's
+    # ``wall_time_s`` is the real cap, not agy's internal timer.
+    print_timeout: str = "120m"

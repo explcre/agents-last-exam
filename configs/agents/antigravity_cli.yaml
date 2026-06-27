@@ -52,4 +52,5 @@ config:
 
   # Pinned CLI version (probe-or-reinstall). Empty download_url => official installer.
   cli_version: "1.0.10"
+  print_timeout: "120m"        # agy --print-timeout; its 5m default truncates long tasks
   download_url: ""
