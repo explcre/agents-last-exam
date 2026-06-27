@@ -95,9 +95,10 @@ integrity.
 
 | Task | Linux / docker | Linux / gcloud | Windows / gcloud |
 |---|---|---|---|
-| `demo/seecheck` (GUI vision) | **1.0** | **1.0** | — (cua, see below) |
+| `demo/seecheck` (GUI vision) | **1.0** | **1.0** | — |
+| `demo/seecheck_win` (GUI vision) | n/a | n/a | **1.0** (3/3, with the cua mitigation) |
 | `demo/tool_smoke` | **0.92** (33/36) | **0.92** (33/36) | n/a |
-| `demo/tool_smoke_win` | n/a | n/a | **0.48–0.84** (native only) |
+| `demo/tool_smoke_win` | n/a | n/a | native + cua (after mitigation) |
 
 gcloud uses the operator's **active gcloud account** (compute access) when
 `GCP_SA_KEY` is unset/missing — `gcloud_sa_key_path()` returns None and the
@@ -133,9 +134,20 @@ The deployer mitigates this in `install()` (all steps cost **no model quota**):
 3. **Pass `--gemini_dir=<absolute>`** so config discovery is deterministic.
 
 The deployer also copies agy's `cli.log` → `work_dir/agy_cli.log` (hot artifact)
-to keep this diagnosable. With the mitigation a fresh-VM run registered cua
-(`tool_smoke_win` total=36, cua usable); full multi-run reliability validation
-is pending (the account hit its multi-day quota during testing).
+to keep this diagnosable. **Validated:** with the mitigation, `demo/seecheck_win`
+(GUI vision) passes **3/3 = 1.0** on fresh ale-win10 gcloud VMs — so cua now loads
+reliably on Windows.
+
+### Account / quota note (important)
+
+agy's quota is **per Google account AND per model**. If runs 429 with
+*"Individual quota reached — please upgrade your subscription"*, the **active
+account is a free tier**, not the intended plan. Check the active account in
+`~/.gemini/google_accounts.json` (there is no agy CLI quota command; the web
+Settings → Models tab shows usage). A different model can have separate quota —
+e.g. when Gemini was exhausted, `Claude Sonnet 4.6 (Thinking)` still worked; the
+Windows validation above used it. To switch accounts, delete
+`~/.gemini/antigravity-cli/antigravity-oauth-token` and re-run the host login.
 
 ## Quota
 
