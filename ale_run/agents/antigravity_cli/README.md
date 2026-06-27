@@ -37,15 +37,18 @@ curl -fsSL https://antigravity.google/cli/install.sh | bash
 
 ### 2. Log in with your Google account
 
-Run `agy` in a normal terminal and follow the prompt:
+Run `agy` in an interactive terminal on the host and follow the prompt:
 
 ```bash
 ~/.local/bin/agy
 ```
 
-- It prints a **Google sign-in URL**. Open it in your browser.
-- Approve with a **Google account that has Antigravity / Gemini access**.
-- The page shows an **authorization code** — paste it back into the terminal.
+- It prints a **Google sign-in URL**.
+- Open it in a browser (on **any** machine — this also works on a headless
+  server: just copy the URL to your laptop's browser).
+- Approve with a **Google account that has Antigravity access**.
+- The `antigravity.google/oauth-callback` page shows an **authorization code** —
+  paste it back into the terminal.
 
 That writes your credential to:
 
@@ -53,8 +56,9 @@ That writes your credential to:
 ~/.gemini/antigravity-cli/antigravity-oauth-token
 ```
 
-> Tip: log in with the plain `agy` command (it waits for you). The `agy -p "…"`
-> one-shot form only gives a ~30-second window to paste the code.
+> Tip: use the plain `agy` command to log in (it waits for you). Avoid the
+> `agy -p "…"` one-shot form for login — it only gives a ~30-second window to
+> paste the code, too short for a browser round-trip.
 
 ### 3. Verify the login works headlessly
 
@@ -106,14 +110,16 @@ Claude Sonnet 4.6 (Thinking) Claude Opus 4.6 (Thinking)
 GPT-OSS 120B (Medium)
 ```
 
-Which models you can actually use depends on your Google plan.
+Which models you can use — and how much — depends on your Google plan. **Quota
+is per account AND per model**, so if one model is throttled another may still
+work (e.g. Gemini exhausted but Claude Sonnet 4.6 fine).
 
 ## Config
 
 ```yaml
 # configs/agents/antigravity_cli.yaml
 harness: antigravity_cli
-model: Gemini 3.1 Pro (High)
+model: Claude Sonnet 4.6 (Thinking)
 config:
   dangerously_skip_permissions: true   # required headless
   max_session_turns: -1                # unbounded (wall-clock is the cap)
@@ -131,6 +137,21 @@ config:
 
 Treat the token file as a secret — it's a long-lived credential for your Google
 account.
+
+## Troubleshooting
+
+- **Which account am I logged in as?** `cat ~/.gemini/google_accounts.json`
+  (the `active` field). There is no agy CLI quota command — the web
+  **Settings → Models** tab (signed in as that account) shows your plan + usage.
+- **Runs 429 with `Individual quota reached … please upgrade your
+  subscription`** → you're on a **free-tier** account (the "upgrade" wording is
+  the tell), or that model's quota is spent. Either switch `model:` to one with
+  quota left (e.g. `Claude Sonnet 4.6 (Thinking)`), or re-login with the right
+  account: delete `~/.gemini/antigravity-cli/antigravity-oauth-token` and redo
+  step 2.
+- **Windows GUI tasks**: the CUA tools load reliably (the deployer warms up the
+  node bridge + primes agy's first-run migration so they win agy's MCP
+  tool-discovery race). No action needed.
 
 ## Notes
 
