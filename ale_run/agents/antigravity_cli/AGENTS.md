@@ -98,7 +98,16 @@ integrity.
 | `demo/seecheck` (GUI vision) | **1.0** | **1.0** | — |
 | `demo/seecheck_win` (GUI vision) | n/a | n/a | **1.0** (3/3, with the cua mitigation) |
 | `demo/tool_smoke` | **0.92** (33/36) | **0.92** (33/36) | n/a |
-| `demo/tool_smoke_win` | n/a | n/a | native + cua (after mitigation) |
+| `demo/tool_smoke_win` | n/a | n/a | **0.89** (34/38) — all 14 cua + native pass |
+
+`demo/tool_smoke_win` (Claude Sonnet 4.6): all 14 cua GUI tools pass + the native
+tools; the only non-passes are expected — `generate_image` (separate image-model
+quota), `grep_search` (no `grep` on the Windows PATH), `read_resource` (cua
+exposes no MCP resources), `ask_question` (interactive). Note: Sonnet invokes the
+cua tools via the `call_mcp_tool` wrapper, so they appear as
+`call_mcp_tool__cua__screenshot` etc. (Gemini promotes them to bare names) — both
+work. The thinking model is slow over 38 tools, so the run hit the 30-min wall
+(`status=timeout`, score still real).
 
 gcloud uses the operator's **active gcloud account** (compute access) when
 `GCP_SA_KEY` is unset/missing — `gcloud_sa_key_path()` returns None and the
