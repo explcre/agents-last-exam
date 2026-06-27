@@ -83,14 +83,18 @@ you never log in inside the sandbox.
 
 ### 5. Run it
 
-Reference the agent preset from an experiment and run as usual:
+Pick a task list and reference the agent preset from an experiment:
+
+```bash
+echo "demo/seecheck" > selected_tasks/my_tasks.txt   # one task id per line
+```
 
 ```yaml
 # my_exp.yaml
 secret_file: secret/.env
 agents:      [configs/agents/antigravity_cli.yaml]
 environment: configs/environments/docker.yaml      # or your GCE env
-tasks:       selected_tasks/seecheck.txt
+tasks:       selected_tasks/my_tasks.txt
 ```
 
 ```bash
@@ -163,9 +167,12 @@ account.
 
 ## Smoke test
 
+Run the experiment from step 5 against **`demo/seecheck`** (a vision smoke test:
+read a code off the desktop) — the quickest end-to-end check that auth + the GUI
+bridge both work:
+
 ```bash
-uv run python -m ale_run run exp_antigravity_seecheck.yaml
+uv run python -m ale_run run my_exp.yaml
 ```
 
-`demo/seecheck` (a vision smoke test: read a code off the desktop) is the
-quickest end-to-end check that auth + the GUI bridge both work.
+On Windows use `demo/seecheck_win` instead.
