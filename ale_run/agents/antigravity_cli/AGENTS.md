@@ -110,9 +110,11 @@ headless sandbox lacks. The default uses `agy`'s real tool names (a demonstratio
 | `demo/tool_smoke_win` | n/a | n/a | **0.89** (34/38) — all 14 cua + native pass |
 
 `demo/tool_smoke_win` (Claude Sonnet 4.6): all 14 cua GUI tools pass + the native
-tools; the only non-passes are expected — `generate_image` (separate image-model
-quota), `grep_search` (no `grep` on the Windows PATH), `read_resource` (cua
-exposes no MCP resources), `ask_question` (interactive). Note: Sonnet invokes the
+tools. Non-passes: `generate_image` (separate image-model quota), `read_resource`
+(cua exposes no MCP resources), `ask_question` (interactive). **`grep_search` is
+now provisioned** — `install()` puts Git-for-Windows' GNU grep
+(`…\Git\usr\bin\grep.exe`, baked into ale-win10) on PATH, verified resolving to
+`grep (GNU grep) 3.0`. Note: Sonnet invokes the
 cua tools via the `call_mcp_tool` wrapper, so they appear as
 `call_mcp_tool__cua__screenshot` etc. (Gemini promotes them to bare names) — both
 work. The thinking model is slow over 38 tools, so the run hit the 30-min wall

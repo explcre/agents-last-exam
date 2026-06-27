@@ -193,8 +193,51 @@ class AntigravityCliDeployer(BaseAgentDeployer):
         #    them once, so agy's spawn of the bridge at launch is fast and wins
         #    the race. (Linux node start is fast; no warm-up needed there.)
         if self._is_windows:
+            self._ensure_grep_windows()
             await self._prewarm_bridge(sandbox)
             await self._prewarm_agy()
+
+    def _ensure_grep_windows(self) -> None:
+        """Put ``grep`` on PATH for agy's ``grep_search`` tool.
+
+        agy shells out to ``grep``, which isn't on the Windows sandbox PATH by
+        default — so ``grep_search`` fails with ``exec: 'grep': ... not found``.
+        Git for Windows (baked into ale-win10) already ships a real GNU grep at
+        ``…\\Git\\usr\\bin\\grep.exe`` (with its DLLs co-located); it's just not
+        on PATH. Prepend that dir. As a fallback for an image WITHOUT Git, fetch
+        a single-file busybox-w32 and run it as ``grep.exe``. Best-effort: a
+        failure only loses ``grep_search``, not the run.
+        """
+        if shutil.which("grep"):
+            return
+        home = os.path.expanduser("~")
+        for d in (
+            r"C:\Program Files\Git\usr\bin",
+            r"C:\Program Files (x86)\Git\usr\bin",
+            os.path.join(home, "AppData", "Local", "Programs", "Git", "usr", "bin"),
+        ):
+            if os.path.isfile(os.path.join(d, "grep.exe")):
+                self._prepend_path(d)
+                logger.info("antigravity_cli: grep via Git for Windows (%s on PATH)", d)
+                return
+        # No Git grep — fetch busybox-w32 (single exe; run as grep.exe → grep applet).
+        bin_dir = _win_appdata_bin(home)
+        try:
+            import urllib.request
+            os.makedirs(bin_dir, exist_ok=True)
+            grep_exe = os.path.join(bin_dir, "grep.exe")
+            urllib.request.urlretrieve(
+                "https://frippery.org/files/busybox/busybox.exe", grep_exe)
+            self._prepend_path(bin_dir)
+            logger.info("antigravity_cli: installed busybox grep at %s", grep_exe)
+        except Exception as e:  # noqa: BLE001 — best-effort, non-fatal
+            logger.warning("antigravity_cli: could not provision grep (grep_search "
+                           "will be unavailable on Windows): %s", e)
+
+    @staticmethod
+    def _prepend_path(directory: str) -> None:
+        if directory not in os.environ.get("PATH", ""):
+            os.environ["PATH"] = directory + os.pathsep + os.environ.get("PATH", "")
 
     async def _prewarm_agy(self) -> None:
         """Run ``agy models`` once so the FIRST-run side effects (config
