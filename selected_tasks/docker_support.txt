@@ -1,4 +1,4 @@
-# Linux (cpu-free-ubuntu) tasks runnable on the Docker provider — 99 tasks.
+# Linux (cpu-free-ubuntu) tasks runnable on the Docker provider — 100 tasks.
 # The 4 tasks needing nested Docker (openroad_sky130_ibex_pnr_signoff,
 # k8s_migration_1, bpmn_supply_disruption_l3, bpmn_category_governance_restructuring_l3)
 # and 2 tasks needing Apptainer/Singularity .simg GUI bundles
@@ -26,6 +26,7 @@ computing_math/go_game_reconstruction_1
 computing_math/ising_post_measurement_1
 computing_math/k3_abelian_extensions
 computing_math/k8s_payment_api_root_cause_analysis
+computing_math/lockstep_desync_repro
 computing_math/mp_checkpoint_consolidation_v2
 computing_math/os_log_permission_guard_v1
 computing_math/paper_reproduction_instance_1
