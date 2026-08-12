@@ -43,14 +43,12 @@ EVAL_DIR = "/tmp/agenthle_eval/gen1_battle_engine_reconstruction"
 PER_SCENARIO_TIMEOUT_S = 60.0
 RUNNER_TIMEOUT_S = 9000.0
 
-_TAPES = json.loads((DATA / "tapes.json").read_text(encoding="utf-8"))
 _HOLDOUT = json.loads((DATA / "holdout" / "scenarios.json").read_text(encoding="utf-8"))
 _EXPECTED = json.loads((DATA / "holdout" / "expected.json").read_text(encoding="utf-8"))
 
 INPUT_FILES: dict[str, Path] = {
     "corpus/scenarios.json": DATA / "visible" / "scenarios.json",
     "corpus/expected.json": DATA / "visible" / "expected.json",
-    "corpus/tapes.json": DATA / "tapes.json",
     "docs/protocol.json": DATA / "protocol.json",
     "docs/layout.json": DATA / "layout.json",
 }
@@ -79,12 +77,12 @@ statement of the rules that exists.
 
 ## What you are given
 
-- `corpus/scenarios.json`: 186 scenarios. Each carries the roll tape it used, \
-the exact starting battle state, the move each side selected, and an update cap.
+- `corpus/scenarios.json`: 638 scenarios. Each is self-contained and carries \
+the roll tape it used as hex, the exact starting battle state, the move each side \
+selected, and an update cap. The engine consumes the tape bytes in order as its \
+only source of randomness; nothing is hidden in them.
 - `corpus/expected.json`: for each of those scenarios, the protocol log the \
 engine emitted on every update, and the final battle state.
-- `corpus/tapes.json`: the roll tapes, as hex. The engine consumes these bytes \
-in order as its only source of randomness. Nothing is hidden in them.
 - `docs/protocol.json`: the protocol vocabulary. Names every event the engine \
 can emit. It does not say when any of them happen.
 - `docs/layout.json`: the byte layout of the battle state. Field offsets and \
@@ -171,13 +169,13 @@ async def start(task_cfg, session: cb.DesktopSession):
 
 
 def _holdout_files() -> dict[str, str]:
-    """Self-contained scenario files for the graded set, tape inlined."""
-    out = {}
-    for sc in _HOLDOUT:
-        payload = dict(sc)
-        payload["tape"] = _TAPES[str(sc["tape"])]
-        out[f"{sc['id']}.json"] = json.dumps(payload)
-    return out
+    """Scenario files for the graded set.
+
+    Emitted verbatim. A graded scenario must have exactly the shape of a visible
+    one: rewriting a field here would mean grading against a format the agent
+    never saw, which is the harness lying rather than the agent failing.
+    """
+    return {f"{sc['id']}.json": json.dumps(sc) for sc in _HOLDOUT}
 
 
 @cb.evaluate_task(split="train")

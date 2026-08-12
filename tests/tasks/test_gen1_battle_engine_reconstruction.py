@@ -73,8 +73,8 @@ def test_start_stages_the_visible_corpus(staged):
     scen = json.loads((input_dir / "corpus" / "scenarios.json").read_text())
     exp = json.loads((input_dir / "corpus" / "expected.json").read_text())
     assert len(scen) == len(exp) and len(scen) > 100
-    tapes = json.loads((input_dir / "corpus" / "tapes.json").read_text())
-    assert all(str(s["tape"]) in tapes for s in scen), "a visible scenario lacks its tape"
+    assert all(isinstance(s["tape"], str) and len(s["tape"]) > 100 for s in scen), \
+        "a visible scenario does not carry its roll tape inline"
 
 
 def test_no_held_out_transcript_reaches_the_vm(staged):
@@ -85,6 +85,15 @@ def test_no_held_out_transcript_reaches_the_vm(staged):
     assert not leaked, f"held-out scenario ids present on the VM: {leaked[:5]}"
     sample = next(iter(task._EXPECTED.values()))
     assert sample["state"] not in text, "a held-out final state is on the VM"
+
+
+def test_graded_scenarios_have_the_same_shape_as_visible_ones():
+    """Grading against a shape the agent never saw is the harness lying."""
+    vis = json.loads((task.DATA / "visible" / "scenarios.json").read_text())
+    graded = [json.loads(t) for t in task._holdout_files().values()]
+    assert {frozenset(s) for s in vis} == {frozenset(s) for s in graded}
+    for s in graded:
+        assert isinstance(s["tape"], str) and len(s["tape"]) == len(vis[0]["tape"])
 
 
 def test_every_graded_mechanic_is_demonstrated():

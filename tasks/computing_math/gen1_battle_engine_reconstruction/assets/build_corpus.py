@@ -155,9 +155,11 @@ def main(argv: list[str]) -> int:
     # effect like Bide cannot be inferred from never observing it: that is
     # unsolvable rather than hard. Every mechanic is demonstrated; the held-out
     # tapes test whether the rule was implemented or the transcript memorised.
-    HOLDOUT_FROM = 4
+    # Hold out the last 30% of each family's tapes. Measured at 6 tapes a family
+    # the visible set gave a median of 4 examples per mechanic, which is thin for
+    # inferring a rule like a bit-rotated comparison or a rejection-sampling loop.
+    HOLDOUT_FROM = max(1, int(per * 0.7))
     out_dir.mkdir(parents=True, exist_ok=True)
-    tapes = {}
     M = (1 << 64) - 1
     for sc in scenarios:
         z = (sc["tape"] + 0x9E3779B97F4A7C15) & M
@@ -168,10 +170,8 @@ def main(argv: list[str]) -> int:
         for _ in range(TAPE_LEN):
             x ^= (x << 13) & M; x &= M; x ^= x >> 7; x ^= (x << 17) & M; x &= M
             buf.append((x >> 24) & 0xFF)
-        tapes[str(sc["tape"])] = bytes(buf).hex()
-    # One file, not one per scenario: staging 278 separate tapes would be 278
-    # round trips through the sandbox file API.
-    (out_dir / "tapes.json").write_text(json.dumps(tapes) + "\n")
+        sc["tape_id"] = sc["tape"]
+        sc["tape"] = bytes(buf).hex()
     for name, want in (("visible", True), ("holdout", False)):
         sub = [sc for sc in scenarios
                if (int(sc["id"].rsplit("_", 1)[1]) < HOLDOUT_FROM) == want]
@@ -180,6 +180,7 @@ def main(argv: list[str]) -> int:
         (d / "scenarios.json").write_text(json.dumps(sub, indent=1) + "\n")
         (d / "expected.json").write_text(
             json.dumps({sc["id"]: expected[sc["id"]] for sc in sub}, indent=1) + "\n")
+
         print(f"  {name:<8} {len(sub):>4} scenarios, "
               f"{len({fam(sc['id']) for sc in sub}):>3} families")
     size = sum(f.stat().st_size for f in out_dir.glob("*.json"))
