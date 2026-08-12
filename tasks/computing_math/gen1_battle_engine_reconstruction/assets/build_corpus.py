@@ -26,11 +26,14 @@ stalemate, which is still a perfectly gradeable deterministic transcript.
 from __future__ import annotations
 
 import json
+import os
 import pathlib
 import subprocess
 import sys
 
-ORACLE = "/tmp/galaxy_srv_disk00/pengchx3/pkmn-spike/oracle-small/bin/oracle"
+# Path to the oracle built from the pinned pkmn/engine commit; see NOTES.md.
+# Deliberately not defaulted to an absolute path from the author's machine.
+ORACLE = os.environ.get("GEN1_ORACLE", "")
 
 # Roll tape length. 1024 is empirically sufficient for every scenario at cap 20
 # (verified: no exhaustion panic and byte-identical transcripts against a 65536
@@ -75,6 +78,10 @@ def alive(state_hex: str) -> bool:
 
 
 def main(argv: list[str]) -> int:
+    if not ORACLE or not pathlib.Path(ORACLE).is_file():
+        raise SystemExit(
+            "set GEN1_ORACLE to the oracle built from the pinned pkmn/engine "
+            "commit; see NOTES.md for the build recipe")
     out_dir = pathlib.Path(argv[1])
     per = int(argv[2]) if len(argv) > 2 else 6
     cap = int(argv[3]) if len(argv) > 3 else 20

@@ -11,7 +11,6 @@ assets/            build-time only, never staged onto the VM
   oracle_script.zig  the driver; imports pkmn/engine, emits one transcript
   build.zig(.zon)    driver build, with -Dshowdown and -Dstrip options
   build_corpus.py    builds data/, and refuses to ship a bad corpus
-  grade_gen1.py      standalone copy of the grader, for offline controls
 data/              generated, committed
   visible/           staged to input/corpus/
   holdout/           graded set, host side only
@@ -33,7 +32,7 @@ git checkout 78dc891c49788e6ec9007d0f02247d2e04a03d29
 # Zig 0.16.0; the driver lives beside it and depends on it by relative path
 zig build --prefix out -Doptimize=ReleaseFast          # cartridge mode
 zig build --prefix out-sd -Doptimize=ReleaseFast -Dshowdown=true
-python3 assets/build_corpus.py data 6 20
+GEN1_ORACLE=out/bin/oracle python3 assets/build_corpus.py data 6 20
 ```
 
 `build_corpus.py` refuses to ship if:
