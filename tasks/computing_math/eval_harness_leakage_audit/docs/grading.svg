@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="900" height="400" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="900" height="400" fill="#f7f8fa"/>
+
+  <text x="24" y="34" font-size="17" font-weight="700" fill="#0f172a">Finding a defect and proving you found it are scored separately</text>
+  <text x="24" y="55" font-size="12.5" fill="#5b6673">A repair you cannot demonstrate is worth half of one you can.</text>
+
+  <!-- what the agent gets -->
+  <rect x="24" y="80" width="236" height="104" rx="4" fill="#fff" stroke="#b45309"/>
+  <text x="40" y="102" font-size="12.5" font-weight="700" fill="#b45309">given, on the VM</text>
+  <text x="40" y="122" font-size="11.5" fill="#334155">harness.py, five defects</text>
+  <text x="40" y="139" font-size="11.5" fill="#334155">test_suite.py, 34 checks</text>
+  <text x="40" y="156" font-size="11.5" fill="#334155">all of which pass</text>
+  <text x="40" y="175" font-size="10.5" fill="#94a3b8">no docstring states the intent</text>
+
+  <line x1="260" y1="132" x2="304" y2="132" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#g)"/>
+  <rect x="308" y="80" width="220" height="104" rx="4" fill="#fff" stroke="#b45309"/>
+  <text x="324" y="102" font-size="12.5" font-weight="700" fill="#b45309">produced</text>
+  <text x="324" y="124" font-size="11.5" fill="#334155">output/harness.py</text>
+  <text x="324" y="146" font-size="11.5" fill="#334155">output/test_audit.py</text>
+  <text x="324" y="168" font-size="10.5" fill="#94a3b8">imports the pipeline as `harness`</text>
+
+  <!-- two graded halves -->
+  <path d="M 528 108 L 576 108" stroke="#2563eb" stroke-width="1.4" marker-end="url(#b)"/>
+  <path d="M 528 156 L 576 156" stroke="#2563eb" stroke-width="1.4" marker-end="url(#b)"/>
+
+  <rect x="580" y="80" width="296" height="52" rx="4" fill="#fff" stroke="#2563eb" stroke-width="1.6"/>
+  <text x="596" y="100" font-size="12.5" font-weight="700" fill="#2563eb">repair, half the score</text>
+  <text x="596" y="119" font-size="11.5" fill="#334155">hidden behavioural probes, one per defect</text>
+
+  <rect x="580" y="140" width="296" height="66" rx="4" fill="#fff" stroke="#2563eb" stroke-width="1.6"/>
+  <text x="596" y="160" font-size="12.5" font-weight="700" fill="#2563eb">proof, half the score</text>
+  <text x="596" y="179" font-size="11.5" fill="#334155">the agent's suite is run against harnesses</text>
+  <text x="596" y="195" font-size="11.5" fill="#334155">carrying exactly one defect each</text>
+
+  <!-- gate -->
+  <rect x="580" y="216" width="296" height="44" rx="4" fill="#fff" stroke="#b91c1c" stroke-width="1.5"/>
+  <text x="596" y="236" font-size="11.5" font-weight="700" fill="#b91c1c">gate</text>
+  <text x="628" y="236" font-size="11.5" fill="#334155">the suite must pass on a correct harness,</text>
+  <text x="596" y="252" font-size="11.5" fill="#334155">so a suite that always fails earns nothing</text>
+
+  <!-- outcomes -->
+  <text x="24" y="232" font-size="12.5" font-weight="700" fill="#0f172a">measured outcomes</text>
+  <rect x="24" y="244" width="528" height="132" rx="4" fill="#fff" stroke="#d7dee7"/>
+  <text x="40" y="266" font-size="11.5" font-weight="700" fill="#5b6673">submission</text>
+  <text x="352" y="266" font-size="11.5" font-weight="700" fill="#5b6673">repair</text>
+  <text x="428" y="266" font-size="11.5" font-weight="700" fill="#5b6673">proof</text>
+  <text x="500" y="266" font-size="11.5" font-weight="700" fill="#5b6673">score</text>
+  <line x1="40" y1="274" x2="536" y2="274" stroke="#e2e8f0"/>
+
+  <text x="40" y="294" font-size="11.5" fill="#334155">repaired it and demonstrated every repair</text>
+  <text x="352" y="294" font-size="11.5" fill="#334155">1.00</text>
+  <text x="428" y="294" font-size="11.5" fill="#334155">1.00</text>
+  <text x="500" y="294" font-size="11.5" font-weight="700" fill="#0f172a">1.000</text>
+
+  <text x="40" y="316" font-size="11.5" fill="#334155">repaired it, wrote a suite that proves nothing</text>
+  <text x="352" y="316" font-size="11.5" fill="#334155">1.00</text>
+  <text x="428" y="316" font-size="11.5" fill="#334155">0.00</text>
+  <text x="500" y="316" font-size="11.5" font-weight="700" fill="#b45309">0.500</text>
+
+  <text x="40" y="338" font-size="11.5" fill="#334155">suite that always fails, to farm kills</text>
+  <text x="352" y="338" font-size="11.5" fill="#334155">1.00</text>
+  <text x="428" y="338" font-size="11.5" fill="#334155">0.00</text>
+  <text x="500" y="338" font-size="11.5" font-weight="700" fill="#b45309">0.500</text>
+
+  <text x="40" y="360" font-size="11.5" fill="#334155">changed nothing</text>
+  <text x="352" y="360" font-size="11.5" fill="#334155">0.00</text>
+  <text x="428" y="360" font-size="11.5" fill="#334155">0.00</text>
+  <text x="500" y="360" font-size="11.5" font-weight="700" fill="#b91c1c">0.000</text>
+
+  <defs>
+    <marker id="g" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#94a3b8"/></marker>
+    <marker id="b" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#2563eb"/></marker>
+  </defs>
+</svg>

@@ -1,4 +1,4 @@
-# All published cpu-free-ubuntu tasks (107) — the full Linux CPU task set.
+# All published cpu-free-ubuntu tasks (108) — the full Linux CPU task set.
 business_finance/american_option_pricing_ls
 business_finance/basel_operational_risk_bia_cn
 business_finance/bpmn_category_governance_restructuring_l3
@@ -20,6 +20,7 @@ computing_math/cost_optimization_1
 computing_math/cp_test_gen_1
 computing_math/data_pipeline_etl_instance_1
 computing_math/dit_pipeline_cfg_alignment_fid_256_001
+computing_math/eval_harness_leakage_audit
 computing_math/gen1_battle_engine_reconstruction
 computing_math/go_game_reconstruction_1
 computing_math/ising_post_measurement_1
