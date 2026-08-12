@@ -85,4 +85,36 @@ Self-contained: standard library only, no baked image data, no task-data pull, n
 
 ## Difficulty
 
-Not yet measured against a reference agent, and not claimed.
+Measured once so far, and not claimed as a tier: ALE runs difficulty
+classification as one of its own review controls.
+
+Codex CLI 0.145.0, `gpt-5.6-sol` at `xhigh`, staged through this task's own
+`start()` and scored by its own grader:
+
+| elapsed | repair | proof | score |
+|---|---|---|---|
+| 387 s | **1.00** | **0.00** | **0.500** |
+
+**That is not "half the defects found".** It found and repaired all five, quickly.
+Every probe passes on its harness. The half it lost is the half this task exists
+to measure.
+
+Its suite runs six checks. Five are correct audits and pass on the reference:
+group isolation, preprocessing fitted on training rows only, early stopping
+driven by validation, an independent per-arm generator, and an imbalance-aware
+headline. It failed on a sixth check it added itself, asserting that even-sized
+columns must use the mathematical median. The reference uses the upper of the two
+middle values, an equally valid convention that this task never specifies.
+
+So it wrote a suite that fails on a correct pipeline that merely differs from its
+own. For a suite whose purpose is auditing someone else's harness that is fatal,
+and the prompt states the requirement.
+
+**A repair-only framing would have scored this submission 1.000 and called it
+solved.** The proof half caught that its verification does not transfer.
+
+One caveat against this design, recorded rather than left to be found: the gate is
+binary, so a single over-specified assertion unrelated to any defect zeroes the
+proof half however good the rest of the suite is. That is the same line a real
+audit suite faces, but a future variant could decompose the suite check by check.
+The current exit-code interface cannot.
