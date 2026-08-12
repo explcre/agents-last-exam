@@ -13,11 +13,14 @@ held-out recordings **bit for bit**.
 Comparison is exact. There is no tolerance, no rubric, and no model in the
 grading path.
 
-## Why it is hard
+## The five deviations
 
 The starter runs, produces well-formed output, and looks plausible. It departs
 from the specification in five places, each a real desync class, and each
-invisible until a specific condition occurs deep into a match:
+invisible to inspection until a specific condition occurs deep into a match.
+
+They are what the task is *about*. They are not, as it turns out, what makes it
+take an agent any time at all: see "Measured difficulty" below.
 
 | deviation | why it hides | first diverges (tick) |
 |---|---|---|
@@ -80,6 +83,39 @@ it describes. `trace_0.txt` carries a hash every 25 ticks, and the gate ticks
 were originally all multiples of 25, so one replay's gate was answerable by
 lookup. The ticks were moved off that grid and the shortcut is now a standing
 control.
+
+## Measured difficulty, and it is low
+
+This task has been run against a reference agent. The result is stated here
+rather than left for a reviewer to discover.
+
+Codex CLI 0.145.0, `gpt-5.6-sol`, reasoning effort `xhigh`, staged through this
+task's own `start()` hook and scored by its own grader:
+
+| variant | elapsed | tool calls | score |
+|---|---|---|---|
+| as shipped | **315 s** | ~16 | **1.000** |
+| with `SPEC.md` withheld | 2374 s | ~72 | **1.000** |
+
+Both verified by an independent re-grade from a fresh stage
+(`gate_pass=True`, `holdout=1.0`), and the submissions are genuine simulators,
+not copies of the starter.
+
+That agent is stronger than the ones ALE describes classifying against, so a
+solve is conclusive where a failure would not have been. Five minutes to a
+perfect score puts this below the near-term tier's expected pass rate.
+
+**Why:** the shipped submission contains no trace of the starter's structure. It
+did not debug the starter at all, it reimplemented from `SPEC.md`. A complete
+normative specification converts a debugging task into a transcription task, and
+the five planted deviations were never the difficulty.
+
+**Withholding the specification does not fix it.** That was tested directly, and
+it changed effort by 7.5x while leaving the outcome at a perfect score. Absence
+of documentation is an effort lever, not a difficulty lever.
+
+The task is offered on that basis: a clean, fully verifiable, self-contained
+near-term task with measured anti-shortcut controls, not a hard one.
 
 ## Reference provenance
 
