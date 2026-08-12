@@ -112,14 +112,35 @@ To rebuild the corpus from source, see [NOTES.md](NOTES.md).
 
 ## Difficulty
 
-Not yet measured against a reference agent, and not claimed. ALE runs difficulty
-classification as one of its own review controls.
+Measured once, and not claimed as a tier: ALE runs difficulty classification as
+one of its own review controls.
 
-One measurement from the sibling task in this contribution is worth stating,
-because it cuts against the obvious assumption: on
-`computing_math/lockstep_desync_repro`, withholding the specification entirely
-changed a strong agent's effort by roughly 7.5x in wall time and did not change
-the outcome at all, which stayed at a perfect score. Absence of a specification
-is therefore not by itself evidence that a task is hard. Whether the far larger
-mechanical surface here behaves differently is an open question that a
-calibration run, not an argument, has to settle.
+Codex CLI 0.145.0, `gpt-5.6-sol` at `xhigh`, staged through this task's own
+`start()` and scored by its own grader:
+
+| elapsed | tool calls | submission | mechanics | full pass |
+|---|---|---|---|---|
+| 2507 s | ~85 | 18,032 bytes | **0.000** | **0** |
+
+The zero was checked before being reported, because an exact zero is the
+signature of a broken interface rather than a hard task. It is not that here: all
+92 scenarios exited 0, all produced a well-formed transcript with a `state` line,
+and none timed out. The submission reproduces the switch-in and then diverges on
+the first damaging turn, on the damage values. It is a working engine that
+reproduces none of the held-out scenarios.
+
+**The comparison that makes this interesting** is with the sibling task in this
+contribution. On `computing_math/lockstep_desync_repro`, the same agent scored
+1.000 with a full specification (315 s) and 1.000 again with the specification
+deleted (2374 s). Holding "no specification" constant and varying only the size
+and subtlety of the mechanics flips the outcome from 1.000 to 0.000.
+
+Difficulty here comes from the mechanical surface, not from withholding
+documentation.
+
+Three caveats worth stating. This is a single run, so it is not a pass rate. Zero
+is a floor and cannot separate hard from unreasonable, though the task is
+solvable in principle since the reference engine scores 1.000 through the same
+grader path. And the `mechanics` metric only discriminates above a threshold: a
+submission whose core damage formula is wrong fails every family at once, so the
+per-family diagnostic becomes useful only once the core is right.
