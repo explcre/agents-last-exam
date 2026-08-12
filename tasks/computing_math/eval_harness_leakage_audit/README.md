@@ -89,11 +89,27 @@ Measured once so far, and not claimed as a tier: ALE runs difficulty
 classification as one of its own review controls.
 
 Codex CLI 0.145.0, `gpt-5.6-sol` at `xhigh`, staged through this task's own
-`start()` and scored by its own grader:
+`start()` and scored by its own grader, three runs:
 
-| elapsed | repair | proof | score |
-|---|---|---|---|
-| 387 s | **1.00** | **0.00** | **0.500** |
+| run | elapsed | repair | proof | score |
+|---|---|---|---|---|
+| 1 | 387 s | 1.00 | 0.00 | **0.500** |
+| 2 | 443 s | 1.00 | 0.00 | **0.500** |
+| 3 | 513 s | 1.00 | **1.00** | **1.000** |
+
+Mean 0.667, full pass in one of three.
+
+**The repair half is saturated; the proof half carries all the variance.** Every
+run repaired all five defects, every time, in under nine minutes. The proof half
+scored 0, 0, 1. A repair-only framing would report three clean passes and
+discriminate nothing.
+
+The perfect run was verified: all five mutants killed, suite exits 0 on the
+reference, harness differs from the starter. The task is solvable end to end,
+which two 0.500s alone could not establish.
+
+Below is the first run in detail, because how it lost the proof half is
+instructive.
 
 **That is not "half the defects found".** It found and repaired all five, quickly.
 Every probe passes on its harness. The half it lost is the half this task exists
