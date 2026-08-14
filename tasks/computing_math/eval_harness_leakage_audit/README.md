@@ -93,41 +93,43 @@ Codex CLI 0.145.0, `gpt-5.6-sol` at `xhigh`, staged through this task's own
 
 | run | elapsed | repair | proof | score |
 |---|---|---|---|---|
-| 1 | 387 s | 1.00 | 0.00 | **0.500** |
-| 2 | 443 s | 1.00 | 0.00 | **0.500** |
-| 3 | 513 s | 1.00 | **1.00** | **1.000** |
+| 1 | 597 s | 1.00 | 0.00 | **0.500** |
+| 2 | 581 s | 1.00 | **1.00** | **1.000** |
+| 3 | 458 s | 1.00 | **1.00** | **1.000** |
 
-Mean 0.667, full pass in one of three.
+Mean 0.833, full pass in two of three.
 
 **The repair half is saturated; the proof half carries all the variance.** Every
-run repaired all five defects, every time, in under nine minutes. The proof half
-scored 0, 0, 1. A repair-only framing would report three clean passes and
-discriminate nothing.
+run repaired all five defects, every time, in under eleven minutes. A repair-only
+framing would report three clean passes and discriminate nothing. The proof half
+scored 0, 1, 1.
 
-The perfect run was verified: all five mutants killed, suite exits 0 on the
-reference, harness differs from the starter. The task is solvable end to end,
-which two 0.500s alone could not establish.
+The full passes were verified rather than trusted: all five mutants killed, suite
+exits 0 on the reference, harness differs from the starter. The task is solvable
+end to end, which a table of partial scores alone could not establish.
 
-Below is the first run in detail, because how it lost the proof half is
-instructive.
+### These numbers replace an earlier set, and the reason matters
 
-**That is not "half the defects found".** It found and repaired all five, quickly.
-Every probe passes on its harness. The half it lost is the half this task exists
-to measure.
+An earlier calibration of this task reported 0.500, 0.500, 1.000. That version
+computed column medians as the upper of the two middle values, a convention the
+task never stated, and the run that lost the proof half lost it by asserting the
+conventional median instead. The agent was penalised for a disagreement the task
+had failed to specify.
 
-Its suite runs six checks. Five are correct audits and pass on the reference:
-group isolation, preprocessing fitted on training rows only, early stopping
-driven by validation, an independent per-arm generator, and an imbalance-aware
-headline. It failed on a sixth check it added itself, asserting that even-sized
-columns must use the mathematical median. The reference uses the upper of the two
-middle values, an equally valid convention that this task never specifies.
+That was a defect in the task, not a finding about the agent, so it was fixed at
+the root: the reference now uses the conventional median and the check that
+depended on the convention is gone. The three runs above are the shipped task.
+The earlier numbers described a version that no longer exists and should not be
+quoted against this one.
 
-So it wrote a suite that fails on a correct pipeline that merely differs from its
-own. For a suite whose purpose is auditing someone else's harness that is fatal,
-and the prompt states the requirement.
+Two things follow, and the second is uncomfortable:
 
-**A repair-only framing would have scored this submission 1.000 and called it
-solved.** The proof half caught that its verification does not transfer.
+1. **A task can manufacture difficulty out of its own ambiguity**, and the score
+   will not distinguish that from real difficulty. Only reading what the losing
+   submission actually asserted did.
+2. **The corrected task is easier.** It moved from a mean of 0.667 to 0.833, and
+   from one full pass in three to two. This is a near-term task, not a
+   last-exam one.
 
 One caveat against this design, recorded rather than left to be found: the gate is
 binary, so a single over-specified assertion unrelated to any defect zeroes the

@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" height="470" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="900" height="470" fill="#f7f8fa"/>
+
+  <text x="24" y="34" font-size="17" font-weight="700" fill="#0f172a">The engine counted it. The agent has to watch it.</text>
+  <text x="24" y="55" font-size="12.5" fill="#5b6673">Ground truth is SuperTuxKart's own profile-mode counter table, so nothing here is human-annotated.</text>
+
+  <!-- source -->
+  <rect x="24" y="80" width="236" height="128" rx="4" fill="#fff" stroke="#0f766e" stroke-width="1.6"/>
+  <text x="40" y="102" font-size="12.5" font-weight="700" fill="#0f766e">SUPERTUXKART 1.5, profile mode</text>
+  <text x="40" y="123" font-size="11.5" fill="#334155">24 races, 12 tracks, 4 laps</text>
+  <text x="40" y="140" font-size="11.5" fill="#334155">chase cam locked to hero `tux`</text>
+  <text x="40" y="157" font-size="11.5" fill="#334155">x11grab capture under Xvfb</text>
+  <text x="40" y="180" font-size="11.5" fill="#0f766e">emits video AND its own counters</text>
+  <text x="40" y="197" font-size="11" fill="#5b6673">108 minutes total, 960x540, CRF 32</text>
+
+  <path d="M260 128 L316 128" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+  <path d="M260 168 L316 300" stroke="#b91c1c" stroke-width="1.6" marker-end="url(#r)"/>
+
+  <!-- on the VM -->
+  <rect x="316" y="80" width="264" height="150" rx="4" fill="#fff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="332" y="102" font-size="12.5" font-weight="700" fill="#1d4ed8">ON THE VM  input/</text>
+  <text x="332" y="124" font-size="11.5" fill="#334155">train/  12 races + labels.json</text>
+  <text x="332" y="141" font-size="11" fill="#5b6673">the engine's telemetry for these</text>
+  <text x="332" y="163" font-size="11.5" fill="#334155">test/   12 races, unlabelled</text>
+  <text x="332" y="180" font-size="11" fill="#5b6673">the same twelve tracks, raced again</text>
+  <text x="332" y="207" font-size="11" fill="#1d4ed8">videos arrive from the task-data store;</text>
+  <text x="332" y="222" font-size="11" fill="#1d4ed8">start() asserts all 24 landed</text>
+
+  <path d="M448 230 L448 268" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- agent -->
+  <rect x="316" y="268" width="264" height="102" rx="4" fill="#fff" stroke="#334155" stroke-width="1.6"/>
+  <text x="332" y="290" font-size="12.5" font-weight="700" fill="#0f172a">THE AGENT</text>
+  <text x="332" y="311" font-size="11.5" fill="#334155">counts pickups, star-ring spin-outs</text>
+  <text x="332" y="328" font-size="11.5" fill="#334155">and rear-wheel drift seconds</text>
+  <text x="332" y="352" font-size="11.5" fill="#334155">writes output/predictions.json</text>
+
+  <path d="M580 319 L636 319" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- held out, host only -->
+  <rect x="636" y="268" width="240" height="102" rx="4" fill="#fff" stroke="#b91c1c" stroke-width="1.6"/>
+  <text x="652" y="290" font-size="12.5" font-weight="700" fill="#b91c1c">HELD OUT, host only</text>
+  <text x="652" y="311" font-size="11.5" fill="#334155">holdout_labels.json</text>
+  <text x="652" y="330" font-size="11" fill="#5b6673">never written to the VM; start()</text>
+  <text x="652" y="345" font-size="11" fill="#5b6673">greps the machine to prove it</text>
+
+  <!-- metric -->
+  <rect x="636" y="80" width="240" height="150" rx="4" fill="#fff" stroke="#7c3aed" stroke-width="1.6"/>
+  <text x="652" y="102" font-size="12.5" font-weight="700" fill="#7c3aed">THE METRIC, per quantity</text>
+  <text x="652" y="126" font-size="11.5" fill="#334155">score = clamp(tau,0,1) x accuracy</text>
+  <text x="652" y="148" font-size="11" fill="#5b6673">tau over the pairs truth can order</text>
+  <text x="652" y="164" font-size="11" fill="#5b6673">accuracy: within 30% of each value</text>
+  <text x="652" y="188" font-size="11" fill="#7c3aed">constant answer .......... 0.000</text>
+  <text x="652" y="204" font-size="11" fill="#7c3aed">perfect ranking, 10x values  0.000</text>
+  <text x="652" y="220" font-size="11" fill="#7c3aed">exact telemetry .......... 1.000</text>
+
+  <path d="M756 268 L756 232" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- floor -->
+  <rect x="24" y="268" width="264" height="102" rx="4" fill="#fff" stroke="#a16207" stroke-width="1.6"/>
+  <text x="40" y="290" font-size="12.5" font-weight="700" fill="#a16207">MEASURED FLOOR</text>
+  <text x="40" y="311" font-size="11.5" fill="#334155">author's extractor, fitted on train,</text>
+  <text x="40" y="328" font-size="11.5" fill="#334155">reported on the 12 it never saw</text>
+  <text x="40" y="352" font-size="12" font-weight="700" fill="#a16207">held-out reward 0.023</text>
+
+  <text x="24" y="404" font-size="11.5" fill="#5b6673">Weights: items 0.40, spin-outs 0.30, skid seconds 0.30. Item pickups have no HUD readout and carry no signal in the baseline.</text>
+  <text x="24" y="424" font-size="11.5" fill="#5b6673">Both splits cover the same twelve tracks, so per-track calibration is available and the ceiling stays reachable.</text>
+  <text x="24" y="444" font-size="11.5" fill="#5b6673">0.023 is a floor, not a ceiling: one author, three iterations, five hand-tuned thresholds, no per-track fitting.</text>
+
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+</svg>

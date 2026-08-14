@@ -1,0 +1,62 @@
+{
+ "cocoa_temple": {
+  "items_collected": 22.307,
+  "spinouts": 4.44,
+  "skid_time": 30.834
+ },
+ "cornfield_crossing": {
+  "items_collected": 4.88,
+  "spinouts": 3.885,
+  "skid_time": 23.125
+ },
+ "fortmagma": {
+  "items_collected": 4.88,
+  "spinouts": 3.885,
+  "skid_time": 80.588
+ },
+ "gran_paradiso_island": {
+  "items_collected": 9.062,
+  "spinouts": 3.33,
+  "skid_time": 128.24
+ },
+ "hacienda": {
+  "items_collected": 4.88,
+  "spinouts": 5.55,
+  "skid_time": 46.25
+ },
+ "lighthouse": {
+  "items_collected": 5.577,
+  "spinouts": 4.995,
+  "skid_time": 56.762
+ },
+ "olivermath": {
+  "items_collected": 3.485,
+  "spinouts": 1.11,
+  "skid_time": 16.118
+ },
+ "ravenbridge_mansion": {
+  "items_collected": 10.456,
+  "spinouts": 2.775,
+  "skid_time": 72.179
+ },
+ "sandtrack": {
+  "items_collected": 14.639,
+  "spinouts": 2.775,
+  "skid_time": 46.25
+ },
+ "scotland": {
+  "items_collected": 11.153,
+  "spinouts": 1.11,
+  "skid_time": 9.11
+ },
+ "snowmountain": {
+  "items_collected": 8.365,
+  "spinouts": 1.11,
+  "skid_time": 22.424
+ },
+ "stk_enterprise": {
+  "items_collected": 2.091,
+  "spinouts": 3.885,
+  "skid_time": 13.315
+ }
+}

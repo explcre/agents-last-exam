@@ -1,0 +1,1 @@
+{"description": "NumPy for Python 3, for array work on decoded video frames", "os": "linux", "apt": "python3-numpy", "verify": "python3 -c 'import numpy; print(numpy.__version__)'"}
