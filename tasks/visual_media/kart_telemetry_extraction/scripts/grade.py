@@ -1,13 +1,12 @@
 """Score reported kart telemetry: a rank gate multiplied by absolute accuracy.
 
-Rank agreement alone is too forgiving. An extractor that sees eight of twenty
-pickups still orders the races correctly and would score well on rank alone, so
-here the rank term only *gates* and the score is carried by how close the reported
-numbers are to the engine's own counters. A constant or random answer has no rank
-agreement and collapses to zero, which is what keeps the metric guess-proof.
+The rank term only gates; the score is carried by how close each reported value is
+to the engine's own counter. A constant or random answer has no rank agreement and
+scores 0, and an answer that ranks every race correctly but reports values outside
+the tolerance also scores 0.
 
-Nothing here imports anything outside the standard library, and no path in this
-module raises on a malformed or missing submission: unparseable input scores zero.
+Standard library only. No path in this module raises on a malformed or missing
+submission: unparseable input scores 0.
 """
 
 from __future__ import annotations
@@ -27,11 +26,10 @@ TOL_FRAC = 0.30
 def kendall(pred: list[float], gt: list[float]) -> float:
     """Normalised concordant-minus-discordant over the pairs the truth can order.
 
-    Pairs that are tied in the ground truth are excluded from the denominator
-    rather than counted as failures. Several races genuinely share a spin-out
-    count, and normalising over all pairs would cap a perfect answer below 1.0 --
-    the task's own positive control caught exactly that. A pair the truth orders
-    but the prediction ties still earns nothing, so ties are not a free ride.
+    Returns a value in [-1, 1]. Pairs tied in ``gt`` are excluded from the
+    denominator, so an exact prediction scores 1.0 even though several races share
+    a spin-out count. A pair ``gt`` orders but ``pred`` ties contributes to the
+    denominator only, and so is penalised.
     """
     concordant = discordant = orderable = 0
     for i in range(len(pred)):

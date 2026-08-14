@@ -72,15 +72,15 @@ rank-only control below tau 1.0 and made that test unreadable.
 
 Eleven checks. The ones that earn their place:
 
-- `test_exact_telemetry_scores_one` — the positive control, which found the tie bug;
+- `test_exact_telemetry_scores_one`: the positive control, which found the tie bug;
 - `test_a_constant_answer_scores_about_zero` and
-  `test_ranking_without_accuracy_earns_almost_nothing` — the two ways this metric
+  `test_ranking_without_accuracy_earns_almost_nothing`: the two ways this metric
   could be farmed, both measured rather than argued;
-- `test_start_fails_loudly_when_the_videos_are_missing` — a staging failure must not
+- `test_start_fails_loudly_when_the_videos_are_missing`: a staging failure must not
   be gradeable;
-- `test_malformed_submissions_score_zero_without_raising` — four junk shapes,
+- `test_malformed_submissions_score_zero_without_raising`: four junk shapes,
   because `evaluate()` must never raise on agent output;
-- `test_the_author_baseline_is_reproduced_and_is_weak` — pins the difficulty floor
+- `test_the_author_baseline_is_reproduced_and_is_weak`: pins the difficulty floor
   so a metric change cannot silently move it.
 
 No test in the suite decodes video; they stage empty files with the right names.
