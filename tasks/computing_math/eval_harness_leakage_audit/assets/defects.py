@@ -86,9 +86,9 @@ _SHARED_RNG = random.Random(SEED)""",
 PATCHES += [
     (
         "D6",
-        """        self.median = [sorted(c)[len(c) // 2] if c else 0.0 for c in cols]""",
+        """        self.median = [_median(c) for c in cols]""",
         """        if not self.median:
-            self.median = [sorted(c)[len(c) // 2] if c else 0.0 for c in cols]""",
+            self.median = [_median(c) for c in cols]""",
     ),
     (
         "D7",

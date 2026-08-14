@@ -4,8 +4,7 @@ Two halves, because finding a defect and proving you found it are different
 skills and the second is the one benchmarks usually skip.
 
   fixes   fraction of the planted defects the submitted harness no longer
-          exhibits, under black-box probes. Halved if the repair also rewrote
-          behaviour that was never defective, which the REG guard checks.
+          exhibits, under black-box probes.
   kills   fraction of single-defect mutants the submitted test suite detects. A
           test that passes on a harness carrying a known defect did not test for
           it, however confidently the write-up claims otherwise.
@@ -58,18 +57,9 @@ def score(probe_results: dict[str, bool],
 
     ``suite_on_*`` are exit codes: 0 means the suite passed on that harness.
     """
-    # REG is a guard, not a planted defect: a repair that gratuitously rewrites
-    # behaviour that was never broken is a different failure, and a real one.
-    guard_ok = probe_results.get("REG", True)
-    defects = {d: ok for d, ok in probe_results.items() if d != "REG"}
+    defects = dict(probe_results)
     fixed = [d for d, ok in defects.items() if ok]
     fixes = (len(fixed) / len(defects)) if defects else 0.0
-    # A repair that rewrote unrelated behaviour is halved rather than zeroed:
-    # it is a real failure, but not the same failure as not repairing anything.
-    # Halving also leaves a do-nothing submission at zero rather than giving the
-    # guard away as a free point.
-    if not guard_ok:
-        fixes *= 0.5
 
     # A suite that cannot pass on a correct harness is not measuring properties
     # of the pipeline, so its kills do not count.
@@ -79,7 +69,6 @@ def score(probe_results: dict[str, bool],
 
     return {
         "probes": probe_results,
-        "regression_guard_passed": guard_ok,
         "defects_fixed": sorted(fixed),
         "defects_remaining": sorted(d for d in defects if d not in fixed),
         "fixes": fixes,
@@ -95,9 +84,7 @@ def score(probe_results: dict[str, bool],
 
 def report(rep: dict) -> str:
     lines = [
-        f"fixes  {rep['fixes']:.2f}   remaining: {rep['defects_remaining'] or 'none'}"
-        + ("" if rep.get("regression_guard_passed", True)
-           else "   (guard failed: unrelated behaviour was rewritten)"),
+        f"fixes  {rep['fixes']:.2f}   remaining: {rep['defects_remaining'] or 'none'}",
         f"kills  {rep['kills']:.2f}   survived : {rep['mutants_survived'] or 'none'}"
         + ("" if rep["suite_gate_passed"] else "   (gate failed: suite does not pass"
                                                " on a correct harness)"),

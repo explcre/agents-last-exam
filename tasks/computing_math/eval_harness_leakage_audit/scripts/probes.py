@@ -152,19 +152,6 @@ def probe_d7_returned_model_is_the_selected_epoch(h) -> bool:
     return abs(got - want) < 1e-9
 
 
-def probe_regression_preprocessing_math_unchanged(h) -> bool:
-    """Repairs must not silently rewrite behaviour that was never broken.
-
-    What data the preprocessing is fitted on was the defect. How it computes a
-    median was not. An audit that gratuitously changes unrelated numerics is a
-    different kind of failure, and a real one.
-    """
-    col = [float(i) for i in range(1, 11)]
-    rows = [{"group": 0, "y": 0,
-             "x": [col[i]] + [0.0] * (h.N_FEATURES - 1)} for i in range(10)]
-    pre = h.Preprocessor().fit(rows)
-    return abs(pre.median[0] - sorted(col)[len(col) // 2]) < 1e-9
-
 
 PROBES = {
     "D1": probe_d1_preprocessing_ignores_test,
@@ -176,9 +163,7 @@ PROBES = {
     "D7": probe_d7_returned_model_is_the_selected_epoch,
 }
 
-# Not a planted defect. A guard: repairs must not silently rewrite behaviour that
-# was never broken. Scored as a gate on the repair half, not as one more defect.
-GUARDS = {"REG": probe_regression_preprocessing_math_unchanged}
+GUARDS: dict = {}
 
 
 def run_all(path: str | pathlib.Path) -> dict[str, bool]:

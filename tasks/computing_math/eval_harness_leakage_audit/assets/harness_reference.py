@@ -75,6 +75,15 @@ def split(rows: list[dict], seed: int = SEED) -> tuple[list, list, list]:
 # --- preprocessing ----------------------------------------------------------
 
 
+def _median(values: list[float]) -> float:
+    """Conventional median: the middle value, averaging the middle pair if even."""
+    if not values:
+        return 0.0
+    v = sorted(values)
+    n = len(v)
+    return v[n // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2.0
+
+
 class Preprocessor:
     """Median imputation then standardisation.
 
@@ -90,7 +99,7 @@ class Preprocessor:
     def fit(self, rows: list[dict]) -> Preprocessor:
         cols = [[r["x"][j] for r in rows if r["x"][j] is not None]
                 for j in range(N_FEATURES)]
-        self.median = [sorted(c)[len(c) // 2] if c else 0.0 for c in cols]
+        self.median = [_median(c) for c in cols]
         filled = [[(r["x"][j] if r["x"][j] is not None else self.median[j])
                    for r in rows] for j in range(N_FEATURES)]
         self.mean = [sum(c) / len(c) for c in filled]
