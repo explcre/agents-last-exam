@@ -31,7 +31,10 @@
     "memory_gb": 16,
     "disk_gb": 100,
     "timeout_s": 21600,
-    "timeout": 21600
+    "timeout": 21600,
+    "network": {
+      "mode": "off"
+    }
   },
   "variants": [
     "base"

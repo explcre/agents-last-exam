@@ -4,20 +4,45 @@
   "taskName": "Battle Engine Reconstruction From Behaviour",
   "summary": "Reconstruct a deterministic Generation I battle engine, bit-exactly, from a labelled corpus of its behaviour and nothing else. No damage formula, no critical-hit rule, no random-number consumption order, no turn order is given. Graded on held-out scenarios by exact comparison of the protocol log and the final battle state.",
   "category": "computing_math",
-  "software": ["Python 3", "Ubuntu"],
-  "tags": ["software-engineering", "reverse-engineering", "deterministic-simulation",
-           "game-engine", "black-box-inference", "cpu-free-ubuntu"],
+  "software": [
+    "Python 3",
+    "Ubuntu"
+  ],
+  "tags": [
+    "software-engineering",
+    "reverse-engineering",
+    "deterministic-simulation",
+    "game-engine",
+    "black-box-inference",
+    "cpu-free-ubuntu"
+  ],
   "agentMustDo": [
     "Infer the engine's rules from a labelled corpus of scenarios, with no specification available.",
     "Determine how the engine consumes its roll tape, which is the only source of randomness.",
     "Write a single standard-library-only Python 3 engine to `output/engine.py`.",
     "Reproduce held-out scenarios exactly, on both the protocol log and the final battle state."
   ],
-  "vm": {"machineType": "c4-standard-4", "snapshot": "cpu-free-ubuntu", "vcpus": 4,
-         "memory_gb": 16, "disk_gb": 100, "timeout_s": 21600, "timeout": 21600},
-  "variants": ["base"],
+  "vm": {
+    "machineType": "c4-standard-4",
+    "snapshot": "cpu-free-ubuntu",
+    "vcpus": 4,
+    "memory_gb": 16,
+    "disk_gb": 100,
+    "timeout_s": 21600,
+    "timeout": 21600,
+    "network": {
+      "mode": "off"
+    }
+  },
+  "variants": [
+    "base"
+  ],
   "requiredSystemPackages": [],
-  "taxonomy": {"domain_id": "9", "domain_code": "computing_math",
-               "subdomain_id": "9.1", "subdomain_code": "software_eng",
-               "subdomain_name": "Software Engineering"}
+  "taxonomy": {
+    "domain_id": "9",
+    "domain_code": "computing_math",
+    "subdomain_id": "9.1",
+    "subdomain_code": "software_eng",
+    "subdomain_name": "Software Engineering"
+  }
 }
