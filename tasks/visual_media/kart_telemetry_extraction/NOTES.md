@@ -55,9 +55,14 @@ to the numerator, so **the exact ground truth scored below 1.0 as a submission**
 `test_exact_telemetry_scores_one` failed and named it immediately.
 
 `kendall()` now excludes pairs the truth cannot order. A pair the truth *does* order
-but the prediction ties still earns nothing, so this is not a loophole. The same bug
-is present in the scorer this metric was ported from, where it went unnoticed
-because no test asserted that a perfect answer scores 1.0.
+but the prediction ties still earns nothing, so this is not a loophole.
+
+The defect was self-inflicted and worth recording as such. The scorer this metric
+was ported from **already guards ground-truth ties** (`if dg == 0: continue`, and it
+normalises by the orderable count). Its module docstring describes the metric as
+"concordant-minus-discordant / pairs", and that prose, not the implementation, is
+what got ported. Porting a summary of code instead of the code is how a correct
+reference turns into a broken copy.
 
 Two further defects surfaced the same way: a submission mapping a race to a string
 crashed the grader with `AttributeError`, and the same tie handling capped the
