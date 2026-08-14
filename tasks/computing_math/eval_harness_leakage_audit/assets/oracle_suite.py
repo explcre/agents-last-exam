@@ -1,4 +1,5 @@
 """Oracle test suite: what a correct audit should produce. Used as a control."""
+import random
 import sys
 
 import harness as H
@@ -47,5 +48,25 @@ a1 = H.run_arm(tr, va, te, arm_seed=1)
 _ = H.run_arm(tr, va, te, arm_seed=2, drop_feature=0)
 a2 = H.run_arm(tr, va, te, arm_seed=1)
 check("arms share a generator", a1 == a2)
+
+# D6: refitting the same preprocessor must replace its statistics
+pre = H.Preprocessor()
+pre.fit(tr)
+first = list(pre.median)
+shifted_rows = [dict(r, x=[(None if v is None else v + 50.0) for v in r["x"]]) for r in te]
+pre.fit(shifted_rows)
+fresh = H.Preprocessor().fit(shifted_rows)
+check("preprocessor keeps stale medians across fits",
+      list(pre.median) == list(fresh.median) and list(pre.median) != first)
+
+# D7: the returned model must be the one from the reported epoch
+_pre = H.Preprocessor().fit(tr)
+_xs, _ys = _pre.transform(tr), [r["y"] for r in tr]
+_xv, _yv = _pre.transform(va), [r["y"] for r in va]
+w1, b1, ep1 = H.train(_xs, _ys, _xv, _yv, random.Random(1), epochs=40)
+w2, b2, _ = H.train(_xs, _ys, _xv, _yv, random.Random(1), epochs=ep1)
+check("returned model is not the selected epoch's model",
+      abs(H.logloss(H.predict(w1, b1, _xv), _yv)
+          - H.logloss(H.predict(w2, b2, _xv), _yv)) < 1e-9)
 
 print("all checks passed")

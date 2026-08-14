@@ -72,7 +72,9 @@ def test_start_stages_a_harness_whose_own_suite_passes(staged):
 def test_the_staged_harness_actually_carries_every_defect(staged):
     d = pathlib.Path(staged.metadata["input_dir"])
     results = probes.run_all(d / "harness.py")
-    assert not any(results.values()), f"a defect is missing from the starter: {results}"
+    planted = {k: v for k, v in results.items() if k in probes.PROBES}
+    assert not any(planted.values()), f"a defect is missing from the starter: {planted}"
+    assert results["REG"], "the guard should pass on the starter; only repairs can break it"
 
 
 def test_reference_is_not_on_the_machine(staged):

@@ -114,19 +114,77 @@ def probe_d5_arms_are_independent(h) -> bool:
     return a1 == a2 and b1 == b2
 
 
+
+def probe_d6_preprocessor_refits_cleanly(h) -> bool:
+    """Refitting the same object on different data must replace its statistics.
+
+    A preprocessor that keeps medians from an earlier fit carries one dataset's
+    statistics into another's transform.
+    """
+    rows = h.make_dataset()
+    tr, _va, te = h.split(rows)
+    pre = h.Preprocessor()
+    pre.fit(tr)
+    first = list(pre.median)
+    shifted = [dict(r, x=[(None if v is None else v + 50.0) for v in r["x"]]) for r in te]
+    pre.fit(shifted)
+    fresh = h.Preprocessor().fit(shifted)
+    return list(pre.median) == list(fresh.median) and list(pre.median) != first
+
+
+def probe_d7_returned_model_is_the_selected_epoch(h) -> bool:
+    """The returned weights must be the ones from the reported epoch.
+
+    Tracking the best epoch and then returning the final weights leaves the two
+    disagreeing, so the number reported is not the number the model produces.
+    """
+    import random as _r
+    rows = h.make_dataset()
+    tr, va, _te = h.split(rows)
+    pre = h.Preprocessor().fit(tr)
+    xs, ys = pre.transform(tr), [r["y"] for r in tr]
+    xv, yv = pre.transform(va), [r["y"] for r in va]
+    w, b, ep = h.train(xs, ys, xv, yv, _r.Random(1), epochs=40)
+    got = h.logloss(h.predict(w, b, xv), yv)
+    # Re-run to the reported epoch: the loss there must be what the model gives.
+    w2, b2, _ = h.train(xs, ys, xv, yv, _r.Random(1), epochs=ep)
+    want = h.logloss(h.predict(w2, b2, xv), yv)
+    return abs(got - want) < 1e-9
+
+
+def probe_regression_preprocessing_math_unchanged(h) -> bool:
+    """Repairs must not silently rewrite behaviour that was never broken.
+
+    What data the preprocessing is fitted on was the defect. How it computes a
+    median was not. An audit that gratuitously changes unrelated numerics is a
+    different kind of failure, and a real one.
+    """
+    col = [float(i) for i in range(1, 11)]
+    rows = [{"group": 0, "y": 0,
+             "x": [col[i]] + [0.0] * (h.N_FEATURES - 1)} for i in range(10)]
+    pre = h.Preprocessor().fit(rows)
+    return abs(pre.median[0] - sorted(col)[len(col) // 2]) < 1e-9
+
+
 PROBES = {
     "D1": probe_d1_preprocessing_ignores_test,
     "D2": probe_d2_groups_do_not_span_splits,
     "D3": probe_d3_epoch_selected_on_validation,
     "D4": probe_d4_headline_beats_a_constant_predictor,
     "D5": probe_d5_arms_are_independent,
+    "D6": probe_d6_preprocessor_refits_cleanly,
+    "D7": probe_d7_returned_model_is_the_selected_epoch,
 }
+
+# Not a planted defect. A guard: repairs must not silently rewrite behaviour that
+# was never broken. Scored as a gate on the repair half, not as one more defect.
+GUARDS = {"REG": probe_regression_preprocessing_math_unchanged}
 
 
 def run_all(path: str | pathlib.Path) -> dict[str, bool]:
     """Run every probe. A probe that raises counts as a failure, not an error."""
     out = {}
-    for pid, fn in PROBES.items():
+    for pid, fn in {**PROBES, **GUARDS}.items():
         try:
             out[pid] = bool(fn(load(path, f"hut_{pid}")))
         except Exception:  # noqa: BLE001 - a harness that crashes has the defect

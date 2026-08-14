@@ -15,6 +15,14 @@ the defective build provably differs from the reference in exactly these places.
       predictor wins on a 12% positive rate.
   D5  both arms draw from one shared generator, so the difference between them
       depends on the order they ran in rather than on the intervention.
+
+The next two are deliberately harder to *demonstrate* than to find, because
+that is where a strong agent was measured to be unreliable.
+
+  D6  the preprocessor keeps the medians from an earlier fit, so refitting the
+      same object on different data silently reuses stale statistics.
+  D7  early stopping tracks the best epoch and then returns the final weights,
+      so the reported epoch and the returned model are not the same thing.
 """
 
 from __future__ import annotations
@@ -75,6 +83,27 @@ _SHARED_RNG = random.Random(SEED)""",
     ),
 ]
 
+PATCHES += [
+    (
+        "D6",
+        """        self.median = [sorted(c)[len(c) // 2] if c else 0.0 for c in cols]""",
+        """        if not self.median:
+            self.median = [sorted(c)[len(c) // 2] if c else 0.0 for c in cols]""",
+    ),
+    (
+        "D7",
+        """        if vl < best[0]:
+            best = (vl, list(w), b, ep)
+    return best[1], best[2], best[3]""",
+        """        if vl < best[0]:
+            best = (vl, list(w), b, ep)
+    return w, b, best[3]""",
+    ),
+]
+
+PATCHES += [
+]
+
 # The code patches above change behaviour. These replace the reference's
 # explanatory docstrings, which otherwise state the correct behaviour in prose
 # directly above the defective code and hand the agent all five answers.
@@ -131,6 +160,8 @@ GROUPS: dict[str, tuple[str, ...]] = {
     "D3": ("D3",),
     "D4": ("D4",),
     "D5": ("D5", "D5b"),
+    "D6": ("D6",),
+    "D7": ("D7",),
 }
 
 DESCRIPTIONS = {
@@ -139,6 +170,8 @@ DESCRIPTIONS = {
     "D3": "early stopping selects the epoch on test",
     "D4": "headline metric is accuracy on an imbalanced label",
     "D5": "both arms share one random generator",
+    "D6": "the preprocessor keeps medians from an earlier fit",
+    "D7": "the returned model is not the selected epoch's model",
 }
 
 
