@@ -1,62 +1,62 @@
 {
- "cocoa_temple": {
-  "items_collected": 22.307,
-  "spinouts": 4.44,
-  "skid_time": 30.834
+ "cornfield_crossing_a": {
+  "spinouts": 0.932,
+  "skid_time": 28.397,
+  "items_collected": 10.667
  },
- "cornfield_crossing": {
-  "items_collected": 4.88,
-  "spinouts": 3.885,
-  "skid_time": 23.125
+ "cornfield_crossing_b": {
+  "spinouts": 2.797,
+  "skid_time": 14.199,
+  "items_collected": 10.667
  },
- "fortmagma": {
-  "items_collected": 4.88,
-  "spinouts": 3.885,
-  "skid_time": 80.588
+ "gran_paradiso_island_a": {
+  "spinouts": 1.865,
+  "skid_time": 16.704,
+  "items_collected": 0.0
  },
- "gran_paradiso_island": {
-  "items_collected": 9.062,
-  "spinouts": 3.33,
-  "skid_time": 128.24
+ "gran_paradiso_island_b": {
+  "spinouts": 2.797,
+  "skid_time": 79.345,
+  "items_collected": 5.333
  },
- "hacienda": {
-  "items_collected": 4.88,
-  "spinouts": 5.55,
-  "skid_time": 46.25
+ "lighthouse_a": {
+  "spinouts": 0.0,
+  "skid_time": 15.034,
+  "items_collected": 0.0
  },
- "lighthouse": {
-  "items_collected": 5.577,
-  "spinouts": 4.995,
-  "skid_time": 56.762
+ "lighthouse_b": {
+  "spinouts": 3.729,
+  "skid_time": 40.925,
+  "items_collected": 10.667
  },
- "olivermath": {
-  "items_collected": 3.485,
-  "spinouts": 1.11,
-  "skid_time": 16.118
+ "olivermath_a": {
+  "spinouts": 0.932,
+  "skid_time": 0.0,
+  "items_collected": 0.0
  },
- "ravenbridge_mansion": {
-  "items_collected": 10.456,
-  "spinouts": 2.775,
-  "skid_time": 72.179
+ "olivermath_b": {
+  "spinouts": 1.865,
+  "skid_time": 15.869,
+  "items_collected": 10.667
  },
- "sandtrack": {
-  "items_collected": 14.639,
-  "spinouts": 2.775,
-  "skid_time": 46.25
+ "snowmountain_a": {
+  "spinouts": 0.932,
+  "skid_time": 7.517,
+  "items_collected": 5.333
  },
- "scotland": {
-  "items_collected": 11.153,
-  "spinouts": 1.11,
-  "skid_time": 9.11
+ "snowmountain_b": {
+  "spinouts": 1.865,
+  "skid_time": 10.022,
+  "items_collected": 10.667
  },
- "snowmountain": {
-  "items_collected": 8.365,
-  "spinouts": 1.11,
-  "skid_time": 22.424
+ "stk_enterprise_a": {
+  "spinouts": 1.865,
+  "skid_time": 18.375,
+  "items_collected": 5.333
  },
- "stk_enterprise": {
-  "items_collected": 2.091,
-  "spinouts": 3.885,
-  "skid_time": 13.315
+ "stk_enterprise_b": {
+  "spinouts": 0.932,
+  "skid_time": 11.693,
+  "items_collected": 0.0
  }
 }

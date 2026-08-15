@@ -87,9 +87,27 @@ def test_no_held_out_label_reaches_the_vm(staged):
         assert str(row["skid_time"]) not in text, f"held-out skid_time for {track} is on the VM"
 
 
-def test_both_splits_cover_the_same_tracks():
-    """The pairing is the lever that makes the task reachable; it must hold."""
-    assert sorted(task._TRAIN) == sorted(task._HOLDOUT)
+def _track(race_id: str) -> str:
+    return race_id.rsplit("_", 1)[0]
+
+
+def test_the_splits_share_no_track():
+    """A track in both halves lets a submission copy its labelled twin."""
+    assert not ({_track(r) for r in task._TRAIN} & {_track(r) for r in task._HOLDOUT})
+
+
+def test_copying_the_labelled_half_scores_near_zero():
+    """The exploit this split exists to close, measured rather than assumed.
+
+    Pairing the halves by track scored 0.257 for a submission that decoded no
+    video, because a track raced twice yields similar telemetry. With disjoint
+    tracks the labelled half carries no per-race information about the graded one,
+    so the best copy is a constant and the rank gate rejects it.
+    """
+    ordered = sorted(task._TRAIN)
+    copied = {race: dict(task._TRAIN[ordered[i % len(ordered)]])
+              for i, race in enumerate(sorted(task._HOLDOUT))}
+    assert grade.score(copied, task._HOLDOUT)["reward"] < 0.10
 
 
 def test_every_graded_dimension_varies():

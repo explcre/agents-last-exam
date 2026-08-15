@@ -1,62 +1,62 @@
 {
- "cocoa_temple": {
+ "cocoa_temple_a": {
   "items_collected": 15,
   "spinouts": 4,
   "skid_time": 46.9611
  },
- "cornfield_crossing": {
-  "items_collected": 6,
-  "spinouts": 10,
-  "skid_time": 40.1263
+ "cocoa_temple_b": {
+  "items_collected": 10,
+  "spinouts": 1,
+  "skid_time": 52.0289
  },
- "fortmagma": {
+ "fortmagma_a": {
   "items_collected": 16,
   "spinouts": 5,
   "skid_time": 72.1794
  },
- "gran_paradiso_island": {
-  "items_collected": 22,
-  "spinouts": 1,
-  "skid_time": 91.6747
+ "fortmagma_b": {
+  "items_collected": 20,
+  "spinouts": 5,
+  "skid_time": 74.2289
  },
- "hacienda": {
+ "hacienda_a": {
   "items_collected": 17,
   "spinouts": 3,
   "skid_time": 75.4286
  },
- "lighthouse": {
-  "items_collected": 13,
-  "spinouts": 1,
-  "skid_time": 65.8976
+ "hacienda_b": {
+  "items_collected": 14,
+  "spinouts": 6,
+  "skid_time": 69.0219
  },
- "olivermath": {
-  "items_collected": 10,
-  "spinouts": 1,
-  "skid_time": 31.4079
- },
- "ravenbridge_mansion": {
+ "ravenbridge_mansion_a": {
   "items_collected": 4,
   "spinouts": 0,
   "skid_time": 30.7413
  },
- "sandtrack": {
+ "ravenbridge_mansion_b": {
+  "items_collected": 4,
+  "spinouts": 2,
+  "skid_time": 44.9857
+ },
+ "sandtrack_a": {
   "items_collected": 8,
   "spinouts": 2,
   "skid_time": 23.9164
  },
- "scotland": {
+ "sandtrack_b": {
+  "items_collected": 4,
+  "spinouts": 4,
+  "skid_time": 22.6664
+ },
+ "scotland_a": {
   "items_collected": 13,
   "spinouts": 0,
   "skid_time": 91.6164
  },
- "snowmountain": {
-  "items_collected": 14,
-  "spinouts": 2,
-  "skid_time": 56.9966
- },
- "stk_enterprise": {
-  "items_collected": 28,
-  "spinouts": 2,
-  "skid_time": 32.7581
+ "scotland_b": {
+  "items_collected": 19,
+  "spinouts": 1,
+  "skid_time": 85.8761
  }
 }

@@ -59,13 +59,14 @@ class TaskConfig(LinuxTaskConfig):
 Recover a racing game's internal counters from gameplay video.
 
 Under `{input}` are twenty-four recorded SuperTuxKart races, twelve under \
-`train/` and twelve under `test/`, one file per track. Every race is the same \
-setup: a chase camera locked to a single hero kart (`tux`) for the whole race, \
-four laps, five AI opponents. `train/labels.json` gives you the engine's own \
-telemetry for each `train/` race. The `test/` races are unlabelled.
+`train/` and twelve under `test/`. Every race is the same setup: a chase camera \
+locked to a single hero kart (`tux`) for the whole race, four laps, five AI \
+opponents. `train/labels.json` gives you the engine's own telemetry for each \
+`train/` race. The `test/` races are unlabelled.
 
-`train/` and `test/` cover **the same twelve tracks** -- the file names match -- \
-but they are different races, with different routes, incidents and outcomes.
+Each half covers **six tracks, raced twice**, and **no track appears in both \
+halves**. Whatever you build on the labelled races has to work on tracks you have \
+never seen labelled, with different scenery, lighting and layout.
 
 ## What to report
 
@@ -82,10 +83,10 @@ sprays bright sparks from the rear wheels.
 
 ## Deliverable
 
-Write `{submission}`: a JSON object keyed by track name, matching the `test/` \
-file names, each mapping to the three fields. For example:
+Write `{submission}`: a JSON object keyed by race id, which is the `test/` file \
+name without its extension, each mapping to the three fields. For example:
 
-    {"hacienda": {"items_collected": 12, "spinouts": 3, "skid_time": 41.5}, ...}
+    {"lighthouse_a": {"items_collected": 12, "spinouts": 3, "skid_time": 41.5}, ...}
 
 Report every `test/` race. A race you omit scores zero for that race.
 

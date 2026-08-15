@@ -38,14 +38,20 @@ hero.txt}`:
 - encode `-vf scale=960:540 -c:v libx264 -preset veryfast -crf 32 -an`;
 - name each file after `track.txt` so the train/test pairing is visible.
 
-## Why the splits share tracks
+## Why the split is by track
 
-Both recorded suites raced the same twelve tracks with the same hero, so the split
-is same-track, different-run rather than track-disjoint. That is the friendlier of
-the two and it was chosen deliberately: the measured author baseline is 0.023, so
-the task did not need to be made harder, and per-track calibration is a real lever
-that keeps the ceiling reachable. A track-disjoint variant is the obvious harder
-sibling and needs only a different split of the same files.
+Both recorded suites raced the same twelve tracks, so the obvious split is by suite.
+That version shipped first and was wrong: a track raced twice yields similar
+telemetry, so copying the labelled value for the matching track scored **0.257** with
+no video decoded. The split is now by track. Each half holds six tracks, both races
+of a track move together, and no track is both labelled and graded. The best no-video
+submission is a constant, which the rank gate scores 0.
+
+`kart_split.json` records the chosen tracks. The split was picked by enumerating all
+924 six-track combinations and taking the one whose halves are most similar in mean
+and spread across the three fields, subject to every field varying in both halves (a
+field with no spread is dropped by the grader, which would silently reweight the
+task).
 
 ## A metric defect the positive control caught
 

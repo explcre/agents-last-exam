@@ -9,22 +9,22 @@ agent in the viewer's seat and grades it against the engine's own numbers.
 
 ## What the agent gets
 
-Twenty-four recorded SuperTuxKart races, one file per track, at 960x540:
+Twenty-four recorded SuperTuxKart races at 960x540:
 
 ```
 input/
   train/  12 races + labels.json    the engine's telemetry for these races
-  test/   12 races                  same twelve tracks, raced again, unlabelled
+  test/   12 races                  six different tracks, unlabelled
 ```
 
 Every race is the same setup: a chase camera locked to one hero kart (`tux`) for
 the whole race, four laps, five AI opponents on the strongest difficulty. Races run
 2 to 7 minutes; the corpus is about 108 minutes of video in total.
 
-`train/` and `test/` cover **the same twelve tracks** and the file names match, but
-they are different races with different routes and incidents. That pairing is
-deliberate: it means the agent can calibrate a detector per track rather than
-having to build one that generalises to scenery it has never seen.
+Each half covers **six tracks, raced twice**, and **no track appears in both
+halves**. A detector calibrated on the labelled races has to survive scenery,
+lighting and layouts it has never seen labelled. The split is by track for a
+measured reason, recorded under "A flaw this task shipped with" below.
 
 ## What it reports
 
@@ -41,8 +41,10 @@ distinguishable, so they are counted together, which is why `spinouts` is a sing
 number rather than two.
 
 ```json
-{"hacienda": {"items_collected": 12, "spinouts": 3, "skid_time": 41.5}, "...": {}}
+{"lighthouse_a": {"items_collected": 12, "spinouts": 3, "skid_time": 41.5}, "...": {}}
 ```
+
+Keys are race ids: the `test/` file name without its extension.
 
 ## How it is graded
 
@@ -71,31 +73,53 @@ itself. Nothing is human-annotated, so there is no labelling noise to dispute.
 
 ## Difficulty, measured rather than asserted
 
-The task author built an extractor and reports it as a floor. Thresholds were fitted
-on the twelve labelled races, per-dimension gains least-squares fitted on the same
-split, and the number below is the twelve races the fit never saw.
+Every number here is measured through the shipped grader on the twelve held-out
+races.
 
-| detector | held-out reward |
+| submission | reward |
 |---|---|
-| colour-sum mask, uncalibrated | 0.000 |
-| measured colour rule + control band | 0.005 |
-| measured colour rule + control band + affine calibration | **0.023** |
+| exact telemetry | **1.000** |
+| a constant answer, or the labelled half's mean | 0.000 |
+| perfect ranking, values ten times too large | 0.000 |
+| author's hand-built extractor | **0.011** |
 
-Its predictions ship as `data/author_baseline_predictions.json` and a test asserts
-they still score below 0.10, so a later change to the metric cannot quietly move the
-floor this difficulty claim rests on.
+The author's extractor had its thresholds fitted on the twelve labelled races and
+its per-dimension gains least-squares fitted on the same split. Per dimension it
+scores `skid_time` tau +0.33 accuracy 0.05, `spinouts` tau +0.12 accuracy 0.18, and
+`items_collected` **no signal at all**. Item boxes are not separable by colour
+statistics in a fixed region; they need real detection.
 
-Per dimension, that baseline scores `skid_time` tau +0.32 accuracy 0.08, `spinouts`
-tau +0.20 accuracy 0.25, and `items_collected` **no signal at all**. Item boxes are
-not separable by colour statistics in a fixed region; they need real detection. The
-30% tolerance is what does the work: rank agreement is cheap here and accuracy is
-not.
+Its predictions ship as `data/author_baseline_predictions.json` and a test pins them
+below 0.10, so a later change to the metric cannot quietly move the floor this
+difficulty claim rests on.
 
-**0.023 is a floor, not a ceiling.** It is one author, three iterations, five
-hand-tuned thresholds, and it deliberately ignores the strongest lever the task
-offers, which is that every test track appears in the labelled half. A correct
-answer scores 1.000 through the same grader, so the target is reachable by
-construction; what is unknown is how close an agent gets.
+**0.011 is a floor, not a ceiling**, and it is a weak one. A text-only agent given
+the earlier, easier version of this split built its own detectors and scored 0.337,
+roughly fifteen times the author's extractor, so the gap above the floor is real and
+reachable. That number is not comparable to this table (it was measured before the
+split was fixed), and the corrected task has not been re-measured yet.
+
+## A flaw this task shipped with
+
+The first version paired the halves by track: the same twelve tracks appeared in
+both, raced twice. The stated rationale was that per-track calibration keeps the
+ceiling reachable.
+
+It also made the task partly solvable without watching anything. A track raced twice
+yields similar telemetry, so **copying the labelled value for the matching track
+scored 0.257 with no video decoded at all**, and on `skid_time` that copy was *more
+accurate* (0.715) than the agent that had actually built detectors (0.647). The rank
+gate did not catch it, because track identity genuinely correlates with the counts.
+
+The split is now by track: six tracks in each half, both races of a track moving
+together, no track labelled and graded. The best no-video submission is now a
+constant, which scores 0.000. `test_copying_the_labelled_half_scores_near_zero`
+holds the line.
+
+The controls that existed at the time tested a constant answer and a rank-only
+answer. Neither covers "copy the labelled half", which is the obvious exploit once
+the halves share a key. A control has to be derived from the specific structure a
+task hands the agent, not from a generic list.
 
 ## Caveats worth stating
 
@@ -106,6 +130,9 @@ construction; what is unknown is how close an agent gets.
 - `items_collected` carries the largest weight and is the hardest of the three. A
   submission that solves the two motion quantities perfectly and the pickups not at
   all caps at 0.60.
+- Each half holds six tracks raced twice, so the two races of a track share scenery.
+  Measuring one well and inferring its twin is a legitimate strategy, not an exploit:
+  neither race is labelled, so nothing can be copied from the labelled half.
 - Two hours of video on four vCPUs is a real time cost. The VM budget is six hours;
   decoding the corpus once at a reduced frame rate and caching features takes a
   small fraction of that, but decoding it repeatedly at full rate does not fit.
