@@ -74,8 +74,8 @@ thing that separates `before` from `after`.
 
 ## The world
 
-Each world is a 9x9 arena of blocks, one layer, addressed by offset from its centre \
-as `"dx,dz"` with `dx` and `dz` from -4 to 4. Cells start as `grass_block` except \
+Each world is a 7x7 arena of blocks, one layer, addressed by offset from its centre \
+as `"dx,dz"` with `dx` and `dz` from -3 to 3. Cells start as `grass_block` except \
 for a handful of markers. `before` and `after` are the full grids.
 
 ## What you write
@@ -84,7 +84,7 @@ for a handful of markers. `before` and `after` are the full grids.
 
     module.exports = { run: async function (arena) { ... } }
 
-`arena` gives you `{centre: [x, y, z], size: 9, host, port, version, username}`. \
+`arena` gives you `{centre: [x, y, z], size: 7, host, port, version, username}`. \
 Connect with `mineflayer`, act, and return when finished. The arena floor is the \
 plane `y = centre[1]`.
 

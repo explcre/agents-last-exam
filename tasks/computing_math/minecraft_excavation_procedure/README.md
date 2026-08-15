@@ -16,8 +16,8 @@ input/
   runner/README.md   how to invoke it
 ```
 
-Each world is a 9x9 arena, one layer, addressed by offset from its centre as
-`"dx,dz"` with both from -4 to 4. Cells start as `grass_block` apart from a
+Each world is a 7x7 arena, one layer, addressed by offset from its centre as
+`"dx,dz"` with both from -3 to 3. Cells start as `grass_block` apart from a
 scattering of markers. `before` and `after` are the full grids.
 
 ## What it writes
@@ -53,7 +53,7 @@ Measured through the shipped grader:
 The F1 half exists so partial credit is possible without paying for inaction.
 Per-cell accuracy would have been the obvious choice and is the wrong one: most of
 the arena is untouched by the procedure, so a bot that does nothing scores about
-0.77 on it. F1 over the set of dug cells scores that bot 0.
+half on it. F1 over the set of dug cells scores that bot 0.
 
 ## Difficulty: measured, and it is too easy
 
@@ -110,8 +110,8 @@ task data: 145 packages and 492 MB, all pure JavaScript with zero native binarie
 - The design is stationary by necessity. Measured on this server, `bot.placeBlock`
   fails with "blockUpdate did not fire", `/tp` crashes the server outright with a
   protodef range error, and pathfinding silently skips work. Digging succeeded in
-  every trial, and a standing bot reached **81 of 81** cells of a 9x9 grid, so the
-  arena is exactly what one stationary bot can reach and the procedure is
+  every trial, and a standing bot reached **81 of 81** cells of a 9x9 grid, so a 7x7
+  arena sits well inside what one stationary bot can reach and the procedure is
   excavation only.
 - Protocol is pinned to 1.16.5. On 1.20.1 `/give` crashes the server and on 1.20.2
   block placement fails.
