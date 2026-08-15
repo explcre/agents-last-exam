@@ -112,22 +112,28 @@ To rebuild the corpus from source, see [NOTES.md](NOTES.md).
 
 ## Difficulty
 
-Measured once, and not claimed as a tier: ALE runs difficulty classification as
-one of its own review controls.
+Measured three times, and not claimed as a tier: ALE runs difficulty
+classification as one of its own review controls.
 
 Codex CLI 0.145.0, `gpt-5.6-sol` at `xhigh`, staged through this task's own
 `start()` and scored by its own grader:
 
-| elapsed | tool calls | submission | mechanics | full pass |
-|---|---|---|---|---|
-| 2507 s | ~85 | 18,032 bytes | **0.000** | **0** |
+| run | elapsed | submission | scenarios exact | mechanics | full pass |
+|---|---|---|---|---|---|
+| 1 | 5528 s | 30,545 B | 0 / 274 | **0.000** | 0 |
+| 2 | 5716 s | 34,632 B | 1 / 274 | **0.004** | 0 |
+| 3 | 8148 s | 40,920 B | 0 / 274 | **0.000** | 0 |
 
-The zero was checked before being reported, because an exact zero is the
-signature of a broken interface rather than a hard task. It is not that here: all
-92 scenarios exited 0, all produced a well-formed transcript with a `state` line,
-and none timed out. The submission reproduces the switch-in and then diverges on
-the first damaging turn, on the damage values. It is a working engine that
-reproduces none of the held-out scenarios.
+One scenario out of 274, once, across three runs totalling five and a half hours
+of agent time. That is noise rather than partial progress.
+
+The zeros were checked before being reported, because an exact zero is the
+signature of a broken interface rather than a hard task. It is not that here: every
+scenario exited 0, every one produced a well-formed transcript with a `state` line,
+and none timed out. The submissions reproduce the switch-in and then diverge on the
+first damaging turn, on the damage values. They are working engines that reproduce
+essentially none of the held-out scenarios. All three break on the same eight
+families, which is what a wrong core damage formula looks like.
 
 **The comparison that makes this interesting** is with the sibling task in this
 contribution. On `computing_math/lockstep_desync_repro`, the same agent scored
@@ -138,7 +144,7 @@ and subtlety of the mechanics flips the outcome from 1.000 to 0.000.
 Difficulty here comes from the mechanical surface, not from withholding
 documentation.
 
-Three caveats worth stating. This is a single run, so it is not a pass rate. Zero
+Two caveats worth stating. Zero
 is a floor and cannot separate hard from unreasonable, though the task is
 solvable in principle since the reference engine scores 1.000 through the same
 grader path. And the `mechanics` metric only discriminates above a threshold: a

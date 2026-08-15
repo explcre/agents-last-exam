@@ -81,7 +81,8 @@ races.
 | exact telemetry | **1.000** |
 | a constant answer, or the labelled half's mean | 0.000 |
 | perfect ranking, values ten times too large | 0.000 |
-| author's hand-built extractor | **0.011** |
+| author's hand-built extractor | 0.011 |
+| Codex CLI `gpt-5.6-sol` at `xhigh`, 51 min | **0.116** |
 
 The author's extractor had its thresholds fitted on the twelve labelled races and
 its per-dimension gains least-squares fitted on the same split. Per dimension it
@@ -93,11 +94,16 @@ Its predictions ship as `data/author_baseline_predictions.json` and a test pins 
 below 0.10, so a later change to the metric cannot quietly move the floor this
 difficulty claim rests on.
 
-**0.011 is a floor, not a ceiling**, and it is a weak one. A text-only agent given
-the earlier, easier version of this split built its own detectors and scored 0.337,
-roughly fifteen times the author's extractor, so the gap above the floor is real and
-reachable. That number is not comparable to this table (it was measured before the
-split was fixed), and the corrected task has not been re-measured yet.
+The agent run is text-only, so it measures the programmatic path: write detectors,
+run them over the corpus, report counts. It decoded video (84 ffmpeg invocations)
+and earned every point, since the no-video floor is 0.000. Per dimension it scores
+`spinouts` tau +0.67 accuracy 0.33, `skid_time` tau +0.52 accuracy 0.32, and
+`items_collected` tau 0.00: it systematically undercounts pickups on the busiest
+tracks, reporting 4 where the engine counted 28.
+
+**Neither number is a ceiling.** Ten times the author's extractor, and still under
+an eighth of the way to exact. A vision-capable agent that watches rather than
+writing detectors is not measured here at all.
 
 ## A flaw this task shipped with
 
