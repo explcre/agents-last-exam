@@ -1,0 +1,53 @@
+{
+  "taskId": "computing_math/minecraft_excavation_procedure",
+  "title": "Reproduce An Excavation Procedure From Its Effects",
+  "taskName": "Reproduce An Excavation Procedure From Its Effects",
+  "summary": "A reference bot applied a fixed procedure to a series of block worlds. The agent is shown each world before and after, is told nothing about what the bot did, and must write a Minecraft bot that reproduces the same transformation on held-out worlds. The procedure is conditional: what happens at a marker depends on what is next to it. Grading compares the arena the agent's bot leaves against the arena the reference bot left, cell for cell. The stack is mineflayer against a flying-squid server, both MIT and pure JavaScript, so no proprietary game asset is involved.",
+  "category": "computing_math",
+  "software": [
+    "Node.js",
+    "mineflayer",
+    "flying-squid",
+    "Ubuntu"
+  ],
+  "tags": [
+    "rule-induction",
+    "agent-control",
+    "black-box-inference",
+    "deterministic-grading",
+    "held-out-generalisation",
+    "cpu-free-ubuntu"
+  ],
+  "agentMustDo": [
+    "Read `input/examples.json`, the worlds recorded before and after a reference bot acted on each.",
+    "Infer the procedure that maps `before` to `after`, including the condition that changes what happens at a marker depending on its neighbours.",
+    "Write `output/bot.js`, a CommonJS module exporting `run(arena)`, that connects with mineflayer and performs the procedure by acting in the world.",
+    "Test locally with `node runner/episode.js <seed> <port> <bot.js> <out.json>` on seeds of its own choosing.",
+    "Handle the fact that the bot has no operator rights, so server commands are unavailable and blocks must actually be dug."
+  ],
+  "vm": {
+    "machineType": "c4-standard-4",
+    "snapshot": "cpu-free-ubuntu",
+    "vcpus": 4,
+    "memory_gb": 16,
+    "disk_gb": 100,
+    "timeout_s": 21600,
+    "timeout": 21600,
+    "network": {
+      "mode": "off"
+    }
+  },
+  "variants": [
+    "base"
+  ],
+  "requiredSystemPackages": [
+    "mineflayer-runtime"
+  ],
+  "taxonomy": {
+    "domain_id": "9",
+    "domain_code": "computing_math",
+    "subdomain_id": "9.1",
+    "subdomain_code": "software_eng",
+    "subdomain_name": "Software Engineering"
+  }
+}

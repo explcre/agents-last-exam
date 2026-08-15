@@ -38,6 +38,7 @@ computing_math/k3_abelian_extensions
 computing_math/k8s_migration_1
 computing_math/k8s_payment_api_root_cause_analysis
 computing_math/lockstep_desync_repro
+computing_math/minecraft_excavation_procedure
 computing_math/mp_checkpoint_consolidation_v2
 computing_math/newyear_keygen2
 computing_math/os_log_permission_guard_v1
