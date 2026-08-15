@@ -55,6 +55,29 @@ Per-cell accuracy would have been the obvious choice and is the wrong one: most 
 the arena is untouched by the procedure, so a bot that does nothing scores about
 0.77 on it. F1 over the set of dug cells scores that bot 0.
 
+## Difficulty: measured, and it is too easy
+
+| run | elapsed | exact worlds | reward |
+|---|---|---|---|
+| Codex CLI `gpt-5.6-sol` at `xhigh` | 1100 s | **8 / 8** | **1.000** |
+
+First attempt, eighteen minutes, every held-out world reproduced cell for cell. The
+submission is a real mineflayer bot and its source reconstructs the rule exactly,
+conditional exception included, from eight before/after pairs.
+
+The conditional was meant to be the difficulty and the density was tuned so it
+appears nine times in the examples. It made no difference: rule induction over a
+49-cell grid with fully observed before and after states is a small search over
+complete evidence.
+
+This should be read alongside `computing_math/lockstep_desync_repro`, which also
+scored 1.000, and against `gen1_battle_engine_reconstruction`, which scored 0.000
+across three runs. The difference is the size of the mechanical surface, not the
+framing. Three marker types with one exception is a lookup table with a footnote.
+
+The task is recorded here as built and measured. Making it hard needs far more
+interacting rules, or partial observation of the worlds, not a different metric.
+
 ## Why this shape
 
 Three findings from earlier tasks in this contribution decided it.
