@@ -10,14 +10,15 @@ const mc = require('flying-squid')
 const { Vec3 } = require('vec3')
 const registry = require('prismarine-registry')('1.16.5')
 
-const VERSION = '1.16.5', SIZE = 7, HALF = (SIZE - 1) / 2
-const MARKERS = ['white_wool', 'orange_wool', 'light_blue_wool']
+const VERSION = '1.16.5', SIZE = 9, HALF = (SIZE - 1) / 2
+const MARKERS = ['white_wool', 'orange_wool', 'light_blue_wool', 'yellow_wool',
+  'lime_wool', 'pink_wool', 'gray_wool', 'cyan_wool']
 
 function rng (seed) {
   let s = seed >>> 0 || 1
   return () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296 }
 }
-function layout (seed, count = 14) {
+function layout (seed, count = 12) {
   const r = rng(seed), taken = new Set(), out = []
   while (out.length < count) {
     const dx = Math.floor(r() * SIZE) - HALF, dz = Math.floor(r() * SIZE) - HALF

@@ -74,8 +74,8 @@ thing that separates `before` from `after`.
 
 ## The world
 
-Each world is a 7x7 arena of blocks, one layer, addressed by offset from its centre \
-as `"dx,dz"` with `dx` and `dz` from -3 to 3. Cells start as `grass_block` except \
+Each world is a 9x9 arena of blocks, one layer, addressed by offset from its centre \
+as `"dx,dz"` with `dx` and `dz` from -4 to 4. Cells start as `grass_block` except \
 for a handful of markers. `before` and `after` are the full grids.
 
 ## What you write
@@ -84,7 +84,7 @@ for a handful of markers. `before` and `after` are the full grids.
 
     module.exports = { run: async function (arena) { ... } }
 
-`arena` gives you `{centre: [x, y, z], size: 7, host, port, version, username}`. \
+`arena` gives you `{centre: [x, y, z], size: 9, host, port, version, username}`. \
 Connect with `mineflayer`, act, and return when finished. The arena floor is the \
 plane `y = centre[1]`.
 
@@ -102,8 +102,9 @@ for grading are not the seeds in your examples.
 Your bot is run against held-out worlds. For each one, the arena after your bot \
 finishes is compared with the arena after the reference bot finished. Half the \
 score is the fraction of worlds reproduced **exactly**, cell for cell; the other \
-half is an F1 over the set of cells changed, so partial credit exists but doing \
-nothing earns zero.
+half is the overlap between the set of cells you changed and the set the reference \
+changed, so partial credit exists but neither doing nothing nor digging everything \
+pays.
 
 Do not modify anything under `input/`. Do not rely on internet access.
 """
@@ -192,6 +193,6 @@ async def evaluate(task_cfg, session: cb.DesktopSession) -> list[float]:
             logger.info("[mc] seed %s unreadable: %s", seed, exc)
 
     report = grade.score(results, _HOLDOUT)
-    logger.info("[mc] exact=%d/%d mean_f1=%.3f reward=%.3f",
-                report["exact"], report["seeds"], report["mean_f1"], report["reward"])
+    logger.info("[mc] exact=%d/%d mean_overlap=%.3f reward=%.3f",
+                report["exact"], report["seeds"], report["mean_overlap"], report["reward"])
     return [float(report["reward"])]

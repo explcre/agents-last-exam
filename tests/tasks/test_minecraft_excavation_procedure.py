@@ -58,7 +58,7 @@ def test_start_stages_examples_and_runner(staged):
     assert len(ex) >= 6
     for w in ex.values():
         assert set(w) >= {"before", "after"}
-        assert len(w["before"]) == 49 and len(w["after"]) == 49
+        assert len(w["before"]) == 81 and len(w["after"]) == 81
 
 
 def test_no_held_out_world_reaches_the_vm(staged):
@@ -90,21 +90,30 @@ def test_examples_and_holdout_are_disjoint():
     assert not (set(task._EXAMPLES) & set(task._HOLDOUT))
 
 
-def test_every_graded_case_is_demonstrated():
-    """A held-out world needing a case absent from the examples would be unfair."""
-    def cases(worlds):
-        """Marker type, plus the neighbour condition only where it changes the outcome."""
-        seen = set()
+def test_every_graded_marker_type_is_demonstrated():
+    """A graded world needing a marker absent from the examples would be unfair."""
+    def types(worlds):
+        return {v for w in worlds.values() for v in w["before"].values() if v != "grass_block"}
+    missing = types(task._HOLDOUT) - types(task._EXAMPLES)
+    assert not missing, f"graded but never demonstrated: {sorted(missing)}"
+
+
+def test_the_suppressing_marker_is_exercised_on_both_sides():
+    """One marker cancels its neighbours. If it never neighbours anything, the
+    interaction it exists for is never tested and the rule is silently simpler."""
+    def suppressions(worlds):
+        n = 0
         for w in worlds.values():
             markers = {k: v for k, v in w["before"].items() if v != "grass_block"}
             for k, v in markers.items():
-                dx, dz = (int(n) for n in k.split(","))
-                near = any(markers.get(f"{dx+a},{dz+b}") == "orange_wool"
-                           for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1)))
-                seen.add((v, near) if v == "white_wool" else (v, None))
-        return seen
-    missing = cases(task._HOLDOUT) - cases(task._EXAMPLES)
-    assert not missing, f"graded but never demonstrated: {sorted(missing)}"
+                if v != "cyan_wool":
+                    continue
+                dx, dz = (int(x) for x in k.split(","))
+                n += sum(1 for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1))
+                         if f"{dx+a},{dz+b}" in markers)
+        return n
+    assert suppressions(task._EXAMPLES) >= 5, "the examples barely show the interaction"
+    assert suppressions(task._HOLDOUT) >= 2, "the graded set barely tests the interaction"
 
 
 def test_missing_submission_scores_zero(staged):

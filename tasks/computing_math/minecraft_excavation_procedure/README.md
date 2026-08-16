@@ -16,8 +16,8 @@ input/
   runner/README.md   how to invoke it
 ```
 
-Each world is a 7x7 arena, one layer, addressed by offset from its centre as
-`"dx,dz"` with both from -3 to 3. Cells start as `grass_block` apart from a
+Each world is a 9x9 arena, one layer, addressed by offset from its centre as
+`"dx,dz"` with both from -4 to 4. Cells start as `grass_block` apart from a
 scattering of markers. `before` and `after` are the full grids.
 
 ## What it writes
@@ -38,7 +38,7 @@ Held-out worlds, built from seeds the agent never sees. For each, the arena the
 agent's bot leaves is compared with the arena the reference bot left.
 
 ```
-reward = 0.5 * (fraction of worlds reproduced exactly) + 0.5 * (mean F1 over dug cells)
+reward = 0.5 * (fraction of worlds reproduced exactly) + 0.5 * (mean Jaccard over dug cells)
 ```
 
 Measured through the shipped grader:
@@ -47,36 +47,43 @@ Measured through the shipped grader:
 |---|---|
 | the reference world states | **1.000** |
 | a bot that does nothing | **0.000** |
-| a bot that digs the whole arena | below 0.5 |
+| a bot that digs the whole arena | **0.183** |
+| a bot that digs all grass and leaves the markers | 0.158 |
 | no submission, or unparseable results | 0.000 |
 
-The F1 half exists so partial credit is possible without paying for inaction.
-Per-cell accuracy would have been the obvious choice and is the wrong one: most of
-the arena is untouched by the procedure, so a bot that does nothing scores about
-half on it. F1 over the set of dug cells scores that bot 0.
+The partial half exists so progress is visible without paying for a shortcut. Two
+metrics were rejected by measurement. Per-cell accuracy hands a bot that does
+nothing about half, because most of the arena is untouched anyway. F1 over dug cells
+fixes that but rewards recall enough that digging the entire arena scores 0.53 on it,
+and 0.26 overall. Jaccard charges that bot for every cell it should not have touched
+and brings it down to 0.18.
 
-## Difficulty: measured, and it is too easy
+## The first version was too easy, and why this one differs
 
-| run | elapsed | exact worlds | reward |
-|---|---|---|---|
-| Codex CLI `gpt-5.6-sol` at `xhigh` | 1100 s | **8 / 8** | **1.000** |
+A first version used a 7x7 arena, three marker types and one conditional exception.
+A strong agent scored **1.000 in 1100 s on its first attempt**, reproducing all
+eight graded worlds exactly, and its submission reconstructed the rule outright.
 
-First attempt, eighteen minutes, every held-out world reproduced cell for cell. The
-submission is a real mineflayer bot and its source reconstructs the rule exactly,
-conditional exception included, from eight before/after pairs.
+The failure was structural, not a matter of tuning. Each marker's effect was
+independent and additive, so every rule could be inferred on its own from a
+before/after pair, and three rules over 49 cells is a lookup table with a footnote.
+Marker density had been tuned so the conditional appeared nine times in the
+examples; it made no difference.
 
-The conditional was meant to be the difficulty and the density was tuned so it
-appears nine times in the examples. It made no difference: rule induction over a
-49-cell grid with fully observed before and after states is a small search over
-complete evidence.
+This version changes the two things that measurement supports:
 
-This should be read alongside `computing_math/lockstep_desync_repro`, which also
-scored 1.000, and against `gen1_battle_engine_reconstruction`, which scored 0.000
-across three runs. The difference is the size of the mechanical surface, not the
-framing. Three marker types with one exception is a lookup table with a footnote.
+- **Effects are ordered and state-dependent.** The procedure applies its rules in a
+  fixed hidden sequence and each one sees the world as the previous ones left it.
+  One rule fires only if none of its neighbours is already cleared, another runs
+  until it meets a cleared cell. No effect can be read off in isolation.
+- **The surface is larger.** Eight marker types rather than three, including one
+  that suppresses its neighbours, one that depends on a global parity, and a closure
+  that repeats to a fixpoint.
 
-The task is recorded here as built and measured. Making it hard needs far more
-interacting rules, or partial observation of the worlds, not a different metric.
+Evidence was widened rather than narrowed: 40 worked examples instead of 8, because
+the difficulty should come from the size of the hypothesis space, not from starving
+the agent of data. That is the shape `gen1_battle_engine_reconstruction` has, where
+638 worked examples and 48 interacting mechanics still yield 0.000.
 
 ## Why this shape
 
