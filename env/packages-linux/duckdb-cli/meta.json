@@ -1,0 +1,1 @@
+{"description": "DuckDB command-line client (MIT), an in-process analytical SQL engine", "os": "linux", "verify": "duckdb -c \"select 1\" >/dev/null && duckdb --version"}
