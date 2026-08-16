@@ -50,10 +50,17 @@ Measured through the shipped grader:
 | submission | reward |
 |---|---|
 | the reference world states | **1.000** |
-| a bot that does nothing | **0.000** |
-| a bot that digs the whole arena | **0.183** |
+| Codex `gpt-5.6-sol` at `xhigh`, two runs | **0.471 / 0.509** |
+| a bot that digs the whole arena | 0.183 |
 | a bot that digs all grass and leaves the markers | 0.158 |
+| a bot that does nothing | **0.000** |
 | no submission, or unparseable results | 0.000 |
+
+The agent runs sit at roughly half, with **overlap 0.88-0.89 but only 1-2 of 16
+worlds exact**: it recovers most of the procedure and reproduces almost none of it
+exactly, which is what an ordered, interacting rule set does to a solver that gets
+the independent parts right and the interactions wrong. The pass threshold recorded
+in the task card is 0.75, above both agent runs and well below the reference.
 
 The partial half exists so progress is visible without paying for a shortcut. Two
 metrics were rejected by measurement. Per-cell accuracy hands a bot that does
