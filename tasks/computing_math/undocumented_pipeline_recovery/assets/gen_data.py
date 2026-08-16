@@ -19,7 +19,9 @@ REGIONS = ["NA", "EMEA", "APAC"]
 TIERS = ["standard", "plus", "internal"]
 STATUSES = ["paid", "settled", "pending", "void"]
 DAY0 = dt.date(2024, 1, 1)
-T0 = dt.datetime(2024, 1, 1, tzinfo=dt.UTC).replace(tzinfo=None)  # naive wall clock, as the source data is
+# Naive wall clock on purpose: the source system records local timestamps
+# without a zone, which is part of what the pipeline has to cope with.
+T0 = dt.datetime(2024, 1, 1)  # noqa: DTZ001
 
 
 class R:
@@ -96,7 +98,23 @@ def build(seed: int, out: pathlib.Path):
         })
         rid += 1
 
+    # payments: fungible money arriving over time, to be allocated against orders
+    payments, pid = [], 9000
+    n_pay = 70 + r.i(40)
+    for _ in range(n_pay):
+        paid = T0 + dt.timedelta(days=r.i(185), hours=r.i(24))
+        payments.append({
+            "payment_id": pid,
+            "customer_id": 1 + r.i(n_cust + 3),
+            "paid_at": paid.replace(microsecond=0).isoformat(sep=" "),
+            "amount_cents": (500 + r.i(150000)),
+            "currency": r.pick(CURRENCIES),
+            "method": r.pick(["card", "wire", "ach"]),
+        })
+        pid += 1
+
     for name, rows, cols in [
+        ("payments", payments, ["payment_id", "customer_id", "paid_at", "amount_cents", "currency", "method"]),
         ("customers", customers, ["customer_id", "region", "tier", "signed_up_at"]),
         ("orders", orders, ["order_id", "customer_id", "placed_at", "amount_cents", "currency", "status"]),
         ("refunds", refunds, ["refund_id", "order_id", "refunded_at", "amount_cents"]),

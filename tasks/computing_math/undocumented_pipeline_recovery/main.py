@@ -44,7 +44,7 @@ VARIANT_NAME = "base"
 EVAL_DIR = "/tmp/agenthle_eval/undocumented_pipeline_recovery"
 CASE_TIMEOUT_S = 300.0
 
-SOURCE_TABLES = ("orders", "customers", "refunds", "fx_rates")
+SOURCE_TABLES = ("orders", "customers", "refunds", "payments", "fx_rates")
 _CASES = sorted(p.name for p in (DATA / "cases").iterdir() if p.is_dir())
 _HOLDOUT = sorted(p.name for p in (DATA / "holdout").iterdir() if p.is_dir())
 
@@ -75,10 +75,13 @@ else about the job survives: no specification, no schema document, no comments.
 - `orders(order_id, customer_id, placed_at, amount_cents, currency, status)`
 - `customers(customer_id, region, tier, signed_up_at)`
 - `refunds(refund_id, order_id, refunded_at, amount_cents)`
+- `payments(payment_id, customer_id, paid_at, amount_cents, currency, method)`
 - `fx_rates(currency, day, rate_to_usd)`
 
-Amounts are integer minor units in the order's own currency. The source data is \
-real-shaped rather than clean: read it carefully before assuming anything.
+Amounts are integer minor units in each row's own currency. The source data is \
+real-shaped rather than clean: read it carefully before assuming anything. Note \
+that payments are not tied to particular orders, and that the result is not simply \
+an aggregate of the orders table.
 
 ## What you write
 
@@ -93,6 +96,7 @@ Test locally with `duckdb`, which is installed:
       CREATE TABLE orders    AS SELECT * FROM read_csv_auto('cases/ds_7001/orders.csv');
       CREATE TABLE customers AS SELECT * FROM read_csv_auto('cases/ds_7001/customers.csv');
       CREATE TABLE refunds   AS SELECT * FROM read_csv_auto('cases/ds_7001/refunds.csv');
+      CREATE TABLE payments  AS SELECT * FROM read_csv_auto('cases/ds_7001/payments.csv');
       CREATE TABLE fx_rates  AS SELECT * FROM read_csv_auto('cases/ds_7001/fx_rates.csv');
       .read output/solution.sql
       SELECT * FROM result ORDER BY ALL;"
@@ -153,7 +157,7 @@ async def start(task_cfg, session: cb.DesktopSession):
         encoding="utf-8").splitlines()[1]
     leak = await session.run_command(
         f"grep -rlF {probe!r} {input_dir!r} 2>/dev/null; "
-        f"grep -rl 'ASOF JOIN' {input_dir!r} 2>/dev/null; ls {ref_dir!r} 2>/dev/null",
+        f"grep -rlE 'ASOF JOIN|cum_supply|cum_demand' {input_dir!r} 2>/dev/null; ls {ref_dir!r} 2>/dev/null",
         check=False)
     if (leak.get("stdout") or "").strip():
         raise RuntimeError(f"reference material leaked onto the VM: {leak['stdout'][:400]}")

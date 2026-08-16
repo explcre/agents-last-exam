@@ -89,6 +89,49 @@ def test_reference_outputs_are_reproduced_exactly_by_themselves():
     assert grade.score(dict(exp), exp)["reward"] == 1.0
 
 
+@pytest.mark.skipif(not HAVE_DUCKDB, reason="duckdb not installed on this host")
+def test_the_naive_rollup_does_not_reproduce_the_result(tmp_path):
+    """Guard the premise: the obvious first attempt must not already be correct.
+
+    If grouping eligible orders by their own month reproduced the expected table,
+    the stateful part of the pipeline would be decoration rather than the difficulty.
+    """
+    naive = tmp_path / "naive.sql"
+    naive.write_text(
+        "CREATE OR REPLACE TABLE result AS "
+        "SELECT date_trunc('month', o.placed_at)::DATE AS month, o.customer_id, "
+        "coalesce(c.region, 'UNKNOWN') AS region, "
+        "CAST(sum(o.amount_cents) AS BIGINT) AS recognised_usd_cents, "
+        "CAST(count(*) AS BIGINT) AS orders_recognised "
+        "FROM orders o LEFT JOIN customers c ON c.customer_id = o.customer_id "
+        "WHERE o.status IN ('paid','settled') AND o.amount_cents > 0 "
+        "GROUP BY 1,2,3 ORDER BY 1,2;\n", encoding="utf-8")
+    for case in task._CASES[:3]:
+        base = task.DATA / "cases" / case
+        script = tmp_path / f"{case}.sql"
+        loads = "\n".join(
+            f"CREATE TABLE {t} AS SELECT * FROM read_csv_auto('{base}/{t}.csv');"
+            for t in task.SOURCE_TABLES)
+        out = tmp_path / f"{case}.csv"
+        script.write_text(loads + "\n" + naive.read_text() +
+                          f"COPY (SELECT * FROM result ORDER BY ALL) TO '{out}' "
+                          f"(HEADER, DELIMITER ',');\n", encoding="utf-8")
+        subprocess.run(f"{DUCKDB} -init /dev/null -batch < {script}", shell=True,
+                       capture_output=True, check=False)
+        assert out.exists(), f"{case}: naive rollup did not run"
+        got = grade.read_rows(out.read_text())
+        want = grade.read_rows((base / "expected.csv").read_text())
+        assert got != want, f"{case}: the naive rollup already reproduces the answer"
+
+
+def test_holdout_answers_differ_from_every_worked_answer():
+    """A held-out answer that coincides with a shipped one would be free marks."""
+    shipped = {(task.DATA / "cases" / c / "expected.csv").read_text() for c in task._CASES}
+    for case in task._HOLDOUT:
+        text = (task.DATA / "holdout" / case / "expected.csv").read_text()
+        assert text not in shipped, f"{case} duplicates a worked example's answer"
+
+
 def test_missing_submission_scores_zero(staged):
     assert asyncio.run(task.evaluate(staged, LocalSession())) == [0.0]
 
