@@ -98,6 +98,52 @@ def test_every_graded_marker_type_is_demonstrated():
     assert not missing, f"graded but never demonstrated: {sorted(missing)}"
 
 
+def _phase_one_size(world):
+    """Re-derive the first-phase footprint the gate branches on, from the world alone."""
+    CARD = ((1, 0), (-1, 0), (0, 1), (0, -1))
+    markers = {k: v for k, v in world["before"].items() if v != "grass_block"}
+    dead = set()
+    for k, v in markers.items():
+        if v != "cyan_wool":
+            continue
+        dx, dz = (int(n) for n in k.split(","))
+        dead.add(k)
+        for a, b in CARD:
+            if f"{dx+a},{dz+b}" in markers:
+                dead.add(f"{dx+a},{dz+b}")
+    live = {k: v for k, v in markers.items() if k not in dead}
+
+    def inb(x, z):
+        return abs(x) <= 4 and abs(z) <= 4
+
+    air = set()
+    for t in ("orange_wool", "white_wool", "light_blue_wool"):
+        for k, v in live.items():
+            if v != t:
+                continue
+            dx, dz = (int(n) for n in k.split(","))
+            if t == "light_blue_wool":
+                d = 1
+                while inb(dx + d, dz) and f"{dx+d},{dz}" not in air:
+                    air.add(f"{dx+d},{dz}")
+                    d += 1
+                continue
+            cells = [(dx, dz)] if t == "orange_wool" else [(dx + a, dz + b) for a, b in CARD]
+            if any(f"{a},{b}" in air for a, b in cells):
+                continue
+            air |= {f"{a},{b}" for a, b in cells if inb(a, b)}
+    return len(air)
+
+
+def test_both_gate_regimes_appear_on_both_sides():
+    """The procedure branches on a global property of the world. If one branch never
+    occurs, the branch is untestable and the task is quietly simpler than intended."""
+    for name, worlds in (("examples", task._EXAMPLES), ("holdout", task._HOLDOUT)):
+        dense = sum(1 for w in worlds.values() if _phase_one_size(w) >= 12)
+        sparse = len(worlds) - dense
+        assert dense >= 3 and sparse >= 3, f"{name}: {dense} dense / {sparse} sparse"
+
+
 def test_the_suppressing_marker_is_exercised_on_both_sides():
     """One marker cancels its neighbours. If it never neighbours anything, the
     interaction it exists for is never tested and the rule is silently simpler."""
@@ -136,7 +182,7 @@ def test_digging_the_whole_arena_scores_poorly():
     """The other cheap shortcut: change everything and hope."""
     greedy = {s: {"before": w["before"], "after": {k: "air" for k in w["before"]}}
               for s, w in task._HOLDOUT.items()}
-    assert grade.score(greedy, task._HOLDOUT)["reward"] < 0.5
+    assert grade.score(greedy, task._HOLDOUT)["reward"] < 0.10
 
 
 def test_malformed_results_score_zero_without_raising():

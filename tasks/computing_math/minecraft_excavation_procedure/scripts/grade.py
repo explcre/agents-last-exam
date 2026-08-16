@@ -1,14 +1,25 @@
 """Score a reproduced excavation procedure against the reference's world states.
 
-Two halves. Exactness is the headline: a held-out world counts only if every cell of
-the arena matches. Jaccard over the set of dug cells supplies partial credit and,
-unlike per-cell accuracy, scores a bot that does nothing at 0 rather than rewarding
-it for leaving an arena that is mostly untouched anyway.
+Exactness carries the score: a held-out world counts only if every cell of the arena
+matches, which is what reproducing a procedure means. Jaccard over the set of dug
+cells contributes the remaining fifth so that progress is visible rather than
+collapsing to a flat zero, and unlike per-cell accuracy it scores a bot that does
+nothing at 0 rather than rewarding it for leaving an arena that is mostly untouched
+anyway.
+
+The weighting was set from measurement, not taste. At an even split a solver that
+recovers most of the procedure and almost none of it exactly still scored 0.47-0.51,
+because Jaccard is bounded below by the share of the cleared set any one rule
+contributes and so stays near 0.88 whenever errors are local. At 0.8 the same
+submissions score 0.23-0.28 while a bot that digs the whole arena falls to 0.07.
 
 Standard library only. No path raises on a malformed or missing result.
 """
 
 from __future__ import annotations
+
+# Exactness carries the score; see the module docstring for how the split was set.
+EXACT_WEIGHT = 0.8
 
 
 def dug(before: dict, after: dict) -> set:
@@ -50,4 +61,4 @@ def score(results: dict, expected: dict) -> dict:
     mean_f1 = sum(f1s) / n if n else 0.0
     return {"seeds": n, "exact": exact, "exact_fraction": exact_frac,
             "mean_overlap": mean_f1, "per_seed": per_seed,
-            "reward": max(0.0, 0.5 * exact_frac + 0.5 * mean_f1)}
+            "reward": max(0.0, EXACT_WEIGHT * exact_frac + (1 - EXACT_WEIGHT) * mean_f1)}
