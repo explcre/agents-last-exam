@@ -150,6 +150,43 @@ not.
 The stack is installed by the `mineflayer-runtime` package rather than shipped as
 task data: 145 packages and 492 MB, all pure JavaScript with zero native binaries.
 
+## Is it fair, and is it representative
+
+Two separate questions, and the answers differ.
+
+**Fair: yes, and it is checked.** The examples are the only statement of the
+procedure, so a rule that never changes an example would be unlearnable rather than
+hard. Every marker type demonstrably alters the outcome in the worked examples,
+between 9 and 34 of the 40:
+
+| marker | changes the outcome in |
+|---|---|
+| orange | 30 of 40 |
+| light blue | 34 of 40 |
+| yellow | 32 of 40 |
+| white | 28 of 40 |
+| lime | 23 of 40 |
+| pink | 22 of 40 |
+| cyan (the suppressor) | 12 of 40 |
+| grey (parity-gated) | 9 of 40 |
+
+A test asserts every type stays witnessed, so a future change to the layout cannot
+quietly make a rule invisible. The measured agent failure is consistent with this:
+its submission implements four of the eight rules and ignores the rest, with no
+guards and no gate. It under-solved the task rather than being defeated by an
+ambiguity in it.
+
+**Representative: partially, and this should not be oversold.** ALE asks for
+workflows used in real industry with the right professional tools. `mineflayer` is
+not a professional tool and Minecraft bot scripting is not an industry workflow. What
+does transfer is the underlying activity: recovering an undocumented deterministic
+transformation from before and after system states, then re-implementing it as an
+automation that has to survive inputs it was not developed against. That is what
+legacy migration and process reconstruction look like. The nearest precedents in the
+existing corpus are `computing_math/go_game_reconstruction_1` and
+`other/mota_exploration`, both game-based. Whether that is close enough is ALE's call
+and is flagged rather than argued.
+
 ## Caveats worth stating
 
 - The design is stationary by necessity. Measured on this server, `bot.placeBlock`

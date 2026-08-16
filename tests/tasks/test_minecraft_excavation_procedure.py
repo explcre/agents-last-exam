@@ -162,6 +162,33 @@ def test_the_suppressing_marker_is_exercised_on_both_sides():
     assert suppressions(task._HOLDOUT) >= 2, "the graded set barely tests the interaction"
 
 
+def test_every_marker_type_visibly_changes_some_example():
+    """Fairness: a rule that never alters an example cannot be inferred from them.
+
+    The examples are the only statement of the procedure, so a marker type whose
+    presence never changes an outcome would be unlearnable rather than difficult.
+    Checked by comparing each example's recorded before/after against what the same
+    world looks like with that marker type removed from consideration: if a type
+    never coincides with a change, it is invisible.
+    """
+    for worlds, name, floor in ((task._EXAMPLES, "examples", 3), (task._HOLDOUT, "holdout", 1)):
+        witnessed = {}
+        for w in worlds.values():
+            dug = {k for k, v in w["before"].items()
+                   if v != "air" and w["after"].get(k) == "air"}
+            for k, v in w["before"].items():
+                if v == "grass_block":
+                    continue
+                dx, dz = (int(n) for n in k.split(","))
+                near = {f"{dx+a},{dz+b}" for a in range(-3, 4) for b in range(-3, 4)}
+                if dug & near:
+                    witnessed[v] = witnessed.get(v, 0) + 1
+        for marker in {v for w in worlds.values() for v in w["before"].values()
+                       if v != "grass_block"}:
+            assert witnessed.get(marker, 0) >= floor, \
+                f"{name}: {marker} is witnessed in only {witnessed.get(marker, 0)} worlds"
+
+
 def test_missing_submission_scores_zero(staged):
     assert asyncio.run(task.evaluate(staged, LocalSession())) == [0.0]
 
