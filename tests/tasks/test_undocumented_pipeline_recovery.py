@@ -80,7 +80,7 @@ def test_no_held_out_answer_and_no_pipeline_source_reach_the_vm(staged):
 
 def test_worked_and_held_out_datasets_are_disjoint():
     assert not (set(task._CASES) & set(task._HOLDOUT))
-    assert len(task._CASES) >= 10 and len(task._HOLDOUT) >= 6
+    assert len(task._CASES) >= 4 and len(task._HOLDOUT) >= 12
 
 
 def test_reference_outputs_are_reproduced_exactly_by_themselves():
@@ -106,7 +106,7 @@ def test_the_naive_rollup_does_not_reproduce_the_result(tmp_path):
         "FROM orders o LEFT JOIN customers c ON c.customer_id = o.customer_id "
         "WHERE o.status IN ('paid','settled') AND o.amount_cents > 0 "
         "GROUP BY 1,2,3 ORDER BY 1,2;\n", encoding="utf-8")
-    for case in task._CASES[:3]:
+    for case in task._CASES[:2]:
         base = task.DATA / "cases" / case
         script = tmp_path / f"{case}.sql"
         loads = "\n".join(

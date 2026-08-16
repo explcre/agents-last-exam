@@ -66,7 +66,7 @@ class TaskConfig(LinuxTaskConfig):
 Recover a reporting pipeline that no longer has any source code.
 
 A nightly job read four tables and wrote one result table. The job is gone; its \
-outputs are not. Under `{input}/cases` are twelve datasets, each holding the four \
+outputs are not. Under `{input}/cases` are four datasets, each holding the five \
 source tables the job read and the `expected.csv` it produced from them. Nothing \
 else about the job survives: no specification, no schema document, no comments.
 
@@ -108,9 +108,9 @@ way as the twelve you have. For each, the `result` table is compared with the on
 the pipeline produced, as a multiset of rows including the header.
 
 Most of the score is the fraction of held-out datasets reproduced **exactly**; the \
-remainder is row-level agreement, so partial progress shows. Matching the twelve \
-worked examples is not the task: the same script has to hold on data you cannot \
-see.
+remainder is row-level agreement, so partial progress shows. There are sixteen \
+held-out datasets and only four worked ones, so matching the four is a weak signal: \
+the same script has to hold on data you cannot see.
 
 Do not modify anything under `input/`. Do not rely on internet access.
 """
