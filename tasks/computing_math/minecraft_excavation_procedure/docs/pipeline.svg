@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" width="900" height="460" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="900" height="460" fill="#f7f8fa"/>
+
+  <text x="24" y="34" font-size="17" font-weight="700" fill="#0f172a">The procedure is never written down. Only its effects are.</text>
+  <text x="24" y="55" font-size="12.5" fill="#5b6673">Forty worlds before and after a reference bot acted, and no statement anywhere of what it did.</text>
+
+  <!-- reference, host only -->
+  <rect x="24" y="80" width="248" height="150" rx="4" fill="#fff" stroke="#b91c1c" stroke-width="1.6"/>
+  <text x="40" y="102" font-size="12.5" font-weight="700" fill="#b91c1c">REFERENCE, host only</text>
+  <text x="40" y="123" font-size="11.5" fill="#334155">8 marker types, applied in a</text>
+  <text x="40" y="140" font-size="11.5" fill="#334155">hidden order, each seeing what</text>
+  <text x="40" y="157" font-size="11.5" fill="#334155">the previous ones left</text>
+  <text x="40" y="180" font-size="11" fill="#5b6673">one suppresses its neighbours</text>
+  <text x="40" y="196" font-size="11" fill="#5b6673">one is gated on a global parity</text>
+  <text x="40" y="212" font-size="11" fill="#5b6673">then a closure to a fixpoint</text>
+
+  <path d="M272 128 L328 128" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+  <path d="M272 190 L328 320" stroke="#b91c1c" stroke-width="1.6" marker-end="url(#r)"/>
+
+  <!-- on the VM -->
+  <rect x="328" y="80" width="252" height="150" rx="4" fill="#fff" stroke="#1d4ed8" stroke-width="1.6"/>
+  <text x="344" y="102" font-size="12.5" font-weight="700" fill="#1d4ed8">ON THE VM  input/</text>
+  <text x="344" y="124" font-size="11.5" fill="#334155">examples.json: 40 worlds,</text>
+  <text x="344" y="141" font-size="11.5" fill="#334155">each a full before and after grid</text>
+  <text x="344" y="163" font-size="11.5" fill="#334155">runner/episode.js</text>
+  <text x="344" y="180" font-size="11" fill="#5b6673">build a world, run a bot, record it</text>
+  <text x="344" y="205" font-size="11" fill="#1d4ed8">no rule text, no graded world,</text>
+  <text x="344" y="221" font-size="11" fill="#1d4ed8">and tests assert both</text>
+
+  <path d="M454 230 L454 268" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- agent -->
+  <rect x="328" y="268" width="252" height="104" rx="4" fill="#fff" stroke="#334155" stroke-width="1.6"/>
+  <text x="344" y="290" font-size="12.5" font-weight="700" fill="#0f172a">THE AGENT</text>
+  <text x="344" y="311" font-size="11.5" fill="#334155">infers the procedure, writes</text>
+  <text x="344" y="328" font-size="11.5" fill="#334155">output/bot.js using mineflayer</text>
+  <text x="344" y="352" font-size="11" fill="#5b6673">no operator rights: it must dig</text>
+
+  <path d="M580 320 L636 320" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- graded -->
+  <rect x="636" y="268" width="240" height="104" rx="4" fill="#fff" stroke="#b91c1c" stroke-width="1.6"/>
+  <text x="652" y="290" font-size="12.5" font-weight="700" fill="#b91c1c">GRADED, host only</text>
+  <text x="652" y="311" font-size="11.5" fill="#334155">16 worlds from unseen seeds</text>
+  <text x="652" y="331" font-size="11" fill="#5b6673">built fresh at evaluation time,</text>
+  <text x="652" y="347" font-size="11" fill="#5b6673">the bot run against each</text>
+
+  <!-- metric -->
+  <rect x="636" y="80" width="240" height="150" rx="4" fill="#fff" stroke="#7c3aed" stroke-width="1.6"/>
+  <text x="652" y="102" font-size="12.5" font-weight="700" fill="#7c3aed">THE METRIC</text>
+  <text x="652" y="125" font-size="11.5" fill="#334155">0.5 x exact worlds</text>
+  <text x="652" y="142" font-size="11.5" fill="#334155">0.5 x Jaccard over dug cells</text>
+  <text x="652" y="167" font-size="11" fill="#7c3aed">exact reference ......... 1.000</text>
+  <text x="652" y="183" font-size="11" fill="#7c3aed">does nothing ............ 0.000</text>
+  <text x="652" y="199" font-size="11" fill="#7c3aed">digs everything ......... 0.183</text>
+  <text x="652" y="219" font-size="11" fill="#5b6673">F1 paid that last one 0.264</text>
+
+  <path d="M756 268 L756 232" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- environment -->
+  <rect x="24" y="268" width="248" height="104" rx="4" fill="#fff" stroke="#0f766e" stroke-width="1.6"/>
+  <text x="40" y="290" font-size="12.5" font-weight="700" fill="#0f766e">THE STACK</text>
+  <text x="40" y="311" font-size="11.5" fill="#334155">mineflayer + flying-squid, MIT</text>
+  <text x="40" y="331" font-size="11" fill="#5b6673">a JavaScript server: no Mojang jar,</text>
+  <text x="40" y="347" font-size="11" fill="#5b6673">asset or world file is involved</text>
+
+  <text x="24" y="404" font-size="11.5" fill="#5b6673">Effects are ordered and state-dependent, so no single rule can be read off a before/after pair in isolation.</text>
+  <text x="24" y="424" font-size="11.5" fill="#5b6673">Evidence is wide on purpose: 40 worked examples. The difficulty is the size of the hypothesis space, not scarcity.</text>
+  <text x="24" y="444" font-size="11.5" fill="#5b6673">Digging is the only reliable operation on this server, so the procedure is excavation and the bot never moves.</text>
+
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+</svg>

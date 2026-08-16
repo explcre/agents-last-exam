@@ -7,6 +7,10 @@ that reproduces the same transformation on worlds it has never seen.
 The examples are the only statement of the procedure that exists. No description of
 it reaches the VM, and a test asserts that.
 
+## How it fits together
+
+![pipeline](docs/pipeline.svg)
+
 ## What the agent gets
 
 ```
