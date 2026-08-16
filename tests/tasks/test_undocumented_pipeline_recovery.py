@@ -63,8 +63,33 @@ def test_start_stages_every_worked_dataset(staged):
     root = pathlib.Path(staged.metadata["input_dir"]) / "cases"
     assert sorted(p.name for p in root.iterdir()) == task._CASES
     for case in task._CASES:
-        for name in (*task.SOURCE_TABLES, "expected"):
+        for name in task.SOURCE_TABLES:
             assert (root / case / f"{name}.csv").is_file(), f"{case}/{name}"
+
+
+def test_exactly_one_worked_dataset_keeps_its_row_level_export(staged):
+    """The evidence is uneven on purpose: one full export, the rest reconciliations.
+
+    That is what limits local verification, which is the whole difficulty of this
+    version. If a second full export appeared, the agent could diff against two.
+    """
+    root = pathlib.Path(staged.metadata["input_dir"]) / "cases"
+    full = [c for c in task._CASES if (root / c / "expected.csv").is_file()]
+    summ = [c for c in task._CASES if (root / c / "summary.csv").is_file()]
+    assert full == [task._FULL_CASE], f"expected one full export, found {full}"
+    assert len(summ) == len(task._CASES) - 1, "every other dataset needs its summary"
+
+
+def test_the_summaries_really_do_hide_the_detail(staged):
+    """A summary that pinned down its detail rows would not reduce the signal."""
+    root = pathlib.Path(staged.metadata["input_dir"]) / "cases"
+    for case in task._CASES:
+        f = root / case / "summary.csv"
+        if not f.is_file():
+            continue
+        lines = [ln for ln in f.read_text().splitlines()[1:] if ln.strip()]
+        hidden = sum(int(ln.split(",")[3]) for ln in lines)
+        assert hidden > len(lines), f"{case}: summary rows do not aggregate anything"
 
 
 def test_no_held_out_answer_and_no_pipeline_source_reach_the_vm(staged):
@@ -106,7 +131,7 @@ def test_the_naive_rollup_does_not_reproduce_the_result(tmp_path):
         "FROM orders o LEFT JOIN customers c ON c.customer_id = o.customer_id "
         "WHERE o.status IN ('paid','settled') AND o.amount_cents > 0 "
         "GROUP BY 1,2,3 ORDER BY 1,2;\n", encoding="utf-8")
-    for case in task._CASES[:2]:
+    for case in [task._FULL_CASE]:
         base = task.DATA / "cases" / case
         script = tmp_path / f"{case}.sql"
         loads = "\n".join(
@@ -126,7 +151,8 @@ def test_the_naive_rollup_does_not_reproduce_the_result(tmp_path):
 
 def test_holdout_answers_differ_from_every_worked_answer():
     """A held-out answer that coincides with a shipped one would be free marks."""
-    shipped = {(task.DATA / "cases" / c / "expected.csv").read_text() for c in task._CASES}
+    shipped = {(task.DATA / "cases" / c / "expected.csv").read_text()
+               for c in task._CASES if (task.DATA / "cases" / c / "expected.csv").is_file()}
     for case in task._HOLDOUT:
         text = (task.DATA / "holdout" / case / "expected.csv").read_text()
         assert text not in shipped, f"{case} duplicates a worked example's answer"

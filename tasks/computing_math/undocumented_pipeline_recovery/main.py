@@ -46,6 +46,9 @@ CASE_TIMEOUT_S = 300.0
 
 SOURCE_TABLES = ("orders", "customers", "refunds", "payments", "fx_rates")
 _CASES = sorted(p.name for p in (DATA / "cases").iterdir() if p.is_dir())
+# Exactly one dataset kept its row-level export; the rest survive only as the
+# monthly reconciliation reports the finance team still files.
+_FULL_CASE = next(c for c in _CASES if (DATA / "cases" / c / "expected.csv").is_file())
 _HOLDOUT = sorted(p.name for p in (DATA / "holdout").iterdir() if p.is_dir())
 
 
@@ -65,10 +68,19 @@ class TaskConfig(LinuxTaskConfig):
         return """\
 Recover a reporting pipeline that no longer has any source code.
 
-A nightly job read four tables and wrote one result table. The job is gone; its \
-outputs are not. Under `{input}/cases` are four datasets, each holding the five \
-source tables the job read and the `expected.csv` it produced from them. Nothing \
-else about the job survives: no specification, no schema document, no comments.
+A nightly job read five tables and wrote one result table. The job is gone, and so \
+is most of what it wrote. Under `{input}/cases` are seven datasets, each holding the \
+five source tables the job read. What survives of its output is uneven, as it \
+usually is:
+
+- **one** dataset still has the full row-level export the job produced, as \
+`expected.csv`;
+- the other six have only `summary.csv`, the monthly reconciliation report finance \
+kept filing: one row per month with the totals, and how many customer rows that \
+month contained.
+
+Nothing else survives: no specification, no schema document, no comments. The \
+single full export is the only place the output's exact shape is visible.
 
 ## The source tables
 
@@ -108,9 +120,10 @@ way as the twelve you have. For each, the `result` table is compared with the on
 the pipeline produced, as a multiset of rows including the header.
 
 Most of the score is the fraction of held-out datasets reproduced **exactly**; the \
-remainder is row-level agreement, so partial progress shows. There are sixteen \
-held-out datasets and only four worked ones, so matching the four is a weak signal: \
-the same script has to hold on data you cannot see.
+remainder is row-level agreement, so partial progress shows. Note what you can and \
+cannot check locally: exactly one dataset lets you compare row for row, and the \
+other six only tell you whether your monthly totals reconcile. Totals that \
+reconcile do not imply the rows beneath them are right.
 
 Do not modify anything under `input/`. Do not rely on internet access.
 """
@@ -146,8 +159,10 @@ async def start(task_cfg, session: cb.DesktopSession):
     await session.run_command(f"mkdir -p {input_dir!r}/cases {out_dir!r}", check=True)
     for case in _CASES:
         await session.run_command(f"mkdir -p {input_dir!r}/cases/{case}", check=True)
-        for name in (*SOURCE_TABLES, "expected"):
+        for name in (*SOURCE_TABLES, "expected", "summary"):
             src = DATA / "cases" / case / f"{name}.csv"
+            if not src.is_file():
+                continue
             await session.write_file(f"{input_dir}/cases/{case}/{name}.csv",
                                      src.read_text(encoding="utf-8"))
 
