@@ -1,0 +1,54 @@
+{
+  "taskId": "other/docx_edit_without_collateral_damage",
+  "title": "Apply A House Style To Word Documents Without Collateral Damage",
+  "taskName": "Apply A House Style To Word Documents Without Collateral Damage",
+  "summary": "Word documents from a review pipeline carry tracked changes, comments and their anchors, footnotes, a content control, a custom XML part, bookmarks, a hyperlink, an embedded image, numbered lists, headers and footers. The agent must apply four named house-style changes and leave everything else exactly as it was. This targets a real and silent failure: a tool that models paragraphs and runs but not revisions or content controls rewrites the document on save and drops what it does not understand, producing a file that still opens and looks right while having lost the review history. Grading is exhaustive: package parts the brief does not name must be byte-identical, and the body must be unchanged once alignment is normalised away.",
+  "category": "other",
+  "software": [
+    "Python 3",
+    "lxml",
+    "OOXML",
+    "LibreOffice",
+    "Ubuntu"
+  ],
+  "tags": [
+    "document-automation",
+    "ooxml",
+    "format-fidelity",
+    "regression-avoidance",
+    "deterministic-grading",
+    "cpu-free-ubuntu"
+  ],
+  "agentMustDo": [
+    "Inspect the sample documents under `input/documents` and find what they contain beyond paragraphs.",
+    "Justify every body paragraph except Heading1 and Heading2, which are left-aligned, including paragraphs inside tables.",
+    "Change the Heading1 colour in word/styles.xml to 7A2E2E.",
+    "Replace the [[CYCLE]] placeholder in both the header and the footer with 'Q1 2026'.",
+    "Leave every other package part byte-identical, and leave every revision, comment anchor, footnote reference, bookmark, field, drawing and content control in place.",
+    "Write output/restyle.py, invoked as `python3 restyle.py <input.docx> <output.docx>`, that works on unseen documents of the same shape."
+  ],
+  "vm": {
+    "machineType": "c4-standard-4",
+    "snapshot": "cpu-free-ubuntu",
+    "vcpus": 4,
+    "memory_gb": 16,
+    "disk_gb": 100,
+    "timeout_s": 21600,
+    "timeout": 21600,
+    "network": {
+      "mode": "off"
+    }
+  },
+  "variants": [
+    "base"
+  ],
+  "requiredSystemPackages": [],
+  "taxonomy": {
+    "domain_id": "13",
+    "domain_code": "other",
+    "subdomain_id": "13.1",
+    "subdomain_code": "other",
+    "subdomain_name": "Other"
+  },
+  "evaluation": "evaluate() runs the submitted script over seven held-out documents. For each, the edit half checks all four named changes and the preservation half checks that unnamed package parts are byte-identical and that the document body is unchanged once w:jc is normalised away. reward = 0.7 * (documents where both hold) + 0.15 * (preserved) + 0.15 * (edited). Reference outputs are produced by running the reference edit, not hand-authored. Grading is deterministic and offline; no judge model or credential is required. Measured against deliberate failure modes: dropping tracked changes, the content control, comment anchors, a footnote reference, the custom XML part or the comments part each score 0.150, while harmless variations such as pretty-printing an edited part or re-ordering the zip score 1.000."
+}
