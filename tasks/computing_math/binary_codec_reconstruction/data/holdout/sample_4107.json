@@ -1,0 +1,56 @@
+{
+ "version": 2,
+ "flags": 3,
+ "records": [
+  {
+   "type": 0,
+   "id": 104,
+   "name": "ingest",
+   "ts": 1601521431,
+   "value": 5934939
+  },
+  {
+   "type": 0,
+   "id": 179,
+   "name": "delta",
+   "ts": 1665634064,
+   "value": 178053
+  },
+  {
+   "type": 1,
+   "id": 382,
+   "name": "flush",
+   "ts": 1768159808,
+   "value": -151.525
+  },
+  {
+   "type": 2,
+   "id": 579,
+   "name": "ingest",
+   "ts": 1758706748,
+   "value": "alpha queue mu flush zeta alpha delta"
+  },
+  {
+   "type": 0,
+   "id": 675,
+   "name": "timeout",
+   "ts": 1654161372,
+   "value": 2568620
+  },
+  {
+   "type": 1,
+   "id": 709,
+   "name": "flush",
+   "ts": 1756445302,
+   "value": 819.65632
+  },
+  {
+   "type": 0,
+   "id": 756,
+   "name": "kappa",
+   "ts": 1754282975,
+   "value": 5883388
+  }
+ ],
+ "payload": "delta beta queue commit delta beta queue commit alpha kappa packet alpha mu timeout delta beta queue commit alpha kappa packet alpha mu timeout flush kappa gateway delta beta queue commit alpha kappa packet alpha mu timeout alpha kappa packet alpha mu timeout gateway ingest timeout queue commit beta eta alpha kappa packet alpha mu timeout gateway ingest timeout queue delta beta queue commit gateway ingest timeout queue delta beta queue commit delta beta queue commit kappa ingest ingest queue alpha kappa packet alpha mu timeout kappa ingest ingest queue flush kappa gateway kappa ingest ingest queue gateway ingest timeout queue alpha kappa packet alpha mu timeout commit beta eta alpha kappa packet alpha mu timeout gateway ingest timeout queue delta beta queue commit kappa ingest ingest queue commit beta eta kappa ingest ingest queue delta beta queue commit alpha kappa packet alpha mu timeout kappa ingest ingest queue delta beta queue commit commit beta eta delta beta queue commit commit beta eta kappa ingest ingest queue flush kappa gateway flush kappa gateway kappa ingest ingest queue gateway ingest timeout queue kappa ingest ingest queue kappa ingest ingest queue alpha kappa packet alpha mu timeout alpha kappa packet alpha mu timeout delta beta queue commit commit beta eta gateway ingest timeout queue"
+}

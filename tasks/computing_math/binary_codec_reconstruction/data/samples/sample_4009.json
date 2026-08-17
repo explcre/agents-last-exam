@@ -1,0 +1,49 @@
+{
+ "version": 1,
+ "flags": 3,
+ "records": [
+  {
+   "type": 1,
+   "id": 30,
+   "name": "gamma",
+   "ts": 1757136727,
+   "value": 998.17025
+  },
+  {
+   "type": 1,
+   "id": 254,
+   "name": "mu",
+   "ts": 1611032498,
+   "value": -655.13854
+  },
+  {
+   "type": 1,
+   "id": 323,
+   "name": "iota",
+   "ts": 1743122910,
+   "value": -734.05804
+  },
+  {
+   "type": 2,
+   "id": 373,
+   "name": "lambda",
+   "ts": 1789330205,
+   "value": "retry alpha packet gamma alpha ingest lambda beta"
+  },
+  {
+   "type": 0,
+   "id": 502,
+   "name": "gateway",
+   "ts": 1646568954,
+   "value": 9412791
+  },
+  {
+   "type": 0,
+   "id": 722,
+   "name": "iota",
+   "ts": 1707898211,
+   "value": 5640139
+  }
+ ],
+ "payload": "gamma commit kappa eta commit retry alpha delta zeta sensor ingest retry sensor ingest retry commit retry alpha delta zeta packet flush commit beta timeout theta gamma commit kappa eta gamma commit kappa eta beta flush eta eta zeta mu queue packet flush commit beta timeout theta eta zeta mu queue eta zeta mu queue sensor ingest retry beta flush eta sensor ingest retry gamma commit kappa eta sensor ingest retry beta flush eta eta zeta mu queue commit retry alpha delta zeta sensor ingest retry packet flush commit beta timeout theta eta zeta mu queue packet flush commit beta timeout theta sensor ingest retry gamma commit kappa eta sensor ingest retry packet flush commit beta timeout theta eta zeta mu queue beta flush eta commit retry alpha delta zeta packet flush commit beta timeout theta"
+}

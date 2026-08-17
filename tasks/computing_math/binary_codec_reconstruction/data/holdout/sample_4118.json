@@ -1,0 +1,119 @@
+{
+ "version": 1,
+ "flags": 3,
+ "records": [
+  {
+   "type": 0,
+   "id": 222,
+   "name": "sensor",
+   "ts": 1668490572,
+   "value": 195089
+  },
+  {
+   "type": 1,
+   "id": 283,
+   "name": "beta",
+   "ts": 1714003424,
+   "value": 985.1051
+  },
+  {
+   "type": 1,
+   "id": 315,
+   "name": "commit",
+   "ts": 1779514512,
+   "value": 395.502
+  },
+  {
+   "type": 2,
+   "id": 443,
+   "name": "epsilon",
+   "ts": 1774525386,
+   "value": "flush timeout ingest gateway delta gateway"
+  },
+  {
+   "type": 0,
+   "id": 446,
+   "name": "delta",
+   "ts": 1621918970,
+   "value": 3291917
+  },
+  {
+   "type": 1,
+   "id": 674,
+   "name": "flush",
+   "ts": 1789783428,
+   "value": 617.26066
+  },
+  {
+   "type": 2,
+   "id": 774,
+   "name": "sensor",
+   "ts": 1634415692,
+   "value": "alpha kappa"
+  },
+  {
+   "type": 1,
+   "id": 994,
+   "name": "delta",
+   "ts": 1604381169,
+   "value": 534.21769
+  },
+  {
+   "type": 0,
+   "id": 1052,
+   "name": "queue",
+   "ts": 1625306712,
+   "value": 7149930
+  },
+  {
+   "type": 2,
+   "id": 1061,
+   "name": "kappa",
+   "ts": 1642814915,
+   "value": "kappa iota epsilon gamma packet delta packet packet"
+  },
+  {
+   "type": 0,
+   "id": 1314,
+   "name": "commit",
+   "ts": 1763799955,
+   "value": 3639386
+  },
+  {
+   "type": 0,
+   "id": 1602,
+   "name": "timeout",
+   "ts": 1601322169,
+   "value": 3412578
+  },
+  {
+   "type": 0,
+   "id": 1704,
+   "name": "mu",
+   "ts": 1654947756,
+   "value": 289200
+  },
+  {
+   "type": 0,
+   "id": 1868,
+   "name": "epsilon",
+   "ts": 1769062440,
+   "value": 668181
+  },
+  {
+   "type": 0,
+   "id": 2035,
+   "name": "eta",
+   "ts": 1789817661,
+   "value": 4500588
+  },
+  {
+   "type": 0,
+   "id": 2205,
+   "name": "ingest",
+   "ts": 1742436425,
+   "value": 1318127
+  }
+ ],
+ "payload": "eta queue commit timeout epsilon commit commit epsilon eta lambda gateway flush zeta gamma epsilon eta lambda gateway flush zeta gamma sensor gateway gateway theta flush retry eta queue commit timeout eta queue commit timeout eta queue commit timeout ingest sensor theta sensor kappa sensor ingest sensor theta sensor kappa sensor epsilon eta lambda gateway flush zeta gamma epsilon commit commit sensor gateway gateway epsilon commit commit epsilon commit commit ingest sensor theta sensor kappa sensor epsilon eta lambda gateway flush zeta gamma ingest sensor theta sensor kappa sensor ingest sensor theta sensor kappa sensor epsilon commit commit eta queue commit timeout theta flush retry eta queue commit timeout theta flush retry"
+}

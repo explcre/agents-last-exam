@@ -1,0 +1,98 @@
+{
+ "version": 1,
+ "flags": 3,
+ "records": [
+  {
+   "type": 0,
+   "id": 46,
+   "name": "delta",
+   "ts": 1604879452,
+   "value": 6056945
+  },
+  {
+   "type": 2,
+   "id": 256,
+   "name": "kappa",
+   "ts": 1681751209,
+   "value": "alpha gateway zeta zeta theta zeta gateway"
+  },
+  {
+   "type": 0,
+   "id": 466,
+   "name": "ingest",
+   "ts": 1724657020,
+   "value": 7490780
+  },
+  {
+   "type": 1,
+   "id": 728,
+   "name": "theta",
+   "ts": 1621955584,
+   "value": -820.54886
+  },
+  {
+   "type": 1,
+   "id": 850,
+   "name": "packet",
+   "ts": 1777670462,
+   "value": -201.43473
+  },
+  {
+   "type": 1,
+   "id": 891,
+   "name": "delta",
+   "ts": 1749277370,
+   "value": 976.03167
+  },
+  {
+   "type": 2,
+   "id": 1156,
+   "name": "kappa",
+   "ts": 1668909466,
+   "value": "queue iota"
+  },
+  {
+   "type": 0,
+   "id": 1388,
+   "name": "flush",
+   "ts": 1793989893,
+   "value": 6191288
+  },
+  {
+   "type": 2,
+   "id": 1631,
+   "name": "mu",
+   "ts": 1602335868,
+   "value": "epsilon theta mu kappa lambda"
+  },
+  {
+   "type": 0,
+   "id": 1883,
+   "name": "ingest",
+   "ts": 1639978579,
+   "value": 7429197
+  },
+  {
+   "type": 0,
+   "id": 1896,
+   "name": "beta",
+   "ts": 1659329555,
+   "value": 9550414
+  },
+  {
+   "type": 0,
+   "id": 1929,
+   "name": "packet",
+   "ts": 1601448840,
+   "value": 2609647
+  },
+  {
+   "type": 2,
+   "id": 2212,
+   "name": "gamma",
+   "ts": 1698034310,
+   "value": "retry kappa gateway kappa iota eta"
+  }
+ ],
+ "payload": "alpha alpha iota packet queue epsilon alpha gamma iota lambda epsilon theta packet queue epsilon alpha gamma iota lambda alpha alpha iota packet queue epsilon alpha gamma iota lambda retry mu packet queue epsilon alpha gamma iota lambda queue epsilon alpha gamma iota lambda alpha alpha iota packet epsilon theta packet epsilon theta packet epsilon theta packet epsilon theta packet retry mu packet alpha alpha iota packet epsilon theta packet epsilon theta packet retry mu packet epsilon theta packet epsilon theta packet alpha alpha iota packet alpha alpha iota packet retry mu packet alpha alpha iota packet alpha alpha iota packet alpha alpha iota packet retry mu packet epsilon theta packet retry mu packet queue epsilon alpha gamma iota lambda"
+}

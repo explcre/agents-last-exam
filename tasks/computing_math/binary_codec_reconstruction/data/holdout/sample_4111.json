@@ -1,0 +1,154 @@
+{
+ "version": 1,
+ "flags": 3,
+ "records": [
+  {
+   "type": 1,
+   "id": 305,
+   "name": "ingest",
+   "ts": 1601480415,
+   "value": -522.37625
+  },
+  {
+   "type": 1,
+   "id": 561,
+   "name": "kappa",
+   "ts": 1628044343,
+   "value": -240.85917
+  },
+  {
+   "type": 0,
+   "id": 608,
+   "name": "retry",
+   "ts": 1661548914,
+   "value": 3267270
+  },
+  {
+   "type": 2,
+   "id": 868,
+   "name": "eta",
+   "ts": 1743992780,
+   "value": "alpha delta flush packet flush epsilon ingest"
+  },
+  {
+   "type": 0,
+   "id": 993,
+   "name": "packet",
+   "ts": 1635945014,
+   "value": 8557012
+  },
+  {
+   "type": 2,
+   "id": 1171,
+   "name": "beta",
+   "ts": 1629360126,
+   "value": "timeout retry zeta commit sensor"
+  },
+  {
+   "type": 1,
+   "id": 1305,
+   "name": "commit",
+   "ts": 1624443684,
+   "value": 681.31855
+  },
+  {
+   "type": 1,
+   "id": 1421,
+   "name": "lambda",
+   "ts": 1664042492,
+   "value": 167.88514
+  },
+  {
+   "type": 2,
+   "id": 1519,
+   "name": "iota",
+   "ts": 1730554188,
+   "value": "iota alpha zeta queue queue sensor"
+  },
+  {
+   "type": 2,
+   "id": 1621,
+   "name": "alpha",
+   "ts": 1671983988,
+   "value": "sensor"
+  },
+  {
+   "type": 0,
+   "id": 1899,
+   "name": "iota",
+   "ts": 1609586202,
+   "value": 4163440
+  },
+  {
+   "type": 0,
+   "id": 2034,
+   "name": "flush",
+   "ts": 1672029014,
+   "value": 1111760
+  },
+  {
+   "type": 0,
+   "id": 2252,
+   "name": "kappa",
+   "ts": 1796195812,
+   "value": 1370720
+  },
+  {
+   "type": 2,
+   "id": 2348,
+   "name": "flush",
+   "ts": 1672064234,
+   "value": "zeta epsilon mu flush gamma"
+  },
+  {
+   "type": 0,
+   "id": 2456,
+   "name": "zeta",
+   "ts": 1603219333,
+   "value": 5440153
+  },
+  {
+   "type": 2,
+   "id": 2616,
+   "name": "mu",
+   "ts": 1715599971,
+   "value": "epsilon lambda"
+  },
+  {
+   "type": 0,
+   "id": 2655,
+   "name": "lambda",
+   "ts": 1722818530,
+   "value": 792284
+  },
+  {
+   "type": 2,
+   "id": 2913,
+   "name": "retry",
+   "ts": 1665689694,
+   "value": "gamma retry theta"
+  },
+  {
+   "type": 0,
+   "id": 3112,
+   "name": "kappa",
+   "ts": 1629244197,
+   "value": 658008
+  },
+  {
+   "type": 0,
+   "id": 3225,
+   "name": "beta",
+   "ts": 1782212180,
+   "value": 185854
+  },
+  {
+   "type": 1,
+   "id": 3239,
+   "name": "sensor",
+   "ts": 1787738022,
+   "value": -807.67663
+  }
+ ],
+ "payload": "packet epsilon theta zeta flush delta mu kappa delta beta retry delta sensor flush mu theta epsilon theta sensor kappa retry delta sensor flush flush iota packet theta zeta eta flush delta mu kappa delta beta sensor commit ingest iota gateway epsilon iota retry delta sensor flush flush iota packet theta zeta eta mu theta epsilon theta sensor kappa packet epsilon theta zeta mu theta epsilon theta sensor kappa sensor commit ingest iota gateway epsilon iota flush delta mu kappa delta beta packet epsilon theta zeta flush delta mu kappa delta beta packet epsilon theta zeta retry delta sensor flush retry delta sensor flush"
+}

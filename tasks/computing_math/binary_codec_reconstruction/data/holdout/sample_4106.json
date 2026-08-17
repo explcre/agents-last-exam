@@ -1,0 +1,147 @@
+{
+ "version": 1,
+ "flags": 3,
+ "records": [
+  {
+   "type": 1,
+   "id": 70,
+   "name": "iota",
+   "ts": 1794588386,
+   "value": 781.12725
+  },
+  {
+   "type": 0,
+   "id": 240,
+   "name": "delta",
+   "ts": 1703811175,
+   "value": 4415670
+  },
+  {
+   "type": 2,
+   "id": 426,
+   "name": "timeout",
+   "ts": 1603453904,
+   "value": "flush kappa theta kappa delta"
+  },
+  {
+   "type": 1,
+   "id": 494,
+   "name": "retry",
+   "ts": 1726612362,
+   "value": 361.25657
+  },
+  {
+   "type": 0,
+   "id": 694,
+   "name": "timeout",
+   "ts": 1725519161,
+   "value": 6807013
+  },
+  {
+   "type": 1,
+   "id": 884,
+   "name": "lambda",
+   "ts": 1755733270,
+   "value": 305.91049
+  },
+  {
+   "type": 0,
+   "id": 1081,
+   "name": "beta",
+   "ts": 1706105614,
+   "value": 6065424
+  },
+  {
+   "type": 0,
+   "id": 1082,
+   "name": "flush",
+   "ts": 1732374857,
+   "value": 4723468
+  },
+  {
+   "type": 0,
+   "id": 1090,
+   "name": "packet",
+   "ts": 1750388937,
+   "value": 1870031
+  },
+  {
+   "type": 0,
+   "id": 1260,
+   "name": "retry",
+   "ts": 1779399108,
+   "value": 5908500
+  },
+  {
+   "type": 1,
+   "id": 1446,
+   "name": "ingest",
+   "ts": 1782060956,
+   "value": -649.36866
+  },
+  {
+   "type": 0,
+   "id": 1695,
+   "name": "kappa",
+   "ts": 1744467271,
+   "value": 3611425
+  },
+  {
+   "type": 1,
+   "id": 1792,
+   "name": "packet",
+   "ts": 1606253735,
+   "value": -833.68791
+  },
+  {
+   "type": 1,
+   "id": 1888,
+   "name": "retry",
+   "ts": 1684962421,
+   "value": -379.56278
+  },
+  {
+   "type": 2,
+   "id": 2003,
+   "name": "ingest",
+   "ts": 1674764748,
+   "value": "retry"
+  },
+  {
+   "type": 2,
+   "id": 2067,
+   "name": "packet",
+   "ts": 1643847756,
+   "value": "alpha retry packet"
+  },
+  {
+   "type": 1,
+   "id": 2093,
+   "name": "alpha",
+   "ts": 1788476334,
+   "value": 596.18062
+  },
+  {
+   "type": 2,
+   "id": 2203,
+   "name": "gamma",
+   "ts": 1724313710,
+   "value": "queue mu iota gateway queue"
+  },
+  {
+   "type": 1,
+   "id": 2251,
+   "name": "mu",
+   "ts": 1746939771,
+   "value": 666.65167
+  },
+  {
+   "type": 0,
+   "id": 2351,
+   "name": "queue",
+   "ts": 1765654261,
+   "value": 8458553
+  }
+ ],
+ "payload": "eta iota commit beta packet retry commit iota iota sensor delta theta retry timeout timeout mu eta iota commit beta packet sensor delta theta retry timeout timeout mu flush lambda epsilon flush lambda epsilon sensor delta theta retry timeout timeout mu retry commit iota iota retry commit iota iota retry commit iota iota zeta retry lambda sensor flush lambda epsilon retry retry epsilon flush commit commit packet retry commit iota iota zeta retry lambda sensor flush lambda epsilon retry retry epsilon flush commit commit packet flush lambda epsilon sensor delta theta retry timeout timeout mu retry commit iota iota sensor delta theta retry timeout timeout mu eta iota commit beta packet retry retry epsilon flush commit commit packet retry retry epsilon flush commit commit packet flush lambda epsilon zeta retry lambda sensor sensor delta theta retry timeout timeout mu sensor delta theta retry timeout timeout mu zeta retry lambda sensor sensor delta theta retry timeout timeout mu zeta retry lambda sensor retry commit iota iota eta iota commit beta packet sensor delta theta retry timeout timeout mu retry retry epsilon flush commit commit packet flush lambda epsilon retry commit iota iota eta iota commit beta packet flush lambda epsilon eta iota commit beta packet sensor delta theta retry timeout timeout mu retry retry epsilon flush commit commit packet sensor delta theta retry timeout timeout mu zeta retry lambda sensor zeta retry lambda sensor sensor delta theta retry timeout timeout mu sensor delta theta retry timeout timeout mu flush lambda epsilon flush lambda epsilon eta iota commit beta packet sensor delta theta retry timeout timeout mu retry retry epsilon flush commit commit packet sensor delta theta retry timeout timeout mu retry commit iota iota eta iota commit beta packet"
+}
