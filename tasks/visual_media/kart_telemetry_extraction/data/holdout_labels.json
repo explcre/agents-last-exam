@@ -1,0 +1,62 @@
+{
+ "cornfield_crossing_a": {
+  "items_collected": 6,
+  "spinouts": 10,
+  "skid_time": 40.1263
+ },
+ "cornfield_crossing_b": {
+  "items_collected": 4,
+  "spinouts": 6,
+  "skid_time": 40.6764
+ },
+ "gran_paradiso_island_a": {
+  "items_collected": 22,
+  "spinouts": 1,
+  "skid_time": 91.6747
+ },
+ "gran_paradiso_island_b": {
+  "items_collected": 6,
+  "spinouts": 1,
+  "skid_time": 92.0912
+ },
+ "lighthouse_a": {
+  "items_collected": 13,
+  "spinouts": 1,
+  "skid_time": 65.8976
+ },
+ "lighthouse_b": {
+  "items_collected": 9,
+  "spinouts": 3,
+  "skid_time": 73.3458
+ },
+ "olivermath_a": {
+  "items_collected": 10,
+  "spinouts": 1,
+  "skid_time": 31.4079
+ },
+ "olivermath_b": {
+  "items_collected": 9,
+  "spinouts": 3,
+  "skid_time": 32.8998
+ },
+ "snowmountain_a": {
+  "items_collected": 14,
+  "spinouts": 2,
+  "skid_time": 56.9966
+ },
+ "snowmountain_b": {
+  "items_collected": 4,
+  "spinouts": 5,
+  "skid_time": 60.0723
+ },
+ "stk_enterprise_a": {
+  "items_collected": 28,
+  "spinouts": 2,
+  "skid_time": 32.7581
+ },
+ "stk_enterprise_b": {
+  "items_collected": 22,
+  "spinouts": 4,
+  "skid_time": 39.5262
+ }
+}

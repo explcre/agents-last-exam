@@ -146,6 +146,7 @@ visual_media/chroma_key_from_reference
 visual_media/compress_3dgs_scene_ply
 visual_media/human_mesh_animation_reproduction
 visual_media/inkscape_cultural_poster_design
+visual_media/kart_telemetry_extraction
 visual_media/music_transcription
 visual_media/project_migration
 visual_media/skeletal_animation_reproduction

@@ -1,0 +1,62 @@
+{
+ "cocoa_temple_a": {
+  "items_collected": 15,
+  "spinouts": 4,
+  "skid_time": 46.9611
+ },
+ "cocoa_temple_b": {
+  "items_collected": 10,
+  "spinouts": 1,
+  "skid_time": 52.0289
+ },
+ "fortmagma_a": {
+  "items_collected": 16,
+  "spinouts": 5,
+  "skid_time": 72.1794
+ },
+ "fortmagma_b": {
+  "items_collected": 20,
+  "spinouts": 5,
+  "skid_time": 74.2289
+ },
+ "hacienda_a": {
+  "items_collected": 17,
+  "spinouts": 3,
+  "skid_time": 75.4286
+ },
+ "hacienda_b": {
+  "items_collected": 14,
+  "spinouts": 6,
+  "skid_time": 69.0219
+ },
+ "ravenbridge_mansion_a": {
+  "items_collected": 4,
+  "spinouts": 0,
+  "skid_time": 30.7413
+ },
+ "ravenbridge_mansion_b": {
+  "items_collected": 4,
+  "spinouts": 2,
+  "skid_time": 44.9857
+ },
+ "sandtrack_a": {
+  "items_collected": 8,
+  "spinouts": 2,
+  "skid_time": 23.9164
+ },
+ "sandtrack_b": {
+  "items_collected": 4,
+  "spinouts": 4,
+  "skid_time": 22.6664
+ },
+ "scotland_a": {
+  "items_collected": 13,
+  "spinouts": 0,
+  "skid_time": 91.6164
+ },
+ "scotland_b": {
+  "items_collected": 19,
+  "spinouts": 1,
+  "skid_time": 85.8761
+ }
+}

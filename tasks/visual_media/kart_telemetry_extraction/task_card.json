@@ -1,0 +1,53 @@
+{
+  "taskId": "visual_media/kart_telemetry_extraction",
+  "title": "Kart Telemetry Extraction From Gameplay Video",
+  "taskName": "Kart Telemetry Extraction From Gameplay Video",
+  "summary": "Recover a racing game's internal per-race counters from gameplay video alone. Twenty-four recorded SuperTuxKart races are given, twelve labelled with the engine's own telemetry for the camera-followed kart and twelve unlabelled over the same twelve tracks. For each unlabelled race the agent reports how many item boxes the hero drove through, how many times it spun out, and how many seconds it spent drifting. Ground truth is the engine's profile-mode counter table, so there is no human annotation. Each quantity is scored as a rank gate times an absolute accuracy: the twelve races must be ordered correctly and each value must land within 30% of the engine's count.",
+  "category": "visual_media",
+  "software": [
+    "Python 3",
+    "FFmpeg",
+    "Ubuntu"
+  ],
+  "tags": [
+    "video-understanding",
+    "computer-vision",
+    "long-video",
+    "telemetry-extraction",
+    "machine-verified-ground-truth",
+    "cpu-free-ubuntu"
+  ],
+  "agentMustDo": [
+    "Inspect the twelve labelled races under `input/train/` together with `input/train/labels.json`, the engine's own telemetry for those races.",
+    "Work out how each of the three quantities is visible in the frames: item-box drive-throughs, the star-ring spin-out, and rear-wheel drift sparks.",
+    "Build an extraction procedure that turns roughly two hours of 540p gameplay video into per-race counts, calibrating it against the labelled half.",
+    "Apply it to the twelve unlabelled races under `input/test/`, which are the same twelve tracks raced again.",
+    "Write `output/predictions.json`, keyed by track name, with `items_collected`, `spinouts` and `skid_time` for every test race."
+  ],
+  "vm": {
+    "machineType": "c4-standard-4",
+    "snapshot": "cpu-free-ubuntu",
+    "vcpus": 4,
+    "memory_gb": 16,
+    "disk_gb": 100,
+    "timeout_s": 21600,
+    "timeout": 21600,
+    "network": {
+      "mode": "off"
+    }
+  },
+  "variants": [
+    "base"
+  ],
+  "requiredSystemPackages": [
+    "ffmpeg",
+    "python3-numpy"
+  ],
+  "taxonomy": {
+    "domain_id": "8",
+    "domain_code": "visual_media",
+    "subdomain_id": "8.1",
+    "subdomain_code": "animation_3d",
+    "subdomain_name": "3D, Animation & Interactive Media"
+  }
+}
