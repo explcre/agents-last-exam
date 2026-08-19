@@ -1,0 +1,56 @@
+{
+ "version": 2,
+ "flags": 3,
+ "records": [
+  {
+   "type": 1,
+   "id": 222,
+   "name": "retry",
+   "ts": 1713944871,
+   "value": -793.25909
+  },
+  {
+   "type": 2,
+   "id": 466,
+   "name": "packet",
+   "ts": 1738995137,
+   "value": "retry ingest flush"
+  },
+  {
+   "type": 2,
+   "id": 541,
+   "name": "timeout",
+   "ts": 1793998135,
+   "value": "commit mu mu queue commit retry"
+  },
+  {
+   "type": 1,
+   "id": 655,
+   "name": "commit",
+   "ts": 1759032182,
+   "value": 173.47434
+  },
+  {
+   "type": 1,
+   "id": 901,
+   "name": "gateway",
+   "ts": 1723390583,
+   "value": 171.37459
+  },
+  {
+   "type": 1,
+   "id": 1111,
+   "name": "beta",
+   "ts": 1660012850,
+   "value": 388.87547
+  },
+  {
+   "type": 0,
+   "id": 1386,
+   "name": "ingest",
+   "ts": 1725297166,
+   "value": 4445911
+  }
+ ],
+ "payload": "timeout iota ingest kappa timeout iota ingest kappa timeout iota ingest kappa gamma lambda gateway delta queue ingest ingest beta kappa beta gamma gamma lambda gateway delta queue gamma lambda gateway delta queue gamma lambda gateway delta queue ingest ingest beta kappa beta gamma timeout iota ingest kappa epsilon queue zeta eta packet timeout epsilon queue zeta eta packet timeout zeta gateway commit alpha retry epsilon queue zeta eta packet timeout gamma lambda gateway delta queue timeout iota ingest kappa gamma lambda gateway delta queue timeout iota ingest kappa gamma lambda gateway delta queue gamma lambda gateway delta queue gamma lambda gateway delta queue gamma lambda gateway delta queue epsilon queue zeta eta packet timeout gamma lambda gateway delta queue timeout iota ingest kappa epsilon queue zeta eta packet timeout gamma lambda gateway delta queue ingest ingest beta kappa beta gamma zeta gateway commit alpha retry epsilon queue zeta eta packet timeout gamma lambda gateway delta queue epsilon queue zeta eta packet timeout epsilon queue zeta eta packet timeout gamma lambda gateway delta queue epsilon queue zeta eta packet timeout gamma lambda gateway delta queue zeta gateway commit alpha retry timeout iota ingest kappa ingest ingest beta kappa beta gamma ingest ingest beta kappa beta gamma timeout iota ingest kappa timeout iota ingest kappa gamma lambda gateway delta queue zeta gateway commit alpha retry gamma lambda gateway delta queue gamma lambda gateway delta queue timeout iota ingest kappa ingest ingest beta kappa beta gamma ingest ingest beta kappa beta gamma"
+}

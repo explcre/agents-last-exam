@@ -1,0 +1,98 @@
+{
+ "version": 1,
+ "flags": 3,
+ "records": [
+  {
+   "type": 0,
+   "id": 306,
+   "name": "sensor",
+   "ts": 1613467318,
+   "value": 1125595
+  },
+  {
+   "type": 2,
+   "id": 604,
+   "name": "alpha",
+   "ts": 1609278371,
+   "value": "iota gateway"
+  },
+  {
+   "type": 0,
+   "id": 854,
+   "name": "theta",
+   "ts": 1743129857,
+   "value": 2021720
+  },
+  {
+   "type": 1,
+   "id": 976,
+   "name": "packet",
+   "ts": 1781325368,
+   "value": -711.35706
+  },
+  {
+   "type": 0,
+   "id": 1148,
+   "name": "gateway",
+   "ts": 1607954958,
+   "value": 3412272
+  },
+  {
+   "type": 0,
+   "id": 1195,
+   "name": "beta",
+   "ts": 1788298270,
+   "value": 3543792
+  },
+  {
+   "type": 1,
+   "id": 1203,
+   "name": "commit",
+   "ts": 1786368263,
+   "value": 502.83568
+  },
+  {
+   "type": 2,
+   "id": 1285,
+   "name": "zeta",
+   "ts": 1783655526,
+   "value": "commit queue timeout lambda delta"
+  },
+  {
+   "type": 0,
+   "id": 1340,
+   "name": "gamma",
+   "ts": 1603903587,
+   "value": 8686265
+  },
+  {
+   "type": 0,
+   "id": 1584,
+   "name": "gamma",
+   "ts": 1686929226,
+   "value": 9946574
+  },
+  {
+   "type": 0,
+   "id": 1883,
+   "name": "lambda",
+   "ts": 1691636820,
+   "value": 950967
+  },
+  {
+   "type": 0,
+   "id": 2086,
+   "name": "queue",
+   "ts": 1648093966,
+   "value": 4390836
+  },
+  {
+   "type": 1,
+   "id": 2302,
+   "name": "flush",
+   "ts": 1738226301,
+   "value": -856.41392
+  }
+ ],
+ "payload": "iota packet delta flush flush beta sensor iota theta iota packet delta flush flush beta iota delta eta theta theta mu queue alpha commit alpha gateway flush gateway sensor queue sensor iota theta zeta commit timeout theta mu ingest iota packet delta flush flush beta gateway flush gateway sensor queue sensor iota theta iota packet delta flush flush beta queue alpha commit alpha queue alpha commit alpha queue alpha commit alpha sensor iota theta queue alpha commit alpha gateway flush gateway sensor queue iota delta eta theta theta mu sensor iota theta iota delta eta theta theta mu gateway flush gateway sensor queue sensor iota theta iota packet delta flush flush beta queue alpha commit alpha iota packet delta flush flush beta queue alpha commit alpha"
+}

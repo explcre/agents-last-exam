@@ -1,0 +1,77 @@
+{
+ "version": 2,
+ "flags": 3,
+ "records": [
+  {
+   "type": 1,
+   "id": 182,
+   "name": "alpha",
+   "ts": 1716809605,
+   "value": 260.49696
+  },
+  {
+   "type": 0,
+   "id": 380,
+   "name": "theta",
+   "ts": 1742901642,
+   "value": 7349647
+  },
+  {
+   "type": 1,
+   "id": 511,
+   "name": "iota",
+   "ts": 1785149962,
+   "value": 546.41107
+  },
+  {
+   "type": 0,
+   "id": 551,
+   "name": "ingest",
+   "ts": 1645566885,
+   "value": 1060456
+  },
+  {
+   "type": 0,
+   "id": 652,
+   "name": "epsilon",
+   "ts": 1643366980,
+   "value": 2391840
+  },
+  {
+   "type": 0,
+   "id": 669,
+   "name": "beta",
+   "ts": 1659832231,
+   "value": 9817704
+  },
+  {
+   "type": 1,
+   "id": 847,
+   "name": "theta",
+   "ts": 1681863552,
+   "value": -661.70666
+  },
+  {
+   "type": 1,
+   "id": 1097,
+   "name": "gamma",
+   "ts": 1743028896,
+   "value": -799.7598
+  },
+  {
+   "type": 0,
+   "id": 1150,
+   "name": "iota",
+   "ts": 1682893932,
+   "value": 5454351
+  },
+  {
+   "type": 2,
+   "id": 1168,
+   "name": "alpha",
+   "ts": 1797900989,
+   "value": "iota queue zeta mu timeout kappa packet"
+  }
+ ],
+ "payload": "iota theta gamma kappa queue timeout epsilon queue kappa alpha ingest lambda queue kappa alpha ingest lambda mu epsilon gateway epsilon epsilon queue kappa alpha ingest lambda epsilon epsilon kappa epsilon queue kappa alpha ingest lambda epsilon epsilon kappa epsilon queue kappa alpha ingest lambda ingest lambda kappa zeta theta zeta mu ingest lambda kappa zeta theta zeta mu epsilon epsilon kappa epsilon iota theta gamma kappa queue timeout epsilon mu epsilon gateway epsilon epsilon queue kappa alpha ingest lambda iota theta gamma kappa queue timeout epsilon ingest lambda kappa zeta theta zeta mu iota theta gamma kappa queue timeout epsilon mu epsilon gateway epsilon epsilon mu epsilon gateway epsilon epsilon"
+}

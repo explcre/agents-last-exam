@@ -1,0 +1,161 @@
+{
+ "version": 2,
+ "flags": 3,
+ "records": [
+  {
+   "type": 0,
+   "id": 212,
+   "name": "kappa",
+   "ts": 1749068392,
+   "value": 7472499
+  },
+  {
+   "type": 0,
+   "id": 226,
+   "name": "beta",
+   "ts": 1719426579,
+   "value": 1372564
+  },
+  {
+   "type": 0,
+   "id": 328,
+   "name": "timeout",
+   "ts": 1689732753,
+   "value": 9265882
+  },
+  {
+   "type": 0,
+   "id": 353,
+   "name": "commit",
+   "ts": 1688934154,
+   "value": 710422
+  },
+  {
+   "type": 0,
+   "id": 402,
+   "name": "delta",
+   "ts": 1657710866,
+   "value": 1728925
+  },
+  {
+   "type": 0,
+   "id": 648,
+   "name": "flush",
+   "ts": 1777444057,
+   "value": 9352657
+  },
+  {
+   "type": 0,
+   "id": 796,
+   "name": "iota",
+   "ts": 1761526954,
+   "value": 8753643
+  },
+  {
+   "type": 0,
+   "id": 882,
+   "name": "queue",
+   "ts": 1680797801,
+   "value": 6685584
+  },
+  {
+   "type": 2,
+   "id": 1115,
+   "name": "gateway",
+   "ts": 1776050037,
+   "value": "iota delta retry"
+  },
+  {
+   "type": 0,
+   "id": 1321,
+   "name": "kappa",
+   "ts": 1681137254,
+   "value": 6713359
+  },
+  {
+   "type": 0,
+   "id": 1563,
+   "name": "alpha",
+   "ts": 1612198943,
+   "value": 7486938
+  },
+  {
+   "type": 0,
+   "id": 1592,
+   "name": "flush",
+   "ts": 1768791274,
+   "value": 5805661
+  },
+  {
+   "type": 1,
+   "id": 1757,
+   "name": "packet",
+   "ts": 1788168241,
+   "value": 160.03769
+  },
+  {
+   "type": 0,
+   "id": 2018,
+   "name": "flush",
+   "ts": 1746923820,
+   "value": 2314073
+  },
+  {
+   "type": 1,
+   "id": 2243,
+   "name": "zeta",
+   "ts": 1658014418,
+   "value": 883.54976
+  },
+  {
+   "type": 2,
+   "id": 2283,
+   "name": "beta",
+   "ts": 1758193099,
+   "value": "retry ingest timeout ingest"
+  },
+  {
+   "type": 0,
+   "id": 2513,
+   "name": "gamma",
+   "ts": 1758703833,
+   "value": 421288
+  },
+  {
+   "type": 1,
+   "id": 2788,
+   "name": "timeout",
+   "ts": 1728422509,
+   "value": -905.28791
+  },
+  {
+   "type": 1,
+   "id": 2839,
+   "name": "epsilon",
+   "ts": 1710560104,
+   "value": -379.44499
+  },
+  {
+   "type": 1,
+   "id": 3100,
+   "name": "gateway",
+   "ts": 1627081156,
+   "value": 834.59115
+  },
+  {
+   "type": 1,
+   "id": 3356,
+   "name": "ingest",
+   "ts": 1764512383,
+   "value": 485.95195
+  },
+  {
+   "type": 1,
+   "id": 3357,
+   "name": "beta",
+   "ts": 1790162073,
+   "value": -6.3203
+  }
+ ],
+ "payload": "sensor beta beta lambda gamma zeta packet alpha zeta gateway beta eta packet gamma gateway beta eta packet gamma gateway beta eta packet gamma gateway beta eta packet gamma sensor beta beta lambda gamma gateway beta eta packet gamma sensor beta beta lambda gamma gateway beta eta packet gamma zeta packet alpha zeta gateway beta eta packet gamma zeta packet alpha zeta sensor beta beta lambda gamma sensor beta beta lambda gamma sensor beta beta lambda gamma gateway beta eta packet gamma zeta packet alpha zeta zeta packet alpha zeta zeta packet alpha zeta sensor beta beta lambda gamma sensor beta beta lambda gamma gateway beta eta packet gamma gateway beta eta packet gamma zeta packet alpha zeta zeta packet alpha zeta"
+}

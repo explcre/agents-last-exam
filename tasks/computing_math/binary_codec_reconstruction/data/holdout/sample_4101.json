@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "flags": 3,
+ "records": [
+  {
+   "type": 1,
+   "id": 143,
+   "name": "epsilon",
+   "ts": 1663704980,
+   "value": -892.75557
+  },
+  {
+   "type": 0,
+   "id": 315,
+   "name": "alpha",
+   "ts": 1731903513,
+   "value": 6490909
+  },
+  {
+   "type": 2,
+   "id": 347,
+   "name": "sensor",
+   "ts": 1703834885,
+   "value": "timeout gateway mu"
+  },
+  {
+   "type": 0,
+   "id": 446,
+   "name": "eta",
+   "ts": 1721492300,
+   "value": 1932945
+  },
+  {
+   "type": 0,
+   "id": 640,
+   "name": "mu",
+   "ts": 1705163707,
+   "value": 7587567
+  },
+  {
+   "type": 1,
+   "id": 684,
+   "name": "lambda",
+   "ts": 1691042601,
+   "value": -599.75364
+  },
+  {
+   "type": 1,
+   "id": 894,
+   "name": "delta",
+   "ts": 1788694220,
+   "value": -877.50338
+  },
+  {
+   "type": 0,
+   "id": 1087,
+   "name": "theta",
+   "ts": 1617630103,
+   "value": 1299914
+  },
+  {
+   "type": 1,
+   "id": 1239,
+   "name": "iota",
+   "ts": 1613633281,
+   "value": -909.81124
+  },
+  {
+   "type": 0,
+   "id": 1318,
+   "name": "sensor",
+   "ts": 1750965202,
+   "value": 4432922
+  }
+ ],
+ "payload": "zeta gamma theta sensor kappa commit delta zeta gamma theta sensor kappa commit delta zeta gamma theta sensor kappa commit delta alpha sensor theta alpha sensor theta mu sensor gateway timeout ingest flush zeta gamma theta sensor kappa commit delta zeta gamma theta sensor kappa commit delta alpha sensor theta mu sensor gateway timeout ingest flush theta iota theta gamma delta eta mu sensor gateway timeout ingest flush mu sensor gateway timeout ingest flush theta iota theta gamma delta eta epsilon retry commit epsilon ingest commit packet alpha sensor theta theta iota theta gamma delta eta alpha sensor theta zeta gamma theta sensor kappa commit delta epsilon retry commit epsilon ingest commit packet alpha sensor theta zeta gamma theta sensor kappa commit delta alpha sensor theta theta iota theta gamma delta eta theta iota theta gamma delta eta theta iota theta gamma delta eta zeta gamma theta sensor kappa commit delta mu sensor gateway timeout ingest flush mu sensor gateway timeout ingest flush theta iota theta gamma delta eta"
+}

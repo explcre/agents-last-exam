@@ -1,0 +1,50 @@
+{
+  "taskId": "computing_math/binary_codec_reconstruction",
+  "title": "Reconstruct A Binary Container Codec Byte-Exactly",
+  "taskName": "Reconstruct A Binary Container Codec Byte-Exactly",
+  "summary": "A legacy system writes files in an undocumented binary container format. The agent is given thirty files paired with the data each holds, and must write a codec that reads held-out files and writes them back to the exact bytes the original encoder produced. Reading is reachable; writing is not, because the format is entangled: record ids are delta-encoded, the string table is ordered by first use, a checksum covers the exact bytes, and the payload is compressed with a lazy-matching policy whose tie-breaks shift every subsequent offset. Measured on this corpus, a wrong tie rule moves 55.6% of the bytes in a file and a wrong minimum match length moves 56.4%. Byte-exact interoperability with a legacy encoder is ordinary work wherever files are signed, deduplicated by hash, or diffed against an archive.",
+  "category": "computing_math",
+  "software": [
+    "Python 3",
+    "Ubuntu"
+  ],
+  "tags": [
+    "reverse-engineering",
+    "binary-format",
+    "codec-interoperability",
+    "black-box-inference",
+    "deterministic-grading",
+    "cpu-free-ubuntu"
+  ],
+  "agentMustDo": [
+    "Read the thirty worked samples under `input/samples`, each a binary file paired with the document it holds.",
+    "Infer the container layout: header, string table, record encoding, checksum and padding.",
+    "Infer the payload compressor's policy closely enough to reproduce its output byte for byte.",
+    "Write `output/codec.py` exposing decode(blob) -> dict and encode(doc) -> bytes, standard library only.",
+    "Verify against the samples that encode(document) reproduces the original file exactly, not merely a file that decodes back."
+  ],
+  "vm": {
+    "machineType": "c4-standard-4",
+    "snapshot": "cpu-free-ubuntu",
+    "vcpus": 4,
+    "memory_gb": 16,
+    "disk_gb": 100,
+    "timeout_s": 21600,
+    "timeout": 21600,
+    "network": {
+      "mode": "off"
+    }
+  },
+  "variants": [
+    "base"
+  ],
+  "requiredSystemPackages": [],
+  "taxonomy": {
+    "domain_id": "9",
+    "domain_code": "computing_math",
+    "subdomain_id": "9.1",
+    "subdomain_code": "software_eng",
+    "subdomain_name": "Software Engineering"
+  },
+  "evaluation": "evaluate() runs the submitted module against twenty held-out files. For each, decode(file) is compared structurally with the document the file holds, and encode(document) is compared byte for byte with the file. reward = 0.75 * (files encoded exactly) + 0.25 * (files decoded correctly). encode is called on the true document rather than the agent's own decode, so a broken decode cannot excuse a broken encode. Reference files are produced by running the reference codec, not hand-authored. Grading is deterministic and offline; no judge model or credential is required."
+}

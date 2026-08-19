@@ -1,0 +1,91 @@
+{
+ "version": 2,
+ "flags": 3,
+ "records": [
+  {
+   "type": 1,
+   "id": 238,
+   "name": "ingest",
+   "ts": 1790319676,
+   "value": 52.87821
+  },
+  {
+   "type": 0,
+   "id": 495,
+   "name": "iota",
+   "ts": 1748702551,
+   "value": 3664859
+  },
+  {
+   "type": 2,
+   "id": 614,
+   "name": "beta",
+   "ts": 1628409743,
+   "value": "retry zeta commit"
+  },
+  {
+   "type": 0,
+   "id": 671,
+   "name": "gamma",
+   "ts": 1630753436,
+   "value": 2634388
+  },
+  {
+   "type": 0,
+   "id": 838,
+   "name": "lambda",
+   "ts": 1757863455,
+   "value": 9572082
+  },
+  {
+   "type": 0,
+   "id": 1016,
+   "name": "eta",
+   "ts": 1757657190,
+   "value": 6672297
+  },
+  {
+   "type": 0,
+   "id": 1286,
+   "name": "queue",
+   "ts": 1671488661,
+   "value": 2073690
+  },
+  {
+   "type": 2,
+   "id": 1347,
+   "name": "flush",
+   "ts": 1618604770,
+   "value": "timeout ingest"
+  },
+  {
+   "type": 2,
+   "id": 1492,
+   "name": "delta",
+   "ts": 1634725398,
+   "value": "commit packet retry epsilon ingest"
+  },
+  {
+   "type": 0,
+   "id": 1790,
+   "name": "lambda",
+   "ts": 1683706442,
+   "value": 9285902
+  },
+  {
+   "type": 1,
+   "id": 1846,
+   "name": "iota",
+   "ts": 1639811979,
+   "value": -686.18218
+  },
+  {
+   "type": 1,
+   "id": 2062,
+   "name": "eta",
+   "ts": 1711595672,
+   "value": -516.52005
+  }
+ ],
+ "payload": "eta ingest retry sensor retry zeta theta alpha retry alpha retry kappa eta alpha gamma delta retry retry alpha retry kappa zeta theta alpha queue timeout commit alpha commit kappa commit delta retry alpha retry kappa retry alpha retry kappa zeta theta alpha eta alpha gamma delta retry queue timeout commit alpha commit timeout mu ingest sensor sensor eta ingest retry sensor retry eta ingest retry sensor retry queue timeout commit alpha commit kappa commit delta eta alpha gamma delta retry kappa commit delta queue timeout commit alpha commit retry alpha retry kappa zeta theta alpha eta alpha gamma delta retry queue timeout commit alpha commit retry alpha retry kappa queue timeout commit alpha commit"
+}

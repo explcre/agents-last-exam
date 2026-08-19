@@ -1,0 +1,105 @@
+{
+ "version": 1,
+ "flags": 3,
+ "records": [
+  {
+   "type": 2,
+   "id": 288,
+   "name": "queue",
+   "ts": 1754956997,
+   "value": "sensor gateway queue theta sensor packet beta kappa"
+  },
+  {
+   "type": 0,
+   "id": 421,
+   "name": "flush",
+   "ts": 1749688958,
+   "value": 1197008
+  },
+  {
+   "type": 0,
+   "id": 665,
+   "name": "beta",
+   "ts": 1747742652,
+   "value": 4978085
+  },
+  {
+   "type": 0,
+   "id": 767,
+   "name": "epsilon",
+   "ts": 1721622010,
+   "value": 5327529
+  },
+  {
+   "type": 0,
+   "id": 799,
+   "name": "timeout",
+   "ts": 1685777188,
+   "value": 7339997
+  },
+  {
+   "type": 0,
+   "id": 920,
+   "name": "epsilon",
+   "ts": 1610850490,
+   "value": 5640505
+  },
+  {
+   "type": 0,
+   "id": 952,
+   "name": "packet",
+   "ts": 1649790177,
+   "value": 8570745
+  },
+  {
+   "type": 0,
+   "id": 992,
+   "name": "retry",
+   "ts": 1650181513,
+   "value": 9116433
+  },
+  {
+   "type": 1,
+   "id": 1249,
+   "name": "lambda",
+   "ts": 1698932617,
+   "value": 5.50784
+  },
+  {
+   "type": 0,
+   "id": 1472,
+   "name": "eta",
+   "ts": 1773946810,
+   "value": 7693784
+  },
+  {
+   "type": 2,
+   "id": 1746,
+   "name": "mu",
+   "ts": 1794263571,
+   "value": "timeout"
+  },
+  {
+   "type": 0,
+   "id": 2015,
+   "name": "commit",
+   "ts": 1658670735,
+   "value": 3926742
+  },
+  {
+   "type": 0,
+   "id": 2298,
+   "name": "eta",
+   "ts": 1721295134,
+   "value": 7349835
+  },
+  {
+   "type": 1,
+   "id": 2339,
+   "name": "zeta",
+   "ts": 1704428184,
+   "value": 156.09338
+  }
+ ],
+ "payload": "theta delta timeout gateway kappa eta timeout commit packet zeta commit beta gateway lambda packet flush theta delta timeout gateway kappa eta timeout commit packet zeta commit beta gateway lambda packet flush delta lambda theta theta delta timeout gateway kappa eta theta delta timeout gateway kappa eta theta delta timeout gateway kappa eta theta delta timeout gateway kappa eta delta lambda theta lambda packet flush theta delta timeout gateway kappa eta delta lambda theta timeout commit packet zeta commit beta gateway lambda packet flush delta lambda theta timeout commit packet zeta commit beta gateway delta lambda theta timeout commit packet zeta commit beta gateway delta lambda theta delta lambda theta timeout commit packet zeta commit beta gateway timeout commit packet zeta commit beta gateway lambda packet flush timeout commit packet zeta commit beta gateway theta delta timeout gateway kappa eta timeout commit packet zeta commit beta gateway lambda packet flush timeout commit packet zeta commit beta gateway timeout commit packet zeta commit beta gateway delta lambda theta"
+}
