@@ -170,6 +170,31 @@ def build_document(seed: int) -> str:
         paras.append(paragraph(
             f"Supplementary note {extra + 1}: capacity held within the agreed envelope.",
             align="left"))
+    # a deleted paragraph mark: accepting it merges this paragraph with the next
+    paras.append(
+        '<w:p><w:pPr><w:jc w:val="left"/><w:rPr>'
+        '<w:del w:id="110" w:author="R. Iyer" w:date="2026-02-11T09:30:00Z"/>'
+        '</w:rPr></w:pPr><w:r><w:t xml:space="preserve">Capacity was reviewed</w:t></w:r></w:p>')
+    paras.append(paragraph(" and found sufficient.", align="left"))
+    # a move: the source side disappears, the destination side stays
+    paras.append(
+        '<w:p><w:pPr><w:jc w:val="left"/></w:pPr>'
+        '<w:moveFromRangeStart w:id="120" w:name="mv1" w:author="R. Iyer" w:date="2026-02-11T09:31:00Z"/>'
+        '<w:moveFrom w:id="121" w:author="R. Iyer" w:date="2026-02-11T09:31:00Z">'
+        '<w:r><w:t xml:space="preserve">Escalation paths were rewritten.</w:t></w:r></w:moveFrom>'
+        '<w:moveFromRangeEnd w:id="120"/></w:p>')
+    paras.append(
+        '<w:p><w:pPr><w:jc w:val="left"/></w:pPr>'
+        '<w:moveToRangeStart w:id="122" w:name="mv1" w:author="R. Iyer" w:date="2026-02-11T09:31:00Z"/>'
+        '<w:moveTo w:id="123" w:author="R. Iyer" w:date="2026-02-11T09:31:00Z">'
+        '<w:r><w:t xml:space="preserve">Escalation paths were rewritten.</w:t></w:r></w:moveTo>'
+        '<w:moveToRangeEnd w:id="122"/></w:p>')
+    # a formatting revision: the record goes, the formatting it records stays
+    paras.append(
+        '<w:p><w:pPr><w:jc w:val="left"/></w:pPr>'
+        '<w:r><w:rPr><w:b/><w:rPrChange w:id="130" w:author="R. Iyer" '
+        'w:date="2026-02-11T09:32:00Z"><w:rPr/></w:rPrChange></w:rPr>'
+        '<w:t xml:space="preserve">Service credits were applied.</w:t></w:r></w:p>')
     paras.append(paragraph("Findings", style="Heading2", align="left"))
     # numbered list, two levels
     for lvl, txt in ((0, "Incident volume declined in every region."),
@@ -192,12 +217,22 @@ def build_document(seed: int) -> str:
         '<w:p><w:pPr><w:jc w:val="left"/></w:pPr><w:r><w:t>Owner: operations</w:t></w:r></w:p>'
         '</w:sdtContent></w:sdt>')
     # a table
+    deleted_row = ('<w:tr><w:trPr><w:del w:id="140" w:author="R. Iyer" '
+                   'w:date="2026-02-11T09:33:00Z"/></w:trPr>'
+                   + "".join(
+                       '<w:tc><w:tcPr><w:tcW w:w="2400" w:type="dxa"/></w:tcPr>'
+                       '<w:p><w:pPr><w:jc w:val="left"/></w:pPr><w:r>'
+                       f'<w:del w:id="14{i + 1}" w:author="R. Iyer" '
+                       f'w:date="2026-02-11T09:33:00Z">'
+                       f'<w:delText>{c}</w:delText></w:del></w:r></w:p></w:tc>'
+                       for i, c in enumerate(("West", "0", "retired")))
+                   + '</w:tr>')
     table_rows = [("Region", "Incidents", "Trend"),
                   ("North", str(12 + n), "down"),
                   ("South", str(19 - n), "flat")]
     if rng.random() < 0.5:
         table_rows.append(("East", str(7 + n), "up"))
-    rows = "".join(
+    rows = deleted_row + "".join(
         "<w:tr>" + "".join(
             f'<w:tc><w:tcPr><w:tcW w:w="2400" w:type="dxa"/></w:tcPr>'
             f'<w:p><w:pPr><w:jc w:val="left"/></w:pPr><w:r><w:t>{c}</w:t></w:r></w:p></w:tc>'

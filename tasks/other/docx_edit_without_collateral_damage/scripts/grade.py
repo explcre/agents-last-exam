@@ -18,7 +18,7 @@ import zipfile
 
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 HEADING_STYLES = {"Heading1", "Heading2"}
-NAMED_PARTS = ("word/document.xml", "word/styles.xml",
+NAMED_PARTS = ("word/document.xml", "word/styles.xml", "word/settings.xml",
                "word/header1.xml", "word/footer1.xml")
 
 
@@ -96,19 +96,24 @@ def score_one(source: bytes, reference: bytes, submitted: bytes) -> dict:
 
     try:
         if "word/document.xml" in names_sub:
+            # the body must match the reference once alignment is normalised away,
+            # which is what separates "accepted the revisions correctly" from
+            # "got the alignment right on a body that is already wrong"
             r["body_content_preserved"] = (
-                _strip_alignment(zsrc.read("word/document.xml"))
+                _strip_alignment(zref.read("word/document.xml"))
                 == _strip_alignment(zsub.read("word/document.xml")))
             aligns = _alignments(zsub.read("word/document.xml"))
             r["alignment_correct"] = bool(aligns) and all(
                 jc == ("left" if style in HEADING_STYLES else "both")
                 for style, jc in aligns)
+            r["revisions_accepted"] = _c14n(zref.read("word/document.xml")) == \
+                _c14n(zsub.read("word/document.xml"))
         if "word/styles.xml" in names_sub:
             r["styles_correct"] = (_c14n(zsub.read("word/styles.xml"))
                                    == _c14n(zref.read("word/styles.xml")))
         r["header_footer_correct"] = all(
             p in names_sub and _c14n(zsub.read(p)) == _c14n(zref.read(p))
-            for p in ("word/header1.xml", "word/footer1.xml"))
+            for p in ("word/header1.xml", "word/footer1.xml", "word/settings.xml"))
     except Exception as exc:  # noqa: BLE001 - any parse failure is a failure
         r["error"] = type(exc).__name__
     return r
@@ -127,7 +132,8 @@ def score(cases: dict) -> dict:
         r["preserved"] = (r["parts_preserved"] and r["unnamed_parts_identical"]
                           and r["body_content_preserved"])
         r["edited"] = (r["alignment_correct"] and r["styles_correct"]
-                       and r["header_footer_correct"])
+                       and r["header_footer_correct"]
+                       and r.get("revisions_accepted", False))
         preserved += r["preserved"]
         edited += r["edited"]
         both += r["preserved"] and r["edited"]

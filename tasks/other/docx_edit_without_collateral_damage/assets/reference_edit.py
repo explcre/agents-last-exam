@@ -49,11 +49,17 @@ def fill_placeholder(xml: bytes, value: str) -> bytes:
 
 
 def apply(src: pathlib.Path, dst: pathlib.Path, cycle: str = "Q1 2026") -> None:
-    """Rewrite the parts the brief names and copy every other byte through untouched."""
+    """Rewrite the parts the brief names and copy every other byte through untouched.
+
+    Revisions are accepted first: accepting a deleted paragraph mark merges two
+    paragraphs, and the alignment pass has to run over the paragraphs that survive.
+    """
+    from accept_revisions import accept, stop_tracking
     with zipfile.ZipFile(src) as zin:
         infos = zin.infolist()
         data = {i.filename: zin.read(i.filename) for i in infos}
-    data["word/document.xml"] = set_alignment(data["word/document.xml"])
+    data["word/document.xml"] = set_alignment(accept(data["word/document.xml"]))
+    data["word/settings.xml"] = stop_tracking(data["word/settings.xml"])
     data["word/styles.xml"] = recolour_heading1(data["word/styles.xml"])
     for part in ("word/header1.xml", "word/footer1.xml"):
         data[part] = fill_placeholder(data[part], cycle)

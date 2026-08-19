@@ -75,21 +75,32 @@ headers and footers.
 
 ## The brief
 
-Exactly four changes, and nothing else:
+The documents are still in review. Finalise them, then apply the house style. \
+Exactly five things change, and nothing else:
 
-1. In the main document body, every paragraph is justified (`w:jc` = `both`), \
+1. **Accept every tracked change**, exactly as a word processor's *Accept All \
+Revisions* would leave the document, and turn revision tracking off in \
+`word/settings.xml`. Accepting is not simply deleting the revision markup: what a \
+revision means depends on which kind it is, and some of them change the structure \
+of the document rather than only its text.
+2. In the main document body, every paragraph is justified (`w:jc` = `both`), \
 except paragraphs styled `Heading1` or `Heading2`, which are left-aligned. \
 Paragraphs inside tables count as body paragraphs. Paragraphs in headers, footers, \
-footnotes and comments are body paragraphs and must not be touched.
-2. In `word/styles.xml`, the `Heading1` style's colour becomes `7A2E2E`.
-3. In the header, the placeholder `[[CYCLE]]` is replaced with `Q1 2026`.
-4. In the footer, the same placeholder is replaced the same way.
+footnotes and comments are **not** body paragraphs and must keep the alignment they \
+already have.
+3. In `word/styles.xml`, the `Heading1` style's colour becomes `7A2E2E`.
+4. In the header, the placeholder `[[CYCLE]]` is replaced with `Q1 2026`.
+5. In the footer, the same placeholder is replaced the same way.
+
+Alignment is applied to the document that results from accepting the revisions, not \
+to the one you started with.
 
 **Everything else must survive exactly.** Any package part the brief does not name \
-must come out byte-identical to the way it went in. Within the document body, \
-nothing may change except paragraph alignment: every revision, comment anchor, \
-footnote reference, bookmark, field, drawing and content control has to be where it \
-was.
+must come out byte-identical to the way it went in: comments, footnotes, numbering, \
+the custom XML part, the image and the relationships. Within the document body, \
+nothing may change beyond accepting the revisions and setting alignment. Every \
+comment anchor, footnote reference, bookmark, field, drawing and content control has \
+to survive.
 
 ## What you write
 

@@ -114,10 +114,6 @@ def test_missing_submission_scores_zero(staged):
 
 
 @pytest.mark.parametrize(("label", "kwargs"), [
-    ("tracked insertion unwrapped",
-     {"mutate": lambda d: re.sub(rb"<w:ins [^>]*>(.*?)</w:ins>", rb"\1", d, flags=re.DOTALL)}),
-    ("deletion removed",
-     {"mutate": lambda d: re.sub(rb"<w:del .*?</w:del>", b"", d, flags=re.DOTALL)}),
     ("content control unwrapped",
      {"mutate": lambda d: re.sub(rb"<w:sdt>.*?<w:sdtContent>(.*?)</w:sdtContent></w:sdt>",
                                  rb"\1", d, flags=re.DOTALL)}),
@@ -150,6 +146,107 @@ def test_harmless_variation_is_not_punished(label, kwargs):
     src, ref = _pair()
     variant = _rebuild(ref, **kwargs)
     assert grade.score({"d": (src, ref, variant)})["reward"] == 1.0, label
+
+
+def _accept_with_one_rule_wrong(**wrong):
+    """Apply the reference edit from source with a single acceptance rule broken."""
+    import sys
+    sys.path.insert(0, str(task.ASSETS))
+    from accept_revisions import stop_tracking
+    from reference_edit import fill_placeholder, recolour_heading1, set_alignment
+    src = (task.DATA / "holdout" / "doc_21.docx").read_bytes()
+    z = zipfile.ZipFile(io.BytesIO(src))
+    data = {n: z.read(n) for n in z.namelist()}
+    data["word/document.xml"] = set_alignment(
+        _naive_accept(data["word/document.xml"], **wrong))
+    data["word/styles.xml"] = recolour_heading1(data["word/styles.xml"])
+    data["word/settings.xml"] = stop_tracking(data["word/settings.xml"])
+    for part in ("word/header1.xml", "word/footer1.xml"):
+        data[part] = fill_placeholder(data[part], "Q1 2026")
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as out:
+        for n in z.namelist():
+            out.writestr(n, data[n])
+    return buf.getvalue()
+
+
+def _naive_accept(xml, *, keep_para_mark=False, drop_move_to=False,
+                  keep_move_from=False, keep_row=False, keep_change_records=False):
+    from lxml import etree
+    W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+    root = etree.fromstring(xml)
+    for tr in list(root.iter(f"{W}tr")):
+        trpr = tr.find(f"{W}trPr")
+        if trpr is not None and trpr.find(f"{W}del") is not None and not keep_row:
+            tr.getparent().remove(tr)
+        elif trpr is not None:
+            for m in list(trpr.findall(f"{W}ins")):
+                trpr.remove(m)
+    if not keep_para_mark:
+        for para in list(root.iter(f"{W}p")):
+            ppr = para.find(f"{W}pPr")
+            rpr = ppr.find(f"{W}rPr") if ppr is not None else None
+            if rpr is None or rpr.find(f"{W}del") is None:
+                continue
+            nxt = para.getnext()
+            if nxt is None or nxt.tag != f"{W}p":
+                rpr.remove(rpr.find(f"{W}del"))
+                continue
+            body = [c for c in para if c.tag != f"{W}pPr"]
+            npp = nxt.find(f"{W}pPr")
+            at = list(nxt).index(npp) + 1 if npp is not None else 0
+            for i, c in enumerate(body):
+                nxt.insert(at + i, c)
+            para.getparent().remove(para)
+    drop = {f"{W}del", f"{W}moveFromRangeStart", f"{W}moveFromRangeEnd",
+            f"{W}moveToRangeStart", f"{W}moveToRangeEnd"}
+    unwrap = {f"{W}ins"}
+    if not keep_move_from:
+        drop.add(f"{W}moveFrom")
+    (drop if drop_move_to else unwrap).add(f"{W}moveTo")
+    for el in list(root.iter()):
+        if el.getparent() is not None and el.tag in drop:
+            el.getparent().remove(el)
+    for el in list(root.iter()):
+        if el.getparent() is None or el.tag not in unwrap:
+            continue
+        par = el.getparent()
+        at = list(par).index(el)
+        for i, c in enumerate(list(el)):
+            par.insert(at + i, c)
+        par.remove(el)
+    if not keep_change_records:
+        for el in list(root.iter()):
+            if el.getparent() is not None and el.tag.endswith("PrChange"):
+                el.getparent().remove(el)
+    for rpr in list(root.iter(f"{W}rPr")):
+        par = rpr.getparent()
+        if len(rpr) == 0 and not rpr.attrib and par is not None and par.tag == f"{W}pPr":
+            par.remove(rpr)
+    for ppr in list(root.iter(f"{W}pPr")):
+        if len(ppr) == 0 and not ppr.attrib and ppr.getparent() is not None:
+            ppr.getparent().remove(ppr)
+    return etree.tostring(root, xml_declaration=True, encoding="UTF-8", standalone=True)
+
+
+def test_accepting_revisions_correctly_scores_one():
+    """The positive control for the hard half: the plain rules, all of them right."""
+    src, ref = _pair()
+    assert grade.score({"d": (src, ref, _accept_with_one_rule_wrong())})["reward"] == 1.0
+
+
+@pytest.mark.parametrize("wrong", [
+    {"keep_para_mark": True},      # the merge that a deleted paragraph mark implies
+    {"drop_move_to": True},        # a move's destination must stay
+    {"keep_move_from": True},      # a move's source must go
+    {"keep_row": True},            # a row marked deleted loses the whole row
+    {"keep_change_records": True},  # the record goes, the formatting it records stays
+])
+def test_one_wrong_acceptance_rule_fails(wrong):
+    """Each of these produces a document that opens cleanly and reads plausibly."""
+    src, ref = _pair()
+    r = grade.score({"d": (src, ref, _accept_with_one_rule_wrong(**wrong))})
+    assert r["both"] == 0, f"{wrong} was not caught"
 
 
 def test_malformed_submissions_score_zero_without_raising():
