@@ -110,6 +110,42 @@ Self-contained: no baked image data, no task-data pull, no
 
 To rebuild the corpus from source, see [NOTES.md](NOTES.md).
 
+## Is it solvable, and is it well defined
+
+Both were open until they were tested, and the honest answer had been "not proven".
+The positive control in the test suite scores 1.000 but does it by shelling out to the
+Zig reference, which does not exist on a VM, so it showed the grading path worked and
+nothing about the artefact the task actually asks for.
+
+A second control now closes most of that gap. Working from the visible corpus and the
+two shipped format documents, one family was modelled outright and shipped as
+`assets/partial_engine.py`: a single Python file, standard library only, no oracle.
+
+| what was fitted | on | checked against |
+|---|---|---|
+| damage base 315, roll is the first tape byte after the first whose `rotr` reaches 217 | visible scenarios | 12 of 12 visible, then **5 of 5 held out** |
+| critical-hit rate | visible scenarios | consistent range 42-55 |
+
+Through the task's own grader that engine scores **0.021**, reproducing **5 of 274**
+held-out scenarios byte for byte and one family of 47 completely. A test pins it.
+
+Two things follow. The task is **well defined**: the starting state, the two choices
+and the roll tape determine the transcript and the final state exactly, and an
+independent implementation recovers them. And the **deliverable form is reachable**:
+a self-contained Python file can produce byte-exact output, which the oracle shim
+never demonstrated.
+
+One corroboration worth noting, because it distinguishes a real mechanic from a
+curve fit. The critical-hit rate consistent with every observation is 42 to 55, and
+Scyther's base speed is 105. Gen I halves base speed for the critical-hit rate, giving
+52, which sits inside that interval. The fit recovered the actual rule.
+
+What is still not proven is the whole of it: one family out of 47 was modelled, not
+all of them, and the bit rotations were read from the reference implementation rather
+than derived from the corpus. Whether an agent can find those from behaviour alone
+remains the open question, and it is the reason the task's difficulty is credible
+rather than the reason it is unfair.
+
 ## Difficulty
 
 Measured three times, and not claimed as a tier: ALE runs difficulty

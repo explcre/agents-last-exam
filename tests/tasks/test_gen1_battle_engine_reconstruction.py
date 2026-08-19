@@ -122,6 +122,25 @@ def test_grader_localises_a_broken_mechanic():
     assert rep["mechanics"] > 0.9, "one broken family should not collapse the score"
 
 
+def test_a_self_contained_engine_reaches_the_deliverable_form(staged):
+    """The control the oracle shim cannot give: no oracle, just a Python file.
+
+    The task asks for a single self-contained Python file, and the positive control
+    above satisfies that shape only by shelling out to the Zig reference, which does
+    not exist on a VM. This submits an engine that models one family outright, with
+    its damage base, critical-hit rate and roll position fitted on visible scenarios
+    alone. It reproduces every held-out scenario of that family byte for byte, which
+    is what shows the required artefact can produce exact output at all.
+    """
+    sub = pathlib.Path(staged.metadata["submission_path"])
+    sub.parent.mkdir(parents=True, exist_ok=True)
+    sub.write_text((task.TASK_DIR / "assets" / "partial_engine.py").read_text(encoding="utf-8"),
+                   encoding="utf-8")
+    score = asyncio.run(task.evaluate(staged, LocalSession()))[0]
+    assert score > 0.0, "a self-contained Python engine scored nothing"
+    assert score == pytest.approx(1 / 47, abs=0.005), score
+
+
 @pytest.mark.skipif(not ORACLE.exists(), reason="reference oracle not built on this host")
 def test_reference_engine_scores_one_through_the_harness(staged):
     sub = pathlib.Path(staged.metadata["submission_path"])
