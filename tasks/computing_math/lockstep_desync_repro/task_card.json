@@ -1,0 +1,92 @@
+{
+  "taskId": "computing_math/lockstep_desync_repro",
+  "title": "Lockstep Replay Conformance",
+  "taskName": "Lockstep Replay Conformance",
+  "summary": "Repair a deterministic lockstep game simulator so that recorded replays reproduce bit for bit. The starter build agrees with the recording for a while and then desynchronises. Grading runs the submission against the visible replays on unpublished checkpoint ticks and against five held-out replays, comparing 64-bit state hashes exactly.",
+  "category": "computing_math",
+  "software": [
+    "Python 3",
+    "Ubuntu"
+  ],
+  "tags": [
+    "software-engineering",
+    "deterministic-simulation",
+    "lockstep",
+    "fixed-point",
+    "debugging",
+    "game-engine",
+    "reverse-engineering",
+    "cpu-free-ubuntu"
+  ],
+  "taskPrompt": "You are fixing a deterministic lockstep simulator so that it reproduces recorded matches bit for bit.\n\nLane Siege is a lockstep simulation: every client replays the same recorded input stream and must arrive at exactly the same state on every tick. The build you have been given does not. It agrees with the recording for a while and then diverges, which in production is a desynchronised match.\n\n## Visible Inputs\n- `input/SPEC.md`: the normative specification. Where the starter disagrees with it, the starter is wrong.\n- `input/starter/sim.py`: the build that fails to reproduce the replays.\n- `input/replays/replay_0.json`, `replay_1.json`, `replay_2.json`: recorded matches.\n- `input/replays/expected_0.json` and the other two: the correct state hash at every checkpoint of the matching replay.\n- `input/replays/trace_0.txt`: a 25-tick-resolution hash trace of `replay_0`, for bisection.\n\n## The Interface\nYour simulator is invoked as `python3 sim.py <replay.json>` and must write one line per checkpoint tick to stdout, in ascending tick order: `<tick> <16 lowercase hex digits>`. Checkpoint ticks are read from the replay file's `checkpoints` field. They differ between replays, and the ticks used for grading are not the ticks published in `expected_*.json`.\n\n## Deliverable\nWrite your simulator to `output/sim.py`. A single self-contained Python 3 file, system interpreter and standard library only. Every visible replay must reproduce every published hash exactly before you are finished.\n\n## How This Is Graded\nThe submission is run against the three visible replays on a checkpoint tick set that was not published, and against five held-out replays. If any visible replay fails on the unpublished ticks, the score is 0. Otherwise the score is the mean fraction of leading checkpoints reproduced on the held-out replays. Comparison is exact; there is no tolerance.\n\nDo not modify anything under `input/`. Do not rely on internet access.\n",
+  "agentMustDo": [
+    "Read the normative specification and the starter build, and locate every point at which the starter departs from the specification.",
+    "Use the published checkpoint hashes and the 25-tick hash trace to bisect each divergence to the tick where it starts.",
+    "Produce a simulator that reproduces all three visible replays at every published checkpoint.",
+    "Write the finished simulator to `output/sim.py` as a single standard-library-only Python 3 file."
+  ],
+  "inputFiles": [
+    {
+      "name": "SPEC.md",
+      "format": "Markdown",
+      "path": "input/SPEC.md",
+      "description": "Normative rules: fixed-point arithmetic, RNG consumption order, the eight tick phases, target acquisition ordering, damage, and the state hash serialisation."
+    },
+    {
+      "name": "sim.py",
+      "format": "Python",
+      "path": "input/starter/sim.py",
+      "description": "Starter simulator. Runs, produces well-formed checkpoint output, and desynchronises from every recorded replay."
+    },
+    {
+      "name": "replay_0.json, replay_1.json, replay_2.json",
+      "format": "JSON",
+      "path": "input/replays/",
+      "description": "Recorded matches: seed, tick count, checkpoint ticks, and the per-tick hero command stream."
+    },
+    {
+      "name": "expected_0.json, expected_1.json, expected_2.json",
+      "format": "JSON",
+      "path": "input/replays/",
+      "description": "Correct 64-bit state hash at every published checkpoint of the matching visible replay."
+    },
+    {
+      "name": "trace_0.txt",
+      "format": "Text",
+      "path": "input/replays/trace_0.txt",
+      "description": "Hash of replay_0 every 25 ticks, so a divergence can be bisected to a 25-tick window."
+    }
+  ],
+  "referenceFiles": [
+    {
+      "name": "Held-out replays and expected hashes",
+      "format": "JSON",
+      "path": "evaluator_assets: data/reference/",
+      "description": "Five held-out replays plus the expected hashes for them and for the visible replays on the unpublished gate ticks. Held repo-local; the held-out replays reach the VM only during evaluate(), after the agent has finished, and the expected hashes never reach it at all."
+    }
+  ],
+  "evaluation": "**Hard gate conditions** (auto score 0 if triggered):\n- `output/sim.py` does not exist.\n- Any of the three agent-visible replays, re-run on the gate checkpoint ticks (a tick set that is published nowhere), fails to reproduce the expected hash at any gate checkpoint. A submission that memorised the published `expected_*.json` hashes, or that crashes, times out, or prints nothing, fails here.\n\n**Scoring method (gate passed):**\n- The submission is run once per held-out replay as `python3 sim.py <replay.json>` on the VM, 300 s per replay.\n- Per replay, count the leading checkpoints whose 64-bit state hash matches the hidden reference. Leading, because a lockstep simulation that has desynchronised stays desynchronised; crediting a later coincidental match would be wrong.\n- Score is the mean over the five held-out replays of `leading_matched / 8`.\n\n**Where does the scoring logic run?** The submission runs on the VM via `scripts/eval_runner.py`. The comparison runs host side in `scripts/grade.py` against repo-local expected hashes, so the reference never exists on the machine the agent used.\n\n**Reference provenance:** the expected hashes are produced by an actual execution of the reference simulator (`assets/sim_reference.py`) over the shipped replays. No hash is hand written. Every replay is recorded by driving that simulator with a scripted policy and is asserted at build time to reproduce its own recording open loop.\n\n**Measured controls** (`assets/controls.py`, run through the same grader path):\n\n| candidate | gate | held-out fraction | score |\n|---|---|---|---|\n| reference simulator (oracle) | pass | 1.000 | **1.000** |\n| starter, unmodified | fail | 0.125 | **0.000** |\n| empty output | fail | 0.000 | 0.000 |\n| crashes on start | fail | 0.000 | 0.000 |\n| replays the published visible hashes | fail | 0.000 | 0.000 |\n| replays the published 25-tick trace | fail | 0.000 | 0.000 |\n\nThe unmodified starter reaches 0.125 on the held-out checkpoints and still scores 0, which is what the gate is for: without it, submitting the provided file unchanged would earn a floor.\n\nThe trace-replay row exists because the task's own harness test found the shortcut it describes. The published `trace_0.txt` carries a hash for every 25th tick, and the gate ticks were originally all multiples of 25, so that one replay's gate could be answered by lookup. Gate ticks were moved off the grid and the shortcut is kept as a standing control.\n\n**Difficulty ladder** (same path; each row leaves exactly the named deviations unrepaired):\n\n| submission | gate | held-out fraction | score |\n|---|---|---|---|\n| everything repaired | pass | 1.000 | **1.000** |\n| all but the 32-bit register deviation | pass | 0.825 | **0.825** |\n| all but the candidate-ordering deviation | fail | 0.325 | 0.000 |\n| candidate ordering only | fail | 0.125 | 0.000 |\n| division rounding and expiry phase only | fail | 0.125 | 0.000 |\n\nThe gate covers the first 44% of a match. Measured over all eight shipped replays, four of the five deviations first diverge by tick 3500 and the fifth no earlier than tick 7575, so the gate certifies that a submission reproduces the opening of every visible match on unpublished ticks, and the held-out score measures how deep into a match the repair holds. A submission that has found four of the five desync causes scores 0.825; one that has found three or fewer scores 0.\n\n**What does a PERFECT output look like?** A simulator that reproduces every gate checkpoint on all three visible replays and all eight checkpoints on all five held-out replays, scoring 1.0.\n\n**What does a WRONG output look like?** A simulator that reproduces the visible replays only because it special-cases them (fails the gate, 0.0), or one that is correct for the first part of a match and desynchronises later (partial credit from the leading-checkpoint count).\n\n**Measured difficulty (disclosed, not inferred):** Codex CLI 0.145.0 with `gpt-5.6-sol` at `xhigh`, staged through this task's own `start()` and scored by its own grader, reached **1.000 in 315 s** on the task as shipped, and **1.000 in 2374 s** with `SPEC.md` withheld. Both independently re-graded from a fresh stage. That agent is stronger than the reference agents ALE describes classifying against, so this is offered as a near-term task, not a hard one. The cause is that a complete normative specification converts the debugging task into a transcription task; withholding it changes effort by 7.5x and does not change the outcome.",
+  "vm": {
+    "machineType": "c4-standard-4",
+    "snapshot": "cpu-free-ubuntu",
+    "vcpus": 4,
+    "memory_gb": 16,
+    "disk_gb": 100,
+    "timeout_s": 10800,
+    "timeout": 10800,
+    "network": {
+      "mode": "off"
+    }
+  },
+  "variants": [
+    "base"
+  ],
+  "requiredSystemPackages": [],
+  "taxonomy": {
+    "domain_id": "9",
+    "domain_code": "computing_math",
+    "subdomain_id": "9.1",
+    "subdomain_code": "software_eng",
+    "subdomain_name": "Software Engineering"
+  }
+}
