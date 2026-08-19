@@ -1,0 +1,197 @@
+"""End-to-end checks for computing_math/undocumented_pipeline_recovery.
+
+These drive the task's real ``start()`` and ``evaluate()`` hooks against a local
+session that runs bash and keeps files on disk. The tests that need DuckDB are
+skipped when it is absent, so the suite still runs on a machine without it; the
+grader tests do not need it at all.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import pathlib
+import shutil
+import subprocess
+import types
+
+import pytest
+
+from tasks.computing_math.undocumented_pipeline_recovery import main as task
+from tasks.computing_math.undocumented_pipeline_recovery.scripts import grade
+
+DUCKDB = shutil.which("duckdb") or "/tmp/galaxy_srv_disk00/pengchx3/etl/duckdb"
+HAVE_DUCKDB = pathlib.Path(DUCKDB).exists()
+
+
+class LocalSession:
+    async def run_command(self, command, *, check=False, timeout=None):
+        env = {"PATH": f"{pathlib.Path(DUCKDB).parent}:/usr/bin:/bin"}
+        p = subprocess.run(  # noqa: ASYNC221 - the fake session is deliberately blocking
+            ["bash", "-c", command], capture_output=True, text=True,
+            timeout=timeout, check=False, env=env)
+        if check and p.returncode != 0:
+            raise RuntimeError(f"{command}\n{p.stderr[:400]}")
+        return {"stdout": p.stdout, "stderr": p.stderr, "return_code": p.returncode}
+
+    async def write_file(self, path, content):
+        t = pathlib.Path(path)
+        t.parent.mkdir(parents=True, exist_ok=True)
+        t.write_text(content, encoding="utf-8")
+
+    async def read_file(self, path):
+        return pathlib.Path(path).read_text(encoding="utf-8")
+
+    async def file_exists(self, path):
+        return pathlib.Path(path).is_file()
+
+
+@pytest.fixture
+def staged(tmp_path, monkeypatch):
+    monkeypatch.setattr(task, "EVAL_DIR", str(tmp_path / "eval"))
+    cfg = task.TaskConfig(REMOTE_ROOT_DIR=str(tmp_path / "root"))
+    tc = types.SimpleNamespace(metadata=cfg.to_metadata())
+    asyncio.run(task.start(tc, LocalSession()))
+    return tc
+
+
+def _expected():
+    return {c: (task.DATA / "holdout" / c / "expected.csv").read_text(encoding="utf-8")
+            for c in task._HOLDOUT}
+
+
+def test_start_stages_every_worked_dataset(staged):
+    root = pathlib.Path(staged.metadata["input_dir"]) / "cases"
+    assert sorted(p.name for p in root.iterdir()) == task._CASES
+    for case in task._CASES:
+        for name in task.SOURCE_TABLES:
+            assert (root / case / f"{name}.csv").is_file(), f"{case}/{name}"
+
+
+def test_exactly_one_worked_dataset_keeps_its_row_level_export(staged):
+    """The evidence is uneven on purpose: one full export, the rest reconciliations.
+
+    That is what limits local verification, which is the whole difficulty of this
+    version. If a second full export appeared, the agent could diff against two.
+    """
+    root = pathlib.Path(staged.metadata["input_dir"]) / "cases"
+    full = [c for c in task._CASES if (root / c / "expected.csv").is_file()]
+    summ = [c for c in task._CASES if (root / c / "summary.csv").is_file()]
+    assert full == [task._FULL_CASE], f"expected one full export, found {full}"
+    assert len(summ) == len(task._CASES) - 1, "every other dataset needs its summary"
+
+
+def test_the_summaries_really_do_hide_the_detail(staged):
+    """A summary that pinned down its detail rows would not reduce the signal."""
+    root = pathlib.Path(staged.metadata["input_dir"]) / "cases"
+    for case in task._CASES:
+        f = root / case / "summary.csv"
+        if not f.is_file():
+            continue
+        lines = [ln for ln in f.read_text().splitlines()[1:] if ln.strip()]
+        hidden = sum(int(ln.split(",")[3]) for ln in lines)
+        assert hidden > len(lines), f"{case}: summary rows do not aggregate anything"
+
+
+def test_no_held_out_answer_and_no_pipeline_source_reach_the_vm(staged):
+    root = pathlib.Path(staged.metadata["task_dir"])
+    text = "\n".join(p.read_text(encoding="utf-8", errors="ignore")
+                     for p in root.rglob("*") if p.is_file())
+    for case, csv_text in _expected().items():
+        body = csv_text.splitlines()[1:]
+        assert body and body[0] not in text, f"held-out answer for {case} is on the VM"
+    for giveaway in ("ASOF JOIN", "INTERVAL 30 DAY", "row_number() OVER"):
+        assert giveaway not in text, f"the pipeline's own SQL leaked: {giveaway}"
+
+
+def test_worked_and_held_out_datasets_are_disjoint():
+    assert not (set(task._CASES) & set(task._HOLDOUT))
+    assert len(task._CASES) >= 4 and len(task._HOLDOUT) >= 12
+
+
+def test_reference_outputs_are_reproduced_exactly_by_themselves():
+    """The positive control at the grader level: the reference tables score 1.0."""
+    exp = _expected()
+    assert grade.score(dict(exp), exp)["reward"] == 1.0
+
+
+@pytest.mark.skipif(not HAVE_DUCKDB, reason="duckdb not installed on this host")
+def test_the_naive_rollup_does_not_reproduce_the_result(tmp_path):
+    """Guard the premise: the obvious first attempt must not already be correct.
+
+    If grouping eligible orders by their own month reproduced the expected table,
+    the stateful part of the pipeline would be decoration rather than the difficulty.
+    """
+    naive = tmp_path / "naive.sql"
+    naive.write_text(
+        "CREATE OR REPLACE TABLE result AS "
+        "SELECT date_trunc('month', o.placed_at)::DATE AS month, o.customer_id, "
+        "coalesce(c.region, 'UNKNOWN') AS region, "
+        "CAST(sum(o.amount_cents) AS BIGINT) AS recognised_usd_cents, "
+        "CAST(count(*) AS BIGINT) AS orders_recognised "
+        "FROM orders o LEFT JOIN customers c ON c.customer_id = o.customer_id "
+        "WHERE o.status IN ('paid','settled') AND o.amount_cents > 0 "
+        "GROUP BY 1,2,3 ORDER BY 1,2;\n", encoding="utf-8")
+    for case in [task._FULL_CASE]:
+        base = task.DATA / "cases" / case
+        script = tmp_path / f"{case}.sql"
+        loads = "\n".join(
+            f"CREATE TABLE {t} AS SELECT * FROM read_csv_auto('{base}/{t}.csv');"
+            for t in task.SOURCE_TABLES)
+        out = tmp_path / f"{case}.csv"
+        script.write_text(loads + "\n" + naive.read_text() +
+                          f"COPY (SELECT * FROM result ORDER BY ALL) TO '{out}' "
+                          f"(HEADER, DELIMITER ',');\n", encoding="utf-8")
+        subprocess.run(f"{DUCKDB} -init /dev/null -batch < {script}", shell=True,
+                       capture_output=True, check=False)
+        assert out.exists(), f"{case}: naive rollup did not run"
+        got = grade.read_rows(out.read_text())
+        want = grade.read_rows((base / "expected.csv").read_text())
+        assert got != want, f"{case}: the naive rollup already reproduces the answer"
+
+
+def test_holdout_answers_differ_from_every_worked_answer():
+    """A held-out answer that coincides with a shipped one would be free marks."""
+    shipped = {(task.DATA / "cases" / c / "expected.csv").read_text()
+               for c in task._CASES if (task.DATA / "cases" / c / "expected.csv").is_file()}
+    for case in task._HOLDOUT:
+        text = (task.DATA / "holdout" / case / "expected.csv").read_text()
+        assert text not in shipped, f"{case} duplicates a worked example's answer"
+
+
+def test_missing_submission_scores_zero(staged):
+    assert asyncio.run(task.evaluate(staged, LocalSession())) == [0.0]
+
+
+def test_malformed_results_score_zero_without_raising():
+    exp = _expected()
+    for junk in ({}, {c: "" for c in exp}, {c: "not,a,valid\ncsv,row" for c in exp},
+                 {c: None for c in exp}):
+        assert grade.score(junk, exp)["reward"] == 0.0
+
+
+def test_an_empty_table_scores_zero():
+    """The cheapest shortcut: produce the right columns and no rows."""
+    exp = _expected()
+    header = {c: v.splitlines()[0] + "\n" for c, v in exp.items()}
+    assert grade.score(header, exp)["reward"] < 0.05
+
+
+def test_row_multiset_not_set(staged):
+    """Duplicating a row is a real error and must not be hidden by set comparison."""
+    exp = _expected()
+    doubled = {}
+    for c, v in exp.items():
+        lines = v.splitlines()
+        doubled[c] = "\n".join([lines[0], lines[1], *lines[1:]]) + "\n"
+    r = grade.score(doubled, exp)
+    assert r["exact"] == 0
+
+
+@pytest.mark.skipif(not HAVE_DUCKDB, reason="duckdb not installed on this host")
+def test_the_reference_pipeline_scores_one_end_to_end(staged, tmp_path):
+    """The control that matters: the pipeline itself, run through evaluate()."""
+    sub = pathlib.Path(staged.metadata["submission_path"])
+    sub.parent.mkdir(parents=True, exist_ok=True)
+    sub.write_text((task.ASSETS / "reference.sql").read_text(encoding="utf-8"),
+                   encoding="utf-8")
+    assert asyncio.run(task.evaluate(staged, LocalSession())) == [1.0]

@@ -1,0 +1,53 @@
+{
+  "taskId": "computing_math/undocumented_pipeline_recovery",
+  "title": "Recover An Undocumented Reporting Pipeline",
+  "taskName": "Recover An Undocumented Reporting Pipeline",
+  "summary": "A nightly revenue pipeline read four source tables and wrote one result table. Its source code is gone and its outputs are still reconciled against. The agent is given twelve datasets with both the inputs and the table the pipeline produced, and must write DuckDB SQL that reproduces the same table on held-out datasets it has never seen. The pipeline embeds ten decisions that are invisible from any single output but each change the numbers: which duplicate order row wins, which statuses count, an as-of currency lookup for days with no rate, refunds converted at the refund's date rather than the order's, a thirty-day refund window, unknown customers reported rather than dropped, internal accounts excluded, and months that net to zero suppressed. Every one is witnessed in the worked examples. Grading compares result tables as multisets of rows, exactly.",
+  "category": "computing_math",
+  "software": [
+    "DuckDB",
+    "SQL",
+    "Ubuntu"
+  ],
+  "tags": [
+    "data-engineering",
+    "pipeline-migration",
+    "black-box-inference",
+    "deterministic-grading",
+    "held-out-generalisation",
+    "cpu-free-ubuntu"
+  ],
+  "agentMustDo": [
+    "Read the twelve worked datasets under `input/cases`, each with four source tables and the result the pipeline produced from them.",
+    "Infer the transformation, including the handling of duplicate order rows, missing FX rates, refund eligibility, unknown customers and suppressed rows.",
+    "Write `output/solution.sql`, a DuckDB script that leaves a table named `result`.",
+    "Check the script reproduces all twelve worked outputs exactly before submitting.",
+    "Ensure it generalises: the graded datasets are different data of the same shape."
+  ],
+  "vm": {
+    "machineType": "c4-standard-4",
+    "snapshot": "cpu-free-ubuntu",
+    "vcpus": 4,
+    "memory_gb": 16,
+    "disk_gb": 100,
+    "timeout_s": 21600,
+    "timeout": 21600,
+    "network": {
+      "mode": "off"
+    }
+  },
+  "variants": [
+    "base"
+  ],
+  "requiredSystemPackages": [
+    "duckdb-cli"
+  ],
+  "taxonomy": {
+    "domain_id": "9",
+    "domain_code": "computing_math",
+    "subdomain_id": "9.1",
+    "subdomain_code": "software_eng",
+    "subdomain_name": "Software Engineering"
+  },
+  "evaluation": "evaluate() runs the submitted SQL against eight held-out datasets with the four source tables preloaded, then compares each `result` table with the reference pipeline's output as a multiset of rows including the header. reward = 0.8 * (datasets reproduced exactly) + 0.2 * (mean row-level F1). Reference outputs are produced by executing the reference pipeline in DuckDB, not hand-authored. Grading is deterministic and offline; no judge model or credential is required."
+}
