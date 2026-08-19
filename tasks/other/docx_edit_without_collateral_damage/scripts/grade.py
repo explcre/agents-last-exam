@@ -22,8 +22,31 @@ NAMED_PARTS = ("word/document.xml", "word/styles.xml", "word/settings.xml",
                "word/header1.xml", "word/footer1.xml")
 
 
+def _drop_noops(root):
+    """Remove property wrappers that carry nothing.
+
+    An empty w:rPr or w:pPr says nothing about the document: a submission that
+    removes a paragraph mark's revision and leaves the wrapper behind has produced
+    the same document as one that removes both. Comparing them as different would
+    fail a correct answer over a convention the brief never states, so both are
+    normalised away before anything is compared. Repeated because emptying an rPr
+    can leave its pPr empty in turn.
+    """
+    from lxml import etree  # noqa: F401 - imported for the caller's parser
+    for _ in range(4):
+        removed = False
+        for tag in (f"{W}rPr", f"{W}pPr"):
+            for el in list(root.iter(tag)):
+                if len(el) == 0 and not el.attrib and el.getparent() is not None:
+                    el.getparent().remove(el)
+                    removed = True
+        if not removed:
+            break
+    return root
+
+
 def _c14n(xml: bytes) -> bytes:
-    """Canonical form with inter-element whitespace dropped.
+    """Canonical form with inter-element whitespace and empty wrappers dropped.
 
     A submission that pretty-prints a part it was told to edit has not lost
     anything, so only real content differences should count against it. Parts the
@@ -31,7 +54,7 @@ def _c14n(xml: bytes) -> bytes:
     reserialising tool does real damage.
     """
     from lxml import etree
-    root = etree.fromstring(xml, etree.XMLParser(remove_blank_text=True))
+    root = _drop_noops(etree.fromstring(xml, etree.XMLParser(remove_blank_text=True)))
     return etree.tostring(root, method="c14n")
 
 
@@ -43,11 +66,7 @@ def _strip_alignment(xml: bytes) -> bytes:
         p = jc.getparent()
         if p is not None:
             p.remove(jc)
-    for ppr in list(root.iter(f"{W}pPr")):
-        if len(ppr) == 0 and not ppr.attrib:
-            p = ppr.getparent()
-            if p is not None:
-                p.remove(ppr)
+    _drop_noops(root)
     return etree.tostring(root, method="c14n")
 
 
