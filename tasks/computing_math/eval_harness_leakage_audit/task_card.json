@@ -1,0 +1,49 @@
+{
+  "taskId": "computing_math/eval_harness_leakage_audit",
+  "title": "Evaluation Harness Leakage Audit",
+  "taskName": "Evaluation Harness Leakage Audit",
+  "summary": "Audit a machine learning evaluation harness that runs, reports plausible numbers, and passes its own 34-check test suite, while measuring the wrong thing. Repair the pipeline and produce a test suite that demonstrates each repair. Half the score is the repair, half is the proof: a defect counts as demonstrated only when the agent's suite fails on a harness that still carries it.",
+  "category": "computing_math",
+  "software": [
+    "Python 3",
+    "Ubuntu"
+  ],
+  "tags": [
+    "software-engineering",
+    "machine-learning",
+    "data-leakage",
+    "evaluation-integrity",
+    "mutation-testing",
+    "test-quality",
+    "cpu-free-ubuntu"
+  ],
+  "agentMustDo": [
+    "Determine why a pipeline that runs and passes its tests still reports the wrong numbers.",
+    "Repair the leakage without changing the public surface the harness is exercised through.",
+    "Write a test suite that fails on a harness still carrying each defect, and passes on a correct one.",
+    "Produce output/harness.py and output/test_audit.py."
+  ],
+  "vm": {
+    "machineType": "c4-standard-4",
+    "snapshot": "cpu-free-ubuntu",
+    "vcpus": 4,
+    "memory_gb": 16,
+    "disk_gb": 100,
+    "timeout_s": 14400,
+    "timeout": 14400,
+    "network": {
+      "mode": "off"
+    }
+  },
+  "variants": [
+    "base"
+  ],
+  "requiredSystemPackages": [],
+  "taxonomy": {
+    "domain_id": "9",
+    "domain_code": "computing_math",
+    "subdomain_id": "9.1",
+    "subdomain_code": "software_eng",
+    "subdomain_name": "Software Engineering"
+  }
+}
