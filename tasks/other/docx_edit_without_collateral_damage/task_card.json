@@ -1,0 +1,55 @@
+{
+  "taskId": "other/docx_edit_without_collateral_damage",
+  "title": "Apply A House Style To Word Documents Without Collateral Damage",
+  "taskName": "Apply A House Style To Word Documents Without Collateral Damage",
+  "summary": "Word documents from a review pipeline must be finalised and restyled: accept every tracked change, then apply four house-style edits, and leave everything else exactly as it was. Accepting revisions is where it gets hard, because what a revision means depends on its kind: a deleted paragraph mark merges two paragraphs, a move's source disappears while its destination stays, a formatting-change record is removed while the formatting it records survives, and a row marked deleted loses the whole row. The documents also carry comments and their anchors, footnotes, a content control, a custom XML part, bookmarks, a hyperlink, an embedded image and multi-level numbering, all of which must come through untouched. Both kinds of mistake are invisible to the eye: the output still opens and still reads plausibly.",
+  "category": "other",
+  "software": [
+    "Python 3",
+    "lxml",
+    "OOXML",
+    "LibreOffice",
+    "Ubuntu"
+  ],
+  "tags": [
+    "document-automation",
+    "ooxml",
+    "format-fidelity",
+    "regression-avoidance",
+    "deterministic-grading",
+    "cpu-free-ubuntu"
+  ],
+  "agentMustDo": [
+    "Inspect the sample documents under `input/documents` and find what they contain beyond paragraphs.",
+    "Accept every tracked change as a word processor's Accept All would, including deleted paragraph marks that merge paragraphs, moves whose source and destination behave differently, formatting-change records, and rows marked deleted.",
+    "Turn revision tracking off in word/settings.xml.",
+    "Justify every body paragraph of the resulting document except Heading1 and Heading2, which are left-aligned, including paragraphs inside tables.",
+    "Change the Heading1 colour in word/styles.xml to 7A2E2E and replace the [[CYCLE]] placeholder in both header and footer with 'Q1 2026'.",
+    "Leave every other package part byte-identical, and leave every comment anchor, footnote reference, bookmark, field, drawing and content control in place.",
+    "Write output/restyle.py, invoked as `python3 restyle.py <input.docx> <output.docx>`, that works on unseen documents of the same shape."
+  ],
+  "vm": {
+    "machineType": "c4-standard-4",
+    "snapshot": "cpu-free-ubuntu",
+    "vcpus": 4,
+    "memory_gb": 16,
+    "disk_gb": 100,
+    "timeout_s": 21600,
+    "timeout": 21600,
+    "network": {
+      "mode": "off"
+    }
+  },
+  "variants": [
+    "base"
+  ],
+  "requiredSystemPackages": [],
+  "taxonomy": {
+    "domain_id": "13",
+    "domain_code": "other",
+    "subdomain_id": "13.1",
+    "subdomain_code": "other",
+    "subdomain_name": "Other"
+  },
+  "evaluation": "evaluate() runs the submitted script over seven held-out documents. For each, the edit half checks that the document matches the finalised reference once alignment is normalised away, that alignment is right, and that styles, header, footer and settings match; the preservation half checks that package parts the brief does not name are byte-identical. reward = 0.7 * (documents where both hold) + 0.15 * (preserved) + 0.15 * (edited). Reference outputs come from running the reference implementation, not hand-authored. Grading is deterministic and offline. Validated against constructed failures: leaving a deleted paragraph mark unmerged, dropping the move destination, keeping the move source, keeping a row marked deleted, or leaving formatting-change records each score 0.000; dropping a comment anchor, footnote reference, content control or custom part scores 0.150; harmless variation such as pretty-printing a named part or re-ordering the zip scores 1.000."
+}
