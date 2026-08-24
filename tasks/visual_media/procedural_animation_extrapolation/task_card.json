@@ -1,0 +1,54 @@
+{
+  "taskId": "visual_media/procedural_animation_extrapolation",
+  "title": "Extrapolate A Procedural Animation Past The Frames You Are Shown",
+  "taskName": "Extrapolate A Procedural Animation Past The Frames You Are Shown",
+  "summary": "Three rigid bodies move under a procedural rule that is a pure function of the frame number. The agent is given the bodies' rest meshes and the first sixty frames as world-space vertex positions, and must build a Blender scene that reproduces frames 61 to 180, which it never sees. Fitting the visible window does not answer this: the sixty published frames do not span a whole number of periods, so an order-8 harmonic fit of them extrapolates to a maximum vertex error of 6.89 and scores zero, as do looping the window and holding its last frame. What must be recovered is the rule itself, namely two turn rates, a Lissajous path, a reach that breathes at a multiple of the arm's spin, and a vertical clamp whose band is not centred on zero. Every one of those is exercised inside the visible window, so nothing has to be guessed, but a turn rate wrong by 0.05% already moves a vertex by 2.6e-02. Grading is exact rather than perceptual, at a tolerance derived by measurement: Blender evaluates in single precision, so two correct rigs built differently drift apart by up to 9.9e-07, while the smallest parameter error tried moves a vertex by 1.5e-04, and grading at 1e-05 sits an order of magnitude above the first and well below the second.",
+  "category": "visual_media",
+  "software": [
+    "Blender 5.0.1",
+    "Python 3",
+    "Ubuntu"
+  ],
+  "tags": [
+    "3d-animation",
+    "system-identification",
+    "extrapolation",
+    "procedural-rigging",
+    "deterministic-grading",
+    "black-box-inference",
+    "cpu-free-ubuntu"
+  ],
+  "agentMustDo": [
+    "Read the rest meshes and the sixty published frames under `input/`, which are world-space vertex positions for three rigid bodies.",
+    "Recover each body's per-frame position and orientation from the vertex data.",
+    "Infer the rule generating that motion, including the turn rates, the path, the breathing reach and the clamped vertical band.",
+    "Write `output/rig.py` exposing build(), which creates the bodies in the current Blender scene and animates them so that frame_set() evaluates the motion.",
+    "Check the rig against frames 1 to 60 before submitting, which is the only feedback available."
+  ],
+  "vm": {
+    "machineType": "c4-standard-4",
+    "snapshot": "cpu-free-ubuntu",
+    "vcpus": 4,
+    "memory_gb": 16,
+    "disk_gb": 100,
+    "timeout_s": 21600,
+    "timeout": 21600,
+    "network": {
+      "mode": "off"
+    }
+  },
+  "variants": [
+    "base"
+  ],
+  "requiredSystemPackages": [
+    "blender-5.0.1-linux"
+  ],
+  "taxonomy": {
+    "domain_id": "8",
+    "domain_code": "visual_media",
+    "subdomain_id": "8.1",
+    "subdomain_code": "animation_3d",
+    "subdomain_name": "3D, Animation & Interactive Media"
+  },
+  "evaluation": "evaluate() imports the submitted rig.py inside Blender 5.0.1 in background mode, calls build(), then steps the scene with frame_set() over frames 61 to 180 and reads world-space vertices back from the evaluated depsgraph, so a submission that prints numbers without animating the scene scores zero. A frame counts as reproduced when its largest vertex deviation is at most 1e-05, and counts toward a smaller share when within 1e-02. reward = 0.8 * (frames reproduced exactly) + 0.2 * (frames within the loose band). Measured on this rig: the reference solution scores 1.0, a harmonic fit of the visible window 0.0, a rig that builds the bodies without animating them 0.0, a turn rate wrong by 0.05% scores 0.04, and a rig that misses the breathing reach 0.01. Grading is deterministic and offline; no judge model or credential is required."
+}
