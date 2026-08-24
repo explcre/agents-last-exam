@@ -113,8 +113,10 @@ Fitting the sixty published frames is not enough on its own: they do not span a 
 number of periods, so a curve fitted to them does not continue correctly. You can \
 check your own rig against frames 1 to 60 before submitting.
 
-Blender is installed and `blender` is on the PATH. Everything you need is in \
-`{input}`. Do not rely on internet access, and do not modify anything under `input/`.
+Blender 5.0.1 is installed and `blender` is on the PATH. Its bundled Python \
+includes `numpy`, so `blender --background --python yourscript.py` gives you both. \
+Everything you need is in `{input}`. Do not rely on internet access, and do not modify \
+anything under `input/`.
 """
 
     def to_metadata(self) -> dict:

@@ -28,6 +28,13 @@ input/
   frames_001_060.json   frames 1..60, world-space vertex coordinates
 ```
 
+## Environment
+
+Blender 5.0.1 is on the PATH, and its bundled Python carries `numpy`, so
+`blender --background --python yourscript.py` provides both the scene API and the
+linear algebra a rigid-body recovery wants. The task needs nothing beyond that: the
+reference solution imports only `math` and `bpy`.
+
 ## What has to be recovered
 
 Two turn rates, a Lissajous path, a reach that breathes at a multiple of the arm's
