@@ -76,6 +76,10 @@ test suite fails if a later change moves it outside that band.
 | bodies built but never animated | 0.000 |
 | rig that raises on import | 0.000 |
 
+A frontier agent solves this task completely: 1.000 in 577 s at high reasoning effort
+and 1.000 in 368 s at low. It is an easy task by measurement, kept for its exact grading
+rather than its difficulty. `NOTES.md` records why the held-out axis was not enough.
+
 The partial scores are proportional to how often the missed rule matters: the clamp
 band is asymmetric on 43% of graded frames, so a rig that assumes symmetry is right on
 the rest. A rig that recovered four rules of five should not score as though it

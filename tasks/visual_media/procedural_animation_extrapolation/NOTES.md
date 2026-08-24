@@ -64,3 +64,29 @@ and that package's own description notes the character-reconstruction eval rejec
 4.5.x. Version sensitivity is a known hazard here. This task ships a Linux package
 under a distinct id, `blender-5.0.1-linux`, pinning the same version by checksum, so it
 can be built and graded on the CPU Ubuntu image and was tested end to end there.
+
+## Calibration: this is an easy task, and that is the finding
+
+Codex CLI `gpt-5.6-sol`, staged through the task's real `start()` and graded by its real
+`evaluate()`:
+
+| run | effort | elapsed | score |
+| --- | --- | --- | --- |
+| run1 | xhigh | 577 s | **1.000** |
+| run2 | low | 368 s | **1.000** |
+
+Low effort was faster than xhigh. Both runs recovered every constant exactly, including
+the composed ones (0.264 = 0.073 + 0.191, 0.573 = 3 x 0.191) and the asymmetric clamp,
+and both wrote Blender drivers rather than baking keyframes, which is more idiomatic
+than the reference solution in `assets/`.
+
+The design premise held and was still not enough. The held-out axis worked exactly as a
+verifier boundary: every shortcut that skips the rule scores 0.000. What made it easy is
+that the observable decomposes. World-space vertices give per-body rigid pose by SVD, and
+the first run reported its own fit residual at 1.4e-07; from there each parameter reads
+off its own channel.
+
+That is the fifth difficulty lever measured and falsified while building these tasks,
+after withholding a specification, statefulness, entanglement and starving the feedback.
+Hiding a rule, adding state, entangling the encoding and holding out an axis are effort
+levers. Non-decomposability is the difficulty lever.
