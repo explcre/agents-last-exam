@@ -1,0 +1,54 @@
+{
+  "taskId": "computing_math/scheduling_model_recovery",
+  "title": "Rebuild A Plant's Scheduling Model From Its Planner's Log",
+  "taskName": "Rebuild A Plant's Scheduling Model From Its Planner's Log",
+  "summary": "A contract manufacturer is replacing a production planner nobody has the source for. All that survives is a log: for each historical run, the shop-floor data the planner was given and the makespan it achieved, which was always optimal for its model. The agent must rebuild that model in CP-SAT and predict the optimal makespan for 25 held-out runs. The observable is one integer per run, which is the point: a makespan is a global optimum, so it cannot be attributed to any individual rule, and there is no intermediate output to diff against. What has to be recovered is that durations scale with machine speed and round up, that a job waits a cooling lag of ceil(previous duration / 4), that moving work between machines costs transport time, that sequence-dependent changeovers are charged between consecutive operations and before a machine's first, that every changeover needs one of a single technician shared across all machines, and that operations may not overlap a maintenance window. Measured: the reference model scores 1.000, a naive flexible job shop scores 0.000, a constant answer and copying the log both score under 0.15, and a model with any single one of these rules wrong scores between 0.000 and 0.36. Exactly one model out of 2304 in the plausible rule grid reproduces the worked log, so the answer is determined rather than ambiguous.",
+  "category": "computing_math",
+  "software": [
+    "Python 3",
+    "Google OR-Tools CP-SAT",
+    "Ubuntu"
+  ],
+  "tags": [
+    "constraint-programming",
+    "operations-research",
+    "scheduling",
+    "model-recovery",
+    "black-box-inference",
+    "deterministic-grading",
+    "cpu-free-ubuntu"
+  ],
+  "agentMustDo": [
+    "Read the 60 worked runs under `input/worked_runs.json`, each the shop-floor data for one historical run plus the makespan the retired planner achieved.",
+    "Infer how the fields combine: speed scaling and its rounding, the cooling lag between a job's operations, transport between machines, sequence-dependent changeovers and where they are charged, the shared technician limit, and how maintenance windows constrain processing.",
+    "Build the recovered model in CP-SAT and check it reproduces every worked makespan, which is the only feedback available.",
+    "Write `output/scheduler.py` exposing optimal_makespan(run) -> int.",
+    "Prove optimality rather than returning the first feasible schedule found, since the graded value is the optimal cost."
+  ],
+  "vm": {
+    "machineType": "c4-standard-4",
+    "snapshot": "cpu-free-ubuntu",
+    "vcpus": 4,
+    "memory_gb": 16,
+    "disk_gb": 100,
+    "timeout_s": 21600,
+    "timeout": 21600,
+    "network": {
+      "mode": "off"
+    }
+  },
+  "variants": [
+    "base"
+  ],
+  "requiredSystemPackages": [
+    "ortools-python"
+  ],
+  "taxonomy": {
+    "domain_id": "9",
+    "domain_code": "computing_math",
+    "subdomain_id": "9.1",
+    "subdomain_code": "software_eng",
+    "subdomain_name": "Software Engineering"
+  },
+  "evaluation": "evaluate() runs the submitted module against 25 held-out runs and compares the integer it returns with the plant's optimal makespan. reward = fraction reproduced exactly; there is no partial credit within a run. An optimal objective value is unique even when the optimal schedule is not, so a correct submission cannot be marked down for finding a different schedule of the same cost and solver nondeterminism cannot move the score. The graded runs were selected to be discriminating: every rule of the model changes the makespan of at least 16 of the 25, so a model with one rule wrong cannot coast. The worked runs separately demonstrate every rule, so nothing has to be guessed. Reference answers are produced by running the reference model, not hand-authored, and a test re-solves a sample of them to catch drift. Grading is deterministic and offline; no judge model or credential is required."
+}

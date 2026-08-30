@@ -1,0 +1,761 @@
+{
+ "rules": [
+  "lag_3",
+  "lag_5",
+  "lag_none",
+  "round_floor",
+  "round_nearest",
+  "no_start_setup",
+  "no_transport",
+  "crew_2",
+  "no_maint",
+  "no_setup"
+ ],
+ "worked": {
+  "run_001": [
+   "no_start_setup",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_002": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_003": [
+   "lag_3",
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_004": [
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_005": [
+   "lag_3",
+   "lag_none",
+   "no_start_setup",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_006": [
+   "lag_3",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_007": [
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_008": [
+   "lag_3",
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_009": [
+   "round_floor",
+   "round_nearest",
+   "no_transport",
+   "no_setup"
+  ],
+  "run_010": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_011": [
+   "lag_3",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_012": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_013": [
+   "round_floor",
+   "no_start_setup",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_014": [
+   "lag_3",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_015": [
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_016": [
+   "lag_3",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_setup"
+  ],
+  "run_017": [
+   "round_floor",
+   "round_nearest",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_018": [
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_019": [
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_020": [
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_021": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_022": [
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_023": [
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_024": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_025": [
+   "lag_3",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_026": [
+   "round_floor",
+   "no_start_setup",
+   "no_transport",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_027": [
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_028": [
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_029": [
+   "lag_3",
+   "round_floor",
+   "no_setup"
+  ],
+  "run_030": [
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_031": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_032": [
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_033": [
+   "no_start_setup",
+   "no_setup"
+  ],
+  "run_034": [
+   "lag_3",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_035": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_036": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_037": [
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_038": [
+   "lag_none",
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_039": [
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_040": [
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_041": [
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_042": [
+   "no_start_setup",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_043": [
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_044": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_045": [
+   "round_floor",
+   "no_start_setup",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_046": [
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_047": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_048": [
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_049": [
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_050": [
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_051": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_052": [
+   "no_maint",
+   "no_setup"
+  ],
+  "run_053": [
+   "lag_3",
+   "lag_none",
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_054": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_055": [
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_setup"
+  ],
+  "run_056": [
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_057": [
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_058": [
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_setup"
+  ],
+  "run_059": [
+   "lag_3",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "run_060": [
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ]
+ },
+ "holdout": {
+  "hold_001": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_002": [
+   "lag_3",
+   "lag_none",
+   "round_floor",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_setup"
+  ],
+  "hold_003": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_004": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_005": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_006": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_007": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_008": [
+   "lag_3",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_009": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_010": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_011": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_012": [
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_013": [
+   "lag_3",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_014": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_015": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_016": [
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_017": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_018": [
+   "lag_3",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_019": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_020": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_021": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_022": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_023": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_024": [
+   "lag_3",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "no_transport",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ],
+  "hold_025": [
+   "lag_3",
+   "lag_5",
+   "lag_none",
+   "round_floor",
+   "round_nearest",
+   "no_start_setup",
+   "crew_2",
+   "no_maint",
+   "no_setup"
+  ]
+ }
+}
