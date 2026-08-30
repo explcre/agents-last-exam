@@ -63,5 +63,17 @@ The graded runs were chosen to be discriminating: every rule changes the makespa
 least 16 of the 25, so a model that is nearly right cannot coast. On a set chosen without
 that care, one wrong-lag model scored 0.95.
 
+## Calibrated
+
+Two runs of Codex CLI `gpt-5.6-sol` at `xhigh` scored **0.08** and **0.04**, each after
+about 80 to 90 minutes and half a million tokens. Both produced working CP-SAT models
+that proved optimality on every graded run; neither recovered the plant's model, and
+both missed the cooling lag. In the first run that was the only rule missed, and the
+task's own discrimination table had predicted that score, 1 - 23/25 = 0.08, before the
+run happened.
+
+The first run also solved all 60 worked runs optimally and reproduced only 33 of them:
+it could not fit even the log it was given. `NOTES.md` has the detail.
+
 **The answer is determined, not ambiguous.** All 2304 models in the plausible rule grid
 were solved against the worked log, and exactly one reproduces it: the true model.

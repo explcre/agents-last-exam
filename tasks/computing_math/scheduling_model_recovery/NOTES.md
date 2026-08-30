@@ -73,3 +73,37 @@ Blender's single-precision noise floor.
 The agent's iteration loop is fast on purpose. Solving all 60 worked runs takes about
 24 s, so a hypothesis can be tested end to end in well under a minute. The difficulty is
 meant to be in finding the model, not in waiting for the solver.
+
+## Calibration
+
+Codex CLI `gpt-5.6-sol`, staged through the task's real `start()` and graded by its
+real `evaluate()`:
+
+| run | effort | elapsed | tokens | score |
+| --- | --- | --- | --- | --- |
+| run1 | xhigh | 4677 s | 485k | **0.08** |
+| run2 | xhigh | 5486 s | 618k | **0.04** |
+
+Both runs produced a working CP-SAT model that proved optimality on all 25 graded runs.
+Neither recovered the plant's model.
+
+run1 recovered five of the six rules: speed scaling with the correct rounding,
+transport, changeovers at machine start and between consecutive operations, the single
+shared crew as a cumulative resource, and maintenance windows. It missed the cooling lag
+between a job's own operations. run2 missed the cooling lag as well and did not model
+the shared crew at all; it parameterised the rounding and transport rules and searched
+over them, which is the right instinct, but never found the two rules it was missing.
+
+The cooling lag is the rule both runs missed. It is a delay proportional to the previous
+operation's duration, so it does not show up as a constant anywhere and is only visible
+in how gaps scale.
+
+**The score was predicted before the run.** Because each graded run was selected so that
+every rule changes its makespan, the discrimination table gives the score of a model
+with a given rule wrong. It said a model missing only the cooling lag scores
+1 - 23/25 = **0.08**. run1 missed only the cooling lag and scored exactly 0.08.
+
+The most telling number is not the score. run1 solved all 60 worked runs to proven
+optimality and reproduced **33 of them**. It could not fit the log it was given, which
+is what a lossy observable is supposed to do: five rules right out of six buys almost
+nothing, because a makespan cannot be assembled from partial credit.
