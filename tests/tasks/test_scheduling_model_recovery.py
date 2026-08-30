@@ -195,3 +195,37 @@ def test_a_submission_that_raises_scores_zero_without_raising(staged):
     sub.write_text("def optimal_makespan(run):\n    raise RuntimeError('nope')\n",
                    encoding="utf-8")
     assert asyncio.run(task.evaluate(staged, LocalSession())) == [0.0]
+
+
+@pytest.mark.skipif(not HAVE_ORTOOLS, reason="ortools not installed on this host")
+def test_the_model_is_recoverable_from_the_published_log():
+    """Solvability, executed rather than asserted.
+
+    That a solving program exists is not enough, because the reference scheduler was
+    written by someone who already knew the rules. This fits candidate cooling lags
+    against the worked runs alone and checks that the log selects exactly the right
+    one. The cooling lag is the rule both calibrated agents missed, so it is the part
+    of the claim most worth guarding.
+
+    The full search over all 3456 models lives in ``assets/recovery_search.py``. It
+    finds two survivors, the same model written two ways, both scoring 25/25 on the
+    graded runs, and 8 worked runs are enough to get there.
+    """
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "recovery", task.ASSETS / "recovery_search.py")
+    rec = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(rec)
+
+    base = {"round": "ceil", "start_setup": True, "transport": True,
+            "crew": 1, "maint": True, "setup": True}
+    worked = task._worked()[:8]
+    fits = []
+    for kind, param in ([("none", None)]
+                        + [("prop", (1, b)) for b in (2, 3, 4, 5, 6, 8)]
+                        + [("const", c) for c in (1, 2, 3)]):
+        r = dict(base, lag_kind=kind, lag_param=param)
+        if all(rec.solve(run, r) == run["makespan"] for run in worked):
+            fits.append((kind, param))
+    assert fits == [("prop", (1, 4))], (
+        f"the worked log should select exactly the cooling lag ceil(d/4); it left {fits}")

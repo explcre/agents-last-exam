@@ -107,3 +107,42 @@ The most telling number is not the score. run1 solved all 60 worked runs to prov
 optimality and reproduced **33 of them**. It could not fit the log it was given, which
 is what a lossy observable is supposed to do: five rules right out of six buys almost
 nothing, because a makespan cannot be assembled from partial credit.
+
+## Is it solvable? Recovering the model from the log alone
+
+A reference that scores 1.000 proves the task is well posed, not that it is solvable:
+that reference was written by someone who already knew the rules. The question that
+matters is whether the rules can be recovered from the published log.
+
+`assets/recovery_search.py` answers it by execution. It never imports the reference and
+never reads a graded answer. It searches a space deliberately wider than the truth,
+where the cooling lag may be absent, proportional to the previous operation with any
+ratio a/b for a in 1..2 and b in 2..8, or a flat constant, and the changeover crew may
+be unlimited or hold one to three technicians. 3456 models, fitted against the 60 worked
+runs only.
+
+**Two survive, in 234 s, and they are the same model:** a lag of `ceil(d * 1/4)` and one
+of `ceil(d * 2/8)` are the same lag. Both score **25/25** on the graded runs.
+
+That second half matters as much as the first. Every model that fits the log also scores
+1.000 on the graded runs, so the task cannot mark a correct agent wrong. That is the
+failure a lossy observable invites and it does not occur here.
+
+### The log is generous; the hypothesis space is the bottleneck
+
+| worked runs used | models still fitting, of 3456 |
+| --- | --- |
+| 1 | 41 |
+| 2 | 20 |
+| 3 | 8 |
+| 8 | 2 |
+| 60 | 2 |
+
+One run eliminates 99% of the space and eight runs pin it down, so the shipped 60 carry
+about sevenfold redundancy. The data is not what makes this hard.
+
+What the search does not do is invent its own hypothesis space. That space was written
+by hand, and conceiving it is the actual difficulty. It is exactly where both calibrated
+agents failed: run1 never considered a cooling lag at all, and run2 did build a
+parameterised search over rounding and transport, which is the right instinct, but its
+space contained neither the cooling lag nor a shared changeover crew.

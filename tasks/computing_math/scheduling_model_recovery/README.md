@@ -63,6 +63,18 @@ The graded runs were chosen to be discriminating: every rule changes the makespa
 least 16 of the 25, so a model that is nearly right cannot coast. On a set chosen without
 that care, one wrong-lag model scored 0.95.
 
+## Is it solvable?
+
+Yes, and not merely because a reference exists. `assets/recovery_search.py` recovers the
+model from the published log alone, searching 3456 candidates over a space wider than
+the answer and never reading a graded value. Two survive in 234 s and they are the same
+model written two ways; both score **25/25** on the graded runs, so every model that
+fits the log also scores 1.000 and a correct agent cannot be marked wrong.
+
+Eight worked runs are enough to pin the model down and one run already eliminates 99%
+of the space, so the shipped 60 are generous. The difficulty is not extracting signal
+from the log, it is knowing what belongs in the hypothesis space.
+
 ## Calibrated
 
 Two runs of Codex CLI `gpt-5.6-sol` at `xhigh` scored **0.08** and **0.04**, each after
